@@ -23,7 +23,7 @@ DEFAULT_HEIGHT = 240
 
 root = tk.Tk()
 
-screen_width = root.winfo_screenwidth() / 2
+screen_width = root.winfo_screenwidth() % For two screens, divide by corresponding factor 2
 screen_height = root.winfo_screenheight()
 
 

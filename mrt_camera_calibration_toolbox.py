@@ -21,17 +21,11 @@ logging.basicConfig(level=logging.ERROR)
 DEFAULT_WIDTH = 320
 DEFAULT_HEIGHT = 240
 
-root = tk.Tk()
-
-screen_width = root.winfo_screenwidth() # For two screens, divide by corresponding factor 2
-screen_height = root.winfo_screenheight()
-
-
-# root.state('zoomed')
-
-class MyFirstGUI:
+class MRTCalibrationToolbox:
     def __init__(self, master, *args, **kwargs):
         self.master = master
+        self.screen_width = master.winfo_screenwidth() # For two screens, divide by corresponding factor 2
+        self.screen_height = master.winfo_screenheight()
         master.title("MRT Camera Calibration Toolbox")
         self.initialize_GUI_variables()
         self.initializeVariables()
@@ -41,11 +35,11 @@ class MyFirstGUI:
         self.traces_GUI()
         self.updateCameraParametersGUI()
 
-    '''
-    Function to center popups and disable the main windows
-    '''
-
     def center(self):
+        '''
+        Function to center popups and disable the main windows
+        '''
+        
         self.master.update_idletasks()
         width = self.popup.winfo_reqwidth()
         height = self.popup.winfo_reqheight()
@@ -58,11 +52,10 @@ class MyFirstGUI:
         self.popup.wait_visibility()
         self.popup.grab_set()  # interact only with popup
 
-    '''
-    Function to initialize GUI related variables at the beginning
-    '''
-
     def initialize_GUI_variables(self):
+        '''
+        Function to initialize GUI related variables at the beginning
+        '''
         # buttons
         self.bot = []
         # total images
@@ -139,11 +132,10 @@ class MyFirstGUI:
                   ('Horizontal.Progressbar.label', {'sticky': ''})]
         self.style_pg.layout('text.Horizontal.TProgressbar', layout)
 
-    '''
-    Function to trace all the changes in tkinter variables
-    '''
-
     def traces_GUI(self):
+        '''
+        Function to trace all the changes in tkinter variables
+        '''
         # link changes in number of poses for updating function
         self.n_total.trace('w', self.update_added_deleted)
         # link changes in width and height to plotting function
@@ -158,11 +150,10 @@ class MyFirstGUI:
         # camera parameters
         self.fx[0].trace('w', self.updatePicture)
 
-    '''
-    Function to reset error related variables
-    '''
-
     def reset_error(self):
+        '''
+        Function to reset error related variables
+        '''
         # array of rms error for each pose
         self.r_error = [None, None]
         # array of pixel distance error for each feature
@@ -171,11 +162,10 @@ class MyFirstGUI:
         self.projected = [[], []]
         self.projected_stereo = [[], []]
 
-    '''
-    Function to reset all intrinsics and extrinsics parameters
-    '''
-
     def reset_camera_parameters(self):
+        '''
+        Function to reset all intrinsics and extrinsics parameters
+        '''
         # camera matrix
         # array of 2 of 3*3 for camera parameters (mean and standard deviation)
         self.camera_matrix = [np.zeros((3, 3), dtype=np.float32), np.zeros((3, 3), dtype=np.float32)]
@@ -189,11 +179,10 @@ class MyFirstGUI:
         # rms error
         self.rms = [0, 0, 0]
 
-    ''' 
-    Function to define variables that has to be reinitialized each time a session is deleted
-    '''
-
     def initializeVariables(self):
+        ''' 
+        Function to define variables that has to be reinitialized each time a session is deleted
+        '''
         # total number of cameras
         self.n_cameras = 0
         # size for each camera, used for internal functions
@@ -262,11 +251,10 @@ class MyFirstGUI:
         self.RMS_array = []
         self.samples = None
 
-    '''
-    Function to create toolbar, data browser, panel of tabs of images, error charts and calculated parameters visualization
-    '''
-
     def initUI(self, *args, **kwargs):
+        '''
+        Function to create toolbar, data browser, panel of tabs of images, error charts and calculated parameters visualization
+        '''
         ## frames definition and positioning ##
         self.frm = []
         for i in range(7):
@@ -276,27 +264,27 @@ class MyFirstGUI:
             # self.frm[-1].propagate(0)
         self.frm[0].grid(row=0, column=0, columnspan=6, sticky=tk.W)  # frame for toolbar
         self.frm[1].grid(row=1, column=0, rowspan=3, sticky='nswe')  # frame for Listbox
-        self.frm[1].configure(width=screen_width * 0.1)  # set frame width 10% of screen width
+        self.frm[1].configure(width=self.screen_width * 0.1)  # set frame width 10% of screen width
 
         self.frm[2].grid(row=1, column=1, sticky=tk.N + tk.S)  # frame for pictures first camera
-        self.frm[2].configure(width=screen_width * 0.28 * 0.9,
-                              height=(screen_height - 25) / 2)  # set frame width 28% of screen width
+        self.frm[2].configure(width=self.screen_width * 0.28 * 0.9,
+                              height=(self.screen_height - 25) / 2)  # set frame width 28% of screen width
 
         self.frm[3].grid(row=1, column=2, sticky=tk.N + tk.S)  # frame for intrinsics first camera
-        self.frm[3].configure(width=screen_width * 0.15 * 0.9,
-                              height=(screen_height - 25) / 2)  # set frame width 15% of screen width
+        self.frm[3].configure(width=self.screen_width * 0.15 * 0.9,
+                              height=(self.screen_height - 25) / 2)  # set frame width 15% of screen width
 
         self.frm[4].grid(row=1, column=3, sticky=tk.N + tk.S)  # frame for extrinsics
-        self.frm[4].configure(width=screen_width * 0.14 * 0.9,
-                              height=(screen_height - 25) / 2)  # set frame width 14% of screen width
+        self.frm[4].configure(width=self.screen_width * 0.14 * 0.9,
+                              height=(self.screen_height - 25) / 2)  # set frame width 14% of screen width
 
         self.frm[5].grid(row=1, column=4, sticky=tk.N + tk.S)  # frame for intrinsics second camera
-        self.frm[5].configure(width=screen_width * 0.15 * 0.9,
-                              height=(screen_height - 25) / 2)  # set frame width 15% of screen width
+        self.frm[5].configure(width=self.screen_width * 0.15 * 0.9,
+                              height=(self.screen_height - 25) / 2)  # set frame width 15% of screen width
 
         self.frm[6].grid(row=1, column=5, sticky=tk.N + tk.S)  # frame for pictures second camera
-        self.frm[6].configure(width=screen_width * 0.28 * 0.9,
-                              height=(screen_height - 25) / 2)  # set frame width 28% of screen width
+        self.frm[6].configure(width=self.screen_width * 0.28 * 0.9,
+                              height=(self.screen_height - 25) / 2)  # set frame width 28% of screen width
 
         sub_frame_g = tk.Frame(self.master)
         sub_frame_g.grid(row=2, column=1, columnspan=5, sticky=tk.W + tk.E)
@@ -488,8 +476,8 @@ class MyFirstGUI:
             for j in range(2):
                 # figure and subplot declaration
                 self.f[i].append(Figure(figsize=(
-                    screen_width / int(self.master.winfo_fpixels('1i')) * 0.45,
-                    (screen_height - 25) / int(self.master.winfo_fpixels('1i')) * 0.25),
+                    self.screen_width / int(self.master.winfo_fpixels('1i')) * 0.45,
+                    (self.screen_height - 25) / int(self.master.winfo_fpixels('1i')) * 0.25),
                     dpi=int(self.master.winfo_fpixels('1i'))))
                 self.ax[i].append(self.f[i][-1].add_subplot(111))
                 ## bar chart initialization and definition ##
@@ -521,11 +509,10 @@ class MyFirstGUI:
         self.master.bind('<Alt-F4>', self.master.quit)
         self.master.bind("<F5>", lambda event: self.bot[5].invoke())
 
-    '''
-    Function to set default pattern parameters when the pattern type is changed
-    '''
-
     def pattern_default(self, *args):
+        '''
+        Function to set default pattern parameters when the pattern type is changed
+        '''
         self.popup.update()
         if "Chessboard" in self.pattern_type.get():
             self.feature_distance.set(50)
@@ -540,12 +527,11 @@ class MyFirstGUI:
             self.pattern_width.set(7)
             self.pattern_height.set(6)
 
-    '''
-    Function for updating the canvas representation of the pattern when adding a new session
-    also shows error and warnings depending of the range of the parameters
-    '''
-
     def check_errors_and_plot(self, *args):
+        '''
+        Function for updating the canvas representation of the pattern when adding a new session
+        also shows error and warnings depending of the range of the parameters
+        '''
         # delete grid_line objects
         try:
             self.c_pattern.delete('grid_line')
@@ -631,11 +617,10 @@ class MyFirstGUI:
                                 text='width and height parameters \n should be an odd-even pair', bg='#ffcc0f',
                                 fg='black')
 
-    '''
-    Function to create popup for calibration settings button
-    '''
-
     def popup_configuration(self):
+        '''
+        Function to create popup for calibration settings button
+        '''
         self.popup = tk.Toplevel(self.master)
         self.popup.withdraw()
 
@@ -651,14 +636,12 @@ class MyFirstGUI:
                                                                                sticky=tk.E + tk.W + tk.N)
         tk.Button(self.popup, text="Exit", command=self.popup.destroy).grid(row=4, column=0, columnspan=2,
                                                                             sticky=tk.E + tk.W + tk.N)
-
         self.center()
 
-    '''
-    Function to create popup for add session button
-    '''
-
     def add_session_popup(self):
+        '''
+        Function to create popup for add session button
+        '''
         self.popup = tk.Toplevel(self.master)
         self.popup.withdraw()
 
@@ -753,11 +736,10 @@ class MyFirstGUI:
 
         self.center()
 
-    '''
+    def modify_add_session_popup(self, *args):
+        '''
         Function to modify add_session popup by changing pattern load selection box
         '''
-
-    def modify_add_session_popup(self, *args):
         self.l_load_files[0].config(text='')
         self.load_files[0] = None
         if "Text" in self.pattern_load.get():
@@ -770,11 +752,10 @@ class MyFirstGUI:
             self.sub_frame[1].grid_forget()
         self.check_errors_and_plot(None)
 
-    '''
-    Function to load 3D points from text
-    '''
-
     def load_3D_points(self):
+        '''
+        Function to load 3D points from text
+        '''
         self.load_files[0] = tk.filedialog.askopenfilenames(parent=self.popup,
                                                             filetypes=[('Text files', '*.txt')])  # , multiple = False)
         if len(self.load_files[0]) == 0:
@@ -789,14 +770,13 @@ class MyFirstGUI:
                 self.l_load_files[0].config(text=self.load_files[0][0].rsplit('/', 1)[1], fg='black')
                 self.check_errors_and_plot(None)
 
-    '''
-    Function to add session after the given parameters are correct
-    Creates object_pattern according to the selected pattern type
-    Enables and disables the corresponding buttons 
-    Adjust the GUI for a single/stereo mode
-    '''
-
     def add_session(self):
+        '''
+        Function to add session after the given parameters are correct
+        Creates object_pattern according to the selected pattern type
+        Enables and disables the corresponding buttons 
+        Adjust the GUI for a single/stereo mode
+        '''
         lim = 0
         if 'Images' in self.pattern_load.get():
             lim = 3
@@ -880,11 +860,10 @@ class MyFirstGUI:
             self.bot[1].config(state="normal")  # enable adding per file
             self.tabControl[0].tab(4, state="disable")  # Disable tab for extrinsic Reprojection
 
-    '''
-    Function for getting new files
-    '''
-
     def get_file_names(self, typeof, title_dialog):
+        '''
+        Function for getting new files
+        '''
         filenames = []
         # this is adding per file
         if typeof == 'p':
@@ -919,12 +898,10 @@ class MyFirstGUI:
                     filenames.append(os.path.join(p, f))
         return filenames
 
-    '''
-    Function to add files to the session
-    '''
-
     def add_file(self, typeof):
-
+        '''
+        Function to add files to the session
+        '''
         file_names_2D_points = self.get_file_names(typeof, '2D points')
 
         if len(file_names_2D_points) == 0:
@@ -1081,11 +1058,10 @@ class MyFirstGUI:
             self.bot[4].config(state="disable")  # disable zoom in button
             self.bot[5].config(state="disable")  # disable run calibration button
 
-    '''
-    Function to create popup for failure in importing images 
-    '''
-
     def popupmsg(self):
+        '''
+        Function to create popup for failure in importing images 
+        '''
         self.popup = tk.Toplevel(self.master)
         self.popup.withdraw()
 
@@ -1104,11 +1080,10 @@ class MyFirstGUI:
         self.center()
         return l_msg
 
-    '''
-    Function for the click event over the data browser
-    '''
-
     def updateSelection(self, event):
+        '''
+        Function for the click event over the data browser
+        '''
         widget = event.widget
         self.zoomhandler = 0
         self.index.set(widget.curselection()[0])
@@ -1116,11 +1091,10 @@ class MyFirstGUI:
             self.loadBarError([1])
             self.updateBarError(0)
 
-    '''
-    Function for the click event over the error bars 
-    '''
-
     def updateSelectionperclick(self, selection, i):
+        '''
+        Function for the click event over the error bars 
+        '''
         # This corresponds to a click over the RMS reprojection error chart
         if i == 0:
             self.zoomhandler = 0
@@ -1136,12 +1110,11 @@ class MyFirstGUI:
             self.updatePicture(None)
             self.updateBarError(1)
 
-    '''
-    Function for the click event with a zoom sunken button
-    Detects the x,y click position and calculate the scale for the image resizing
-    '''
-
     def click_to_zoom(self, event):
+        '''
+        Function for the click event with a zoom sunken button
+        Detects the x,y click position and calculate the scale for the image resizing
+        '''
         self.scale = 1.0
         self.x = event.x
         self.y = event.y
@@ -1171,22 +1144,20 @@ class MyFirstGUI:
             self.zoomhandler -= 1
         self.updatePicture()
 
-    '''
-    Function to keep only one zoom button enable
-    '''
-
     def toggle_zoom_buttons(self, button1, button2):
+        '''
+        Function to keep only one zoom button enable
+        '''
         if self.bot[button1].config('relief')[-1] == 'sunken':
             self.bot[button1].config(relief="raised")
         else:
             self.bot[button1].config(relief="sunken")
             self.bot[button2].config(relief="raised")
 
-    '''
-    Function to update pictures in panel of tabs
-    '''
-
     def updatePicture(self, *args):
+        '''
+        Function to update pictures in panel of tabs
+        '''
         selection = self.index.get()
         # checks for a valid selection
         if selection >= 0:
@@ -1235,11 +1206,10 @@ class MyFirstGUI:
 
     # self.panel1.itemconfig(self.image_on_panel1, image = None)
 
-    '''
-    Function to create an picture with the original one and its detected features with markers
-    '''
-
     def image_features(self, camera, index):
+        '''
+        Function to create an picture with the original one and its detected features with markers
+        '''
         # get the features for the selected image
         features = self.detected_features[camera][index]
         # get original of the selected image
@@ -1255,11 +1225,10 @@ class MyFirstGUI:
             im2 = im
         return im2
 
-    '''
-    Function to update heat map when a new image is added or an image is deleted
-    '''
-
     def update_added_deleted(self, *args):
+        '''
+        Function to update heat map when a new image is added or an image is deleted
+        '''
         self.zoomhandler = 0
         if self.n_total.get() > 0:
             for j in range(self.n_cameras):
@@ -1270,11 +1239,10 @@ class MyFirstGUI:
         # update data browser
         self.loadImagesBrowser()
 
-    '''
-    Function to update items in data browser
-    '''
-
     def loadImagesBrowser(self):
+        '''
+        Function to update items in data browser
+        '''
         # checks if listbox object exists
         if self.listbox:
             self.listbox.delete(0, tk.END)
@@ -1287,11 +1255,10 @@ class MyFirstGUI:
                 else:
                     self.listbox.select_set(self.index.get())
 
-    '''
-    Function to calculate a density cloud map of all the images using its detected features
-    '''
-
     def density_cloud_heat_map(self, camera):
+        '''
+        Function to calculate a density cloud map of all the images using its detected features
+        '''
         # initialize picture with image size
         width = self.size[camera][1]
         height = self.size[camera][0]
@@ -1356,12 +1323,11 @@ class MyFirstGUI:
         im = np.uint8(cm.jet(grid) * 255)
         return im
 
-    '''
-    Function to get the images comparing the original in green and its projection in red
-    The current selected feature index is represented by a circle over the point
-    '''
-
     def project_detected_features(self, camera, index, forExtrinsics=False):
+        '''
+        Function to get the images comparing the original in green and its projection in red
+        The current selected feature index is represented by a circle over the point
+        '''
         # create RGB picture with the image size
         im3 = np.uint8(np.zeros(self.size[camera] + (3,)))
         im = self.img_original[camera][index]
@@ -1403,11 +1369,10 @@ class MyFirstGUI:
 
         return im3
 
-    '''
-    Function to adjust the GUI according to the selected calibration method 
-    '''
-
     def modify_play_popup(self, *args):
+        '''
+        Function to adjust the GUI according to the selected calibration method 
+        '''
         self.bot[8].config(state="disable")  # enable export parameters button
         self.bot[9].config(state="disable")  # enable export parameters button
         # reset all values
@@ -2029,13 +1994,12 @@ class MyFirstGUI:
                             np.sum(np.square(self.r_error[0] + self.r_error[1])) / len(
                                 self.r_error[0] + self.r_error[1]))
 
-    '''
-    Function to update the color of the bars in the bar charts
-    depending of the selection
-    The selected bar is red, the others are blue
-    '''
-
     def updateBarError(self, k):
+        '''
+        Function to update the color of the bars in the bar charts
+        depending of the selection
+        The selected bar is red, the others are blue
+        '''
         if k == 0:
             index = self.index.get()
         else:
@@ -2050,11 +2014,10 @@ class MyFirstGUI:
                         self.dr[k][j][i].set_color('b')
                 self.bar[k][j].draw()
 
-    '''
-    Function to update error bar chart
-    '''
-
     def loadBarError(self, r_up):
+        '''
+        Function to update error bar chart
+        '''
         xlabel_names = ['Images', 'Features']
         title_names = ['RMS Reprojection Error', 'Pixel Distance Error']
         factor_width = [10, 7]
@@ -2122,12 +2085,11 @@ class MyFirstGUI:
                 self.f[k][j].tight_layout()  # Adjust size
                 self.bar[k][j].draw()
 
-    '''
-    Function to handle the event of pressing over one of the bar in the chart to update selected pose
-    j is camera, i is graphic #TODO: Maybe change logic? (easier to understand...)
-    '''
-
     def on_press(self, event, i, j):
+        '''
+        Function to handle the event of pressing over one of the bar in the chart to update selected pose
+        j is camera, i is graphic #TODO: Maybe change logic? (easier to understand...)
+        '''
         # checks if a calibration has already succeed
         if self.camera_matrix[0][0][0] != 0:  # Fx is zero only when reset
             b_continue = False
@@ -2144,11 +2106,10 @@ class MyFirstGUI:
                         self.updateSelectionperclick(int(rect.get_label()), i)
                         break
 
-    '''
-    Function to update all the labels values from the calculated parameters in the calibration
-    '''
-
     def updateCameraParametersGUI(self):
+        '''
+        Function to update all the labels values from the calculated parameters in the calibration
+        '''
         if self.n_cameras == 0:
             r_cameras1 = 2
             r_cameras2 = 3
@@ -2182,11 +2143,10 @@ class MyFirstGUI:
             for i in range(3):
                 float2StringVar(self.R_tk[i][j], self.R_stereo[i][j])
 
-    '''
-    Function to delete with Del key one image
-    '''
-
     def del_single(self):
+        '''
+        Function to delete with Del key one image
+        '''
         # get current index
         index = self.listbox.curselection()
         if index:
@@ -2229,11 +2189,10 @@ class MyFirstGUI:
                     self.index.set(-1)
             self.loadBarError([0, 1])  # uses self.index which is updated in updatepicture
 
-    '''
-    Function to delete all the session
-    '''
-
     def del_all(self):
+        '''
+        Function to delete all the session
+        '''
         # enable the add session button
         self.bot[0].config(state="active")
         # disable the other toolbar buttons
@@ -2254,11 +2213,10 @@ class MyFirstGUI:
         self.frm[8].grid_forget()
         self.frm[10].grid_forget()
 
-    '''
-    Function to create popup for deleting confirmation
-    '''
-
     def popupmsg_deleting(self):
+        '''
+        Function to create popup for deleting confirmation
+        '''
         self.popup = tk.Toplevel(self.master)
         self.popup.withdraw()
 
@@ -2271,11 +2229,10 @@ class MyFirstGUI:
 
         self.center()
 
-    '''
-    Function to export the calibration parameters
-    '''
-
     def exportCalibrationParameters(self):
+        '''
+        Function to export the calibration parameters
+        '''
         default_filenames = ['intrinsics_first_camera', 'intrinsics_second_camera', 'extrinsics']
         for j in range(2 * int(self.m_stereo) + 1):
             filename = tk.filedialog.asksaveasfilename(initialfile=default_filenames[j], defaultextension='.txt',
@@ -2292,11 +2249,10 @@ class MyFirstGUI:
             else:
                 return
 
-    '''
-    Function to export calibration results per Iteration
-    '''
-
     def exportCalibrationParametersIteration(self):
+        '''
+        Function to export calibration results per Iteration
+        '''
         logging.info('exporting results per calibration')
 
         t_choose = 'Please select a folder'
@@ -2350,9 +2306,3 @@ class MyFirstGUI:
                 f.write("]")
                 f.write("\n")
             f.close()
-
-root.wait_visibility()
-root.grab_set()
-my_gui = MyFirstGUI(root)
-# root.eval('tk::PlaceWindow %s center' % root.winfo_pathname(root.winfo_id()))
-root.mainloop()

@@ -16,7 +16,7 @@ The MRT Camera Calibration Toolbox is an application, developed in Python using 
 
 ## Citation:  
 
-So far no publication has been written on the current toolbox, we recommend the following paper for citation in the geometric calibration of cameras in several spectral ranges:
+So far no publication has been written on the current toolbox, we recommend the following paper for citation of the geometric calibration of cameras in several spectral ranges:
 ```
 @INPROCEEDINGS{Rangel2014,
   author = {Rangel González, Johannes Havid and Soldan, Samuel and Kroll, Andreas},

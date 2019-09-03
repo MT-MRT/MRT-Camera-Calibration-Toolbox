@@ -14,7 +14,47 @@ The MRT Camera Calibration Toolbox is an application, developed in Python using 
 - Import and export of data
 - It's free!
 
-## Citation:  
+## Requirements
+
+To use the toolbox, the modules listed below has to be installed on your computer. 
+
+- Python3 (Tested for Python 3.4 and Python 3.6)
+- OpenCV 4.1
+- tkinter 8.6
+- PIL 5.4.1
+- numpy 1.16.4
+- matplotlib 1.3.1
+
+## Installation
+
+You can download the source code and excecute the toolbox [mrt_camera_calibration_toolbox.py](https://github.com/MT-MRT/MRT-Camera-Calibration-Toolbox/blob/master/mrt_camera_calibration_toolbox.py) directly on your computer through the Linux or Windows terminal:
+
+```
+cd path/to/your/toolbox
+python3 mrt_camera_calibration_toolbox.py
+```
+
+## Getting Started
+
+Check this animation of a running example of the MRT Camera Calibration Toolbox. 
+
+![example](https://github.com/MT-MRT/MRT-Camera-Calibration-Toolbox/blob/master/docs/example_single_chessboard.gif)
+
+## Documentation
+
+Documentation is currently under development...
+
+## Contributing 
+
+Contributions are very welcome. Open a fresh issue to start a discussion around a feature idea or a bug.
+
+## Acknowledgments
+
+For [quaternions.py](https://github.com/MT-MRT/MRT-Camera-Calibration-Toolbox/blob/master/quaternions.py) code based on: Christoph Hagen. "averaging quaternions". Available here: https://github.com/christophhagen/averaging-quaternions
+
+Toolbar icons obtain from: https://www.iconfinder.com
+
+## Citation
 
 So far no publication has been written on the current toolbox, we recommend the following paper for citation of the geometric calibration of cameras in several spectral ranges:
 ```
@@ -27,7 +67,7 @@ So far no publication has been written on the current toolbox, we recommend the 
 }
 ```
 
-## Contact:  
+## Contact
 
 If you have any questions, please email Daniela Aguirre Salazar at daguirres@unal.edu.co or Sebastian Schramm at sebastian.schramm@mrt.uni-kassel.de.
  

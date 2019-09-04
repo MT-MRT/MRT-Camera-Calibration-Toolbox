@@ -16,7 +16,7 @@ The MRT Camera Calibration Toolbox is an application, developed in Python using 
 
 ## Requirements
 
-To use the toolbox, the modules listed below has to be installed on your computer. 
+To use the toolbox, the modules listed below have to be installed on your computer. 
 
 - Python3 (Tested for Python 3.4 and Python 3.6)
 - OpenCV 4.1
@@ -27,7 +27,7 @@ To use the toolbox, the modules listed below has to be installed on your compute
 
 ## Installation
 
-You can download the source code and excecute the toolbox [mrt_camera_calibration_toolbox.py](https://github.com/MT-MRT/MRT-Camera-Calibration-Toolbox/blob/master/main.py) directly on your computer through the Linux or Windows terminal:
+You can download the source code and excecute the toolbox [main.py](https://github.com/MT-MRT/MRT-Camera-Calibration-Toolbox/blob/master/main.py) directly on your computer through the Linux or Windows terminal:
 
 ```
 cd path/to/your/toolbox

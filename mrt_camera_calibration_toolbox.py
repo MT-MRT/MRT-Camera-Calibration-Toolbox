@@ -12,7 +12,7 @@ from matplotlib.figure import Figure
 
 import datastring
 from misc_tools import combination, validate, float2StringVar
-from plot_patterns import plot_chessboard, plot_grid, plot_led, plot_custom
+from plot_patterns import plot_chessboard, plot_asymmetric_grid, plot_symmetric_grid, plot_custom
 from quaternions import averageMatrix
 from time_tools import chronometer
 
@@ -21,10 +21,11 @@ logging.basicConfig(level=logging.ERROR)
 DEFAULT_WIDTH = 320
 DEFAULT_HEIGHT = 240
 
+
 class MRTCalibrationToolbox:
     def __init__(self, master, *args, **kwargs):
         self.master = master
-        self.screen_width = master.winfo_screenwidth() # For two screens, divide by corresponding factor 2
+        self.screen_width = master.winfo_screenwidth()  # For two screens, divide by corresponding factor 2
         self.screen_height = master.winfo_screenheight()
         master.title("MRT Camera Calibration Toolbox")
         self.initialize_GUI_variables()
@@ -518,11 +519,11 @@ class MRTCalibrationToolbox:
             self.feature_distance.set(50)
             self.pattern_width.set(9)
             self.pattern_height.set(6)
-        elif "Grid" in self.pattern_type.get():
+        elif "Asymmetric Grid" in self.pattern_type.get():
             self.feature_distance.set(100)
             self.pattern_width.set(9)
             self.pattern_height.set(4)
-        elif "Led" in self.pattern_type.get():
+        elif "Symmetric Grid" in self.pattern_type.get():
             self.feature_distance.set(50)
             self.pattern_width.set(7)
             self.pattern_height.set(6)
@@ -604,12 +605,12 @@ class MRTCalibrationToolbox:
                 if "Chessboard" in self.pattern_type.get():
                     plot_chessboard(self.c_pattern, self.p_width, self.p_height, self.c_pattern.winfo_width(),
                                     self.c_pattern.winfo_height())
-                elif "Grid" in self.pattern_type.get():
-                    plot_grid(self.c_pattern, self.p_width, self.p_height, self.c_pattern.winfo_width(),
-                              self.c_pattern.winfo_height())
-                elif "Led" in self.pattern_type.get():
-                    plot_led(self.c_pattern, self.p_width, self.p_height, self.c_pattern.winfo_width(),
-                             self.c_pattern.winfo_height())
+                elif "Asymmetric Grid" in self.pattern_type.get():
+                    plot_asymmetric_grid(self.c_pattern, self.p_width, self.p_height, self.c_pattern.winfo_width(),
+                                         self.c_pattern.winfo_height())
+                elif "Symmetric Grid" in self.pattern_type.get():
+                    plot_symmetric_grid(self.c_pattern, self.p_width, self.p_height, self.c_pattern.winfo_width(),
+                                        self.c_pattern.winfo_height())
 
         # check if width and height parameters are an odd-even pair and show warnings if applies
         if (self.p_width + self.p_height) % 2 == 0:
@@ -689,8 +690,9 @@ class MRTCalibrationToolbox:
         self.l_load_files[0].grid(row=7, column=0, sticky=tk.E + tk.W + tk.N)
 
         tk.Label(self.sub_frame[2], text='Pattern type ', width=23).grid(row=0, column=0, sticky=tk.W)
-        tk.OptionMenu(self.sub_frame[2], self.pattern_type, "Chessboard", "Asymetric Grid", "Led").grid(row=1, column=0,
-                                                                                                        sticky=tk.E + tk.W + tk.N)
+        tk.OptionMenu(self.sub_frame[2], self.pattern_type, "Chessboard", "Asymmetric Grid", "Symmetric Grid").grid(
+            row=1, column=0,
+            sticky=tk.E + tk.W + tk.N)
         tk.Label(self.sub_frame[2], text='Pattern width ').grid(row=2, column=0, sticky=tk.W)
         tk.Entry(self.sub_frame[2], textvariable=self.pattern_width, validate='key', validatecommand=vcmd_int).grid(
             row=3,
@@ -797,7 +799,7 @@ class MRTCalibrationToolbox:
                 self.object_pattern[:, 0] = -grid[:, 1]
                 self.object_pattern[:, 1] = grid[:, 0]
             # creates object from Grid pattern
-            elif "Grid" in self.pattern_type.get():
+            elif "Asymmetric Grid" in self.pattern_type.get():
                 pattern_size = (self.p_height, self.p_width)
                 self.object_pattern = np.zeros((np.prod(pattern_size), 3), np.float32)
                 self.object_pattern[:, :2] = np.fliplr(np.indices(pattern_size).T.reshape(-1, 2))
@@ -809,7 +811,7 @@ class MRTCalibrationToolbox:
                         self.object_pattern[i, 1] = self.object_pattern[i, 1] * self.f_distance + self.f_distance / 2
                         self.object_pattern[i, 0] = self.object_pattern[i, 0] * self.f_distance / 2
             # returns for led pattern (not yet implemented)
-            elif "Led" in self.pattern_type.get():
+            elif "Symmetric Grid" in self.pattern_type.get():
                 self.object_pattern = np.zeros((self.p_width * self.p_height, 3), np.float32)
                 grid = np.mgrid[0:self.p_height, 0:self.p_width].T.reshape(-1, 2) * self.f_distance
                 self.object_pattern[:, 0] = -grid[:, 1]
@@ -946,14 +948,14 @@ class MRTCalibrationToolbox:
                                 cv2.cornerSubPix(im2, features, (3, 3), (-1, -1), criteria)
                                 break
                         # find features for asymmetric grid pattern type
-                        elif 'Grid' in self.pattern_type.get():
+                        elif 'Asymmetric Grid' in self.pattern_type.get():
                             features = np.array([], np.float32)
                             ret, features = cv2.findCirclesGrid(im2, (self.p_height, self.p_width), features,
                                                                 cv2.CALIB_CB_ASYMMETRIC_GRID)
                             if ret:
                                 break
                         # find features for asymmetric grid pattern type
-                        elif 'Led' in self.pattern_type.get():
+                        elif 'Symmetric Grid' in self.pattern_type.get():
                             features = np.array([], np.float32)
                             '''
                             Since the findCirclesGrid algorithm for symmetric grid usually fails for a wrong height - width configuration,

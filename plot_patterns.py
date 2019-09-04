@@ -39,7 +39,7 @@ def plot_chessboard(c_pattern, p_width, p_height, w, h):
                            (w_down + w_step + w_step / 3, h_down + h_step + h_step / 3)], tag='grid_line', fill="red")
 
 
-def plot_grid(c_pattern, p_width, p_height, w, h):
+def plot_asymmetric_grid(c_pattern, p_width, p_height, w, h):
     w -= 2
     h -= 2
 
@@ -76,7 +76,7 @@ def plot_grid(c_pattern, p_width, p_height, w, h):
                           fill="red")
 
 
-def plot_led(c_pattern, p_width, p_height, w, h):
+def plot_symmetric_grid(c_pattern, p_width, p_height, w, h):
     w -= 2
     h -= 2
 

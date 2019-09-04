@@ -39,7 +39,7 @@ class MRTCalibrationToolbox:
         '''
         Function to center popups and disable the main windows
         '''
-        
+
         self.master.update_idletasks()
         width = self.popup.winfo_reqwidth()
         height = self.popup.winfo_reqheight()
@@ -868,7 +868,7 @@ class MRTCalibrationToolbox:
         # this is adding per file
         if typeof == 'p':
             t_choose = 'Please select a file for ' + title_dialog
-            filenames = tk.filedialog.askopenfilenames(parent=root, title=t_choose, filetypes=self.ftypes)
+            filenames = tk.filedialog.askopenfilenames(parent=self.master, title=t_choose, filetypes=self.ftypes)
         # this is adding per folder
         else:
             list_path = []
@@ -876,7 +876,7 @@ class MRTCalibrationToolbox:
             while len(list_path) < self.n_cameras:
                 # create dialog for adding folders
                 t_choose = 'Please select a folder for ' + title_dialog + t_options[len(list_path)]
-                path_folder = tk.filedialog.askdirectory(parent=root, title=t_choose)
+                path_folder = tk.filedialog.askdirectory(parent=self.master, title=t_choose)
                 # checks that the selected folder exists
                 if path_folder:
                     list_path.append(path_folder)
@@ -2256,7 +2256,7 @@ class MRTCalibrationToolbox:
         logging.info('exporting results per calibration')
 
         t_choose = 'Please select a folder'
-        path_folder = tk.filedialog.askdirectory(parent=root, title=t_choose)
+        path_folder = tk.filedialog.askdirectory(parent=self.master, title=t_choose)
 
         if path_folder != '':
             for j in range(self.n_cameras):

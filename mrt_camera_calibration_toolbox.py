@@ -181,7 +181,7 @@ class MRTCalibrationToolbox:
         self.rms = [0, 0, 0]
 
     def initializeVariables(self):
-        ''' 
+        '''
         Function to define variables that has to be reinitialized each time a session is deleted
         '''
         # total number of cameras
@@ -541,65 +541,40 @@ class MRTCalibrationToolbox:
             return
         # Clear warnings
         self.l_error.config(image='', text='', bg='#d9d9d9')
-        if 'Text' in self.pattern_load.get():
-            # check the image size and show error if applies
-            try:
-                if self.image_width.get() == 0:
-                    self.label_msg[0].configure(text='width parameter muss be greater than zero')
-                else:
-                    self.label_msg[0].configure(text='')
-            except ValueError:
-                self.label_msg[0].configure(text='width parameter can not be empty')
-            # check range of pattern height, update the continue flag and show error if applies
-            try:
-                if self.image_height.get() == 0:
-                    self.label_msg[1].configure(text='height parameter muss be greater than zero')
-                else:
-                    self.label_msg[1].configure(text='')
-            except ValueError:
-                self.label_msg[1].configure(text='height parameter can not be empty')
-
-            # plot the pattern representation using the parameters according to the pattern type
-            if self.load_files[0]:
-                set_3D_points = np.fromfile(self.load_files[0][0], dtype=np.float32, sep=',')
-                n_points = len(set_3D_points) / 3
-                self.object_pattern = set_3D_points.reshape((n_points, 1, 3))
-                plot_custom(self.c_pattern, n_points, self.c_pattern.winfo_width(), self.c_pattern.winfo_height())
-
-        else:
+        if "Image" in self.pattern_load.get():
             # set continue flag in true
             b_continue = True
             # check range of pattern width, update the continue flag and show error if applies
             try:
                 self.p_width = self.pattern_width.get()
                 if self.p_width < 2:
-                    self.label_msg[2].configure(text='width parameter muss be greater than one')
+                    self.label_msg[0].configure(text='width parameter muss be greater than one')
                     b_continue = False
                 else:
-                    self.label_msg[2].configure(text='')
+                    self.label_msg[0].configure(text='')
             except ValueError:
-                self.label_msg[2].configure(text='width parameter can not be empty')
+                self.label_msg[0].configure(text='width parameter can not be empty')
                 b_continue = False
             # check range of pattern height, update the continue flag and show error if applies
             try:
                 self.p_height = self.pattern_height.get()
                 if self.p_height < 2:
-                    self.label_msg[3].configure(text='height parameter muss be greater than one')
+                    self.label_msg[1].configure(text='height parameter muss be greater than one')
                     b_continue = False
                 else:
-                    self.label_msg[3].configure(text='')
+                    self.label_msg[1].configure(text='')
             except ValueError:
-                self.label_msg[3].configure(text='height parameter can not be empty')
+                self.label_msg[1].configure(text='height parameter can not be empty')
                 b_continue = False
             # check range of pattern length and show error if applies
             try:
                 self.f_distance = self.feature_distance.get()
                 if self.f_distance == 0:
-                    self.label_msg[4].configure(text='length parameter muss be greater than zero')
+                    self.label_msg[2].configure(text='length parameter muss be greater than zero')
                 else:
-                    self.label_msg[4].configure(text='')
+                    self.label_msg[2].configure(text='')
             except ValueError:
-                self.label_msg[4].configure(text='length parameter can not be empty')
+                self.label_msg[2].configure(text='length parameter can not be empty')
 
             if b_continue:
                 if "Chessboard" in self.pattern_type.get():
@@ -612,11 +587,35 @@ class MRTCalibrationToolbox:
                     plot_symmetric_grid(self.c_pattern, self.p_width, self.p_height, self.c_pattern.winfo_width(),
                                         self.c_pattern.winfo_height())
 
-        # check if width and height parameters are an odd-even pair and show warnings if applies
-        if (self.p_width + self.p_height) % 2 == 0:
-            self.l_error.config(image='::tk::icons::warning',
-                                text='width and height parameters \n should be an odd-even pair', bg='#ffcc0f',
-                                fg='black')
+                # check if width and height parameters are an odd-even pair and show warnings if applies
+                if (self.p_width + self.p_height) % 2 == 0:
+                    self.l_error.config(image='::tk::icons::warning',
+                                        text='width and height parameters \n should be an odd-even pair', bg='#ffcc0f',
+                                        fg='black')
+
+        else:
+            # check the image size and show error if applies
+            try:
+                if self.image_width.get() == 0:
+                    self.label_msg[3].configure(text='width parameter muss be greater than zero')
+                else:
+                    self.label_msg[3].configure(text='')
+            except ValueError:
+                self.label_msg[3].configure(text='width parameter can not be empty')
+            # check range of pattern height, update the continue flag and show error if applies
+            try:
+                if self.image_height.get() == 0:
+                    self.label_msg[4].configure(text='height parameter muss be greater than zero')
+                else:
+                    self.label_msg[4].configure(text='')
+            except ValueError:
+                self.label_msg[4].configure(text='height parameter can not be empty')
+
+            # load 3D points to object_pattern
+            if self.load_files[0]:
+                set_3D_points = np.fromfile(self.load_files[0][0], dtype=np.float32, sep=',')
+                n_points = len(set_3D_points) / 3
+                self.object_pattern = set_3D_points.reshape((n_points, 1, 3))
 
     def popup_configuration(self):
         '''
@@ -644,93 +643,143 @@ class MRTCalibrationToolbox:
         Function to create popup for add session button
         '''
         self.popup = tk.Toplevel(self.master)
+        self.popup.grid_columnconfigure(0, weight=1)
+        self.popup.grid_rowconfigure(0, weight=1)
         self.popup.withdraw()
 
         self.popup.wm_title("Add Session")
 
         self.pattern_load.set('Images')
 
-        m_frm = []
-        for i in range(2):
-            m_frm.append(tk.Frame(self.popup))
-            m_frm[-1].grid(row=0, column=0 + i)
-        m_frm.append(tk.Frame(self.popup))
-        m_frm[-1].grid(row=1, column=0, columnspan=2)
-        # self.m_frm[0].grid_forget()
-
-        self.sub_frame = []
+        ## struct popup add session popup ##
+        # ---------------------------------
+        # | Select file type to load      |
+        # ---------------------------------
+        # | Option Menu file type  |*|    |
+        # ---------------------------------
+        # |    Frame add image files      |
+        # ---------------------------------
+        # |    Frame add text files       |
+        # ---------------------------------
+        # | Stereo mode? | checkbox [+]   |
+        # ---------------------------------
+        # |    !  Label warning           |
+        # ---------------------------------
+        # ||   Start   || ||   Exit      ||
+        # ---------------------------------
+        self.m_frm = []
         for i in range(4):
-            self.sub_frame.append(tk.Frame(m_frm[0]))
-            self.sub_frame[-1].grid(row=i, column=0)
-        self.sub_frame[1].grid_forget()
+            self.m_frm.append(tk.Frame(self.popup))
+            self.m_frm[-1].grid(row=i, column=0, columnspan=1 + i % 2)
 
         vcmd_int = (self.popup.register(validate), '%d', '%i', '%P', '%s', '%S', '%v', '%V', '%W', '0123456789')
         vcmd_float = (self.popup.register(validate), '%d', '%i', '%P', '%s', '%S', '%v', '%V', '%W', '0123456789.')
 
-        tk.Label(self.sub_frame[0], text='Select file type to load', width=25).grid(row=0, column=0, sticky=tk.W)
-        tk.OptionMenu(self.sub_frame[0], self.pattern_load, "Images", "Text",
-                      command=self.modify_add_session_popup).grid(row=1, column=0, sticky=tk.E + tk.W + tk.N)
+        tk.Label(self.m_frm[0], text='Select file type to load').grid(row=0, column=0, sticky=tk.W + tk.E)
+        tk.OptionMenu(self.m_frm[0], self.pattern_load, "Images", "Text",
+                      command=self.modify_add_session_popup).grid(row=1, column=0, sticky=tk.W + tk.E)
 
-        tk.Label(self.sub_frame[1], text='Image width ', width=23).grid(row=0, column=0, sticky=tk.W)
-        tk.Entry(self.sub_frame[1], textvariable=self.image_width, validate='key', validatecommand=vcmd_int).grid(row=1,
-                                                                                                                  column=0,
-                                                                                                                  sticky=tk.E + tk.W + tk.N)
-        self.label_msg[0] = tk.Label(self.sub_frame[1], font='TkDefaultFont 6', fg='red')
-        self.label_msg[0].grid(row=2, column=0, sticky=tk.W)
+        tk.Label(self.m_frm[3], text='Stereo mode?').grid(row=0, column=0)
+        tk.Checkbutton(self.m_frm[3], variable=self.mode_stereo).grid(row=0, column=1)
 
-        tk.Label(self.sub_frame[1], text='Image height ').grid(row=3, column=0, sticky=tk.W)
-        tk.Entry(self.sub_frame[1], textvariable=self.image_height, validate='key', validatecommand=vcmd_int).grid(
-            row=4, column=0, sticky=tk.E + tk.W + tk.N)
-        self.label_msg[1] = tk.Label(self.sub_frame[1], font='TkDefaultFont 6', fg='red')
-        self.label_msg[1].grid(row=5, column=0, sticky=tk.W)
+        self.l_error = tk.Label(self.m_frm[3], compound=tk.LEFT)
+        self.l_error.grid(row=1, column=0, columnspan=2)
+        tk.Button(self.m_frm[3], text="Start", command=self.add_session).grid(row=2, column=0)
+        tk.Button(self.m_frm[3], text="Cancel", command=self.popup.destroy).grid(row=2, column=1)
 
-        tk.Button(self.sub_frame[1], text="3D points of pattern", command=self.load_3D_points).grid(row=6, column=0,
-                                                                                                    sticky=tk.E + tk.W + tk.N)
-        self.l_load_files[0] = tk.Label(self.sub_frame[1], font='TkDefaultFont 6')
-        self.l_load_files[0].grid(row=7, column=0, sticky=tk.E + tk.W + tk.N)
+        ## struct Frame add session images (m_frm[1]) ##
+        # -------------------------------------------------------------
+        # | Pattern type                  |                           |
+        # ---------------------------------                           |
+        # | Option Menu pattern type  |*| |                           |
+        # ---------------------------------                           |
+        # | Pattern width                 |                           |
+        # ---------------------------------                           |
+        # | *Text width*                  |                           |
+        # ---------------------------------                           |
+        # | Label error width             |                           |
+        # ---------------------------------      canvas pattern       |
+        # | Pattern height                |                           |
+        # ---------------------------------                           |
+        # | *Text height*                 |                           |
+        # ---------------------------------                           |
+        # | Label error height            |                           |
+        # ---------------------------------                           |
+        # | Feature distance (mm)         |                           |
+        # ---------------------------------                           |
+        # | Label error distance          |                           |
+        # ---------------------------------                           |
+        # | *Text distance*               |                           |
+        # -------------------------------------------------------------
 
-        tk.Label(self.sub_frame[2], text='Pattern type ', width=23).grid(row=0, column=0, sticky=tk.W)
-        tk.OptionMenu(self.sub_frame[2], self.pattern_type, "Chessboard", "Asymmetric Grid", "Symmetric Grid").grid(
-            row=1, column=0,
-            sticky=tk.E + tk.W + tk.N)
-        tk.Label(self.sub_frame[2], text='Pattern width ').grid(row=2, column=0, sticky=tk.W)
-        tk.Entry(self.sub_frame[2], textvariable=self.pattern_width, validate='key', validatecommand=vcmd_int).grid(
+        tk.Label(self.m_frm[1], text='Pattern type ').grid(row=0, column=0, sticky=tk.W)
+        tk.OptionMenu(self.m_frm[1], self.pattern_type, "Chessboard", "Asymmetric Grid", "Symmetric Grid").grid(
+            row=1, column=0, sticky=tk.W + tk.E)
+        tk.Label(self.m_frm[1], text='Pattern width ').grid(row=2, column=0, sticky=tk.W)
+        tk.Entry(self.m_frm[1], textvariable=self.pattern_width, validate='key', validatecommand=vcmd_int).grid(
             row=3,
-            column=0,
-            sticky=tk.E + tk.W + tk.N)
+            column=0, sticky=tk.W + tk.E)
 
-        self.label_msg[2] = tk.Label(self.sub_frame[2], font='TkDefaultFont 6', fg='red')
-        self.label_msg[2].grid(row=4, column=0, sticky=tk.W)
+        self.label_msg[0] = tk.Label(self.m_frm[1], font='TkDefaultFont 6', fg='red')
+        self.label_msg[0].grid(row=4, column=0, sticky=tk.W)
 
-        tk.Label(self.sub_frame[2], text='Pattern height ').grid(row=5, column=0, sticky=tk.W)
-        tk.Entry(self.sub_frame[2], textvariable=self.pattern_height, validate='key', validatecommand=vcmd_int).grid(
+        tk.Label(self.m_frm[1], text='Pattern height ').grid(row=5, column=0, sticky=tk.W)
+        tk.Entry(self.m_frm[1], textvariable=self.pattern_height, validate='key', validatecommand=vcmd_int).grid(
             row=6,
-            column=0,
-            sticky=tk.E + tk.W + tk.N)
+            column=0, sticky=tk.W + tk.E)
 
-        self.label_msg[3] = tk.Label(self.sub_frame[2], font='TkDefaultFont 6', fg='red')
-        self.label_msg[3].grid(row=7, column=0, sticky=tk.W)
+        self.label_msg[1] = tk.Label(self.m_frm[1], font='TkDefaultFont 6', fg='red')
+        self.label_msg[1].grid(row=7, column=0, sticky=tk.W)
 
-        tk.Label(self.sub_frame[2], text='Feature distance (mm) ').grid(row=8, column=0, sticky=tk.W)
-        tk.Entry(self.sub_frame[2], textvariable=self.feature_distance, validate='key',
+        tk.Label(self.m_frm[1], text='Feature distance (mm) ').grid(row=8, column=0, sticky=tk.W)
+        tk.Entry(self.m_frm[1], textvariable=self.feature_distance, validate='key',
                  validatecommand=vcmd_float).grid(
-            row=9, column=0, sticky=tk.E + tk.W + tk.N)
+            row=9, column=0, sticky=tk.W + tk.E)
 
-        self.label_msg[4] = tk.Label(self.sub_frame[2], font='TkDefaultFont 6', fg='red')
-        self.label_msg[4].grid(row=10, column=0, sticky=tk.W)
+        ## struct Frame add session text (m_frm[2]) ##
+        # -----------------------------
+        # | Image width               |
+        # -----------------------------
+        # | *Text width*              |
+        # -----------------------------
+        # | Label error width         |
+        # -----------------------------
+        # | Image height              |
+        # -----------------------------
+        # | *Text height*             |
+        # -----------------------------
+        # | Label error height        |
+        # -----------------------------
+        # ||  3D points of pattern   ||
+        # -----------------------------
+        # | Label error 3D points     |
+        # -----------------------------
 
-        tk.Label(self.sub_frame[3], text='Stereo mode?').grid(row=0, column=0, sticky=tk.W)
-        tk.Checkbutton(self.sub_frame[3], variable=self.mode_stereo).grid(row=0, column=1, sticky=tk.E + tk.W + tk.N)
+        self.m_frm[2].grid_forget()
+        self.label_msg[2] = tk.Label(self.m_frm[1], font='TkDefaultFont 6', fg='red')
+        self.label_msg[2].grid(row=10, column=0, sticky=tk.W)
 
-        self.c_pattern = tk.Canvas(m_frm[1], height=100, width=100, bg='white')
-        self.c_pattern.grid(row=0, column=0)
-        self.c_pattern.bind('<Configure>', self.check_errors_and_plot)
-        tk.Label(m_frm[1], width=18).grid(row=1, column=0, sticky=tk.W)
+        self.c_pattern = tk.Canvas(self.m_frm[1], height=100, width=100, bg='white')
+        self.c_pattern.grid(row=0, column=1, rowspan=11)
+        tk.Label(self.m_frm[1], width=15).grid(row=1, column=1, sticky=tk.W)
+        # self.c_pattern.bind('<Configure>', self.check_errors_and_plot)
 
-        self.l_error = tk.Label(m_frm[2], compound=tk.LEFT)
-        self.l_error.grid(row=0, column=0, columnspan=2, sticky=tk.E + tk.W)
-        tk.Button(m_frm[2], text="Yes", command=self.add_session).grid(row=1, column=0, sticky=tk.E + tk.W + tk.N)
-        tk.Button(m_frm[2], text="Cancel", command=self.popup.destroy).grid(row=1, column=1, sticky=tk.E + tk.W + tk.N)
+        tk.Label(self.m_frm[2], text='Image width ').grid(row=0, column=0, sticky=tk.W)
+        tk.Entry(self.m_frm[2], textvariable=self.image_width, validate='key', validatecommand=vcmd_int).grid(row=1,
+                                                                                                              column=0,
+                                                                                                              sticky=tk.W + tk.E)
+        self.label_msg[3] = tk.Label(self.m_frm[2], font='TkDefaultFont 6', fg='red')
+        self.label_msg[3].grid(row=2, column=0, sticky=tk.W)
+
+        tk.Label(self.m_frm[2], text='Image height ').grid(row=3, column=0, sticky=tk.W)
+        tk.Entry(self.m_frm[2], textvariable=self.image_height, validate='key', validatecommand=vcmd_int).grid(
+            row=4, column=0, sticky=tk.W + tk.E)
+        self.label_msg[4] = tk.Label(self.m_frm[2], font='TkDefaultFont 6', fg='red')
+        self.label_msg[4].grid(row=5, column=0, sticky=tk.W)
+
+        tk.Button(self.m_frm[2], text="3D points of pattern", command=self.load_3D_points).grid(row=6, column=0)
+        self.l_load_files[0] = tk.Label(self.m_frm[2], font='TkDefaultFont 6')
+        self.l_load_files[0].grid(row=7, column=0)
 
         # Setting pattern feature variables
         self.mode_stereo.set(False)
@@ -747,11 +796,11 @@ class MRTCalibrationToolbox:
         if "Text" in self.pattern_load.get():
             self.image_width.set(240)
             self.image_height.set(320)
-            self.sub_frame[1].grid(row=1, column=0)
-            self.sub_frame[2].grid_forget()
+            self.m_frm[2].grid(row=2, column=0)
+            self.m_frm[1].grid_forget()
         else:
-            self.sub_frame[2].grid(row=2, column=0)
-            self.sub_frame[1].grid_forget()
+            self.m_frm[1].grid(row=1, column=0)
+            self.m_frm[2].grid_forget()
         self.check_errors_and_plot(None)
 
     def load_3D_points(self):
@@ -776,18 +825,23 @@ class MRTCalibrationToolbox:
         '''
         Function to add session after the given parameters are correct
         Creates object_pattern according to the selected pattern type
-        Enables and disables the corresponding buttons 
+        Enables and disables the corresponding buttons
         Adjust the GUI for a single/stereo mode
         '''
-        lim = 0
         if 'Images' in self.pattern_load.get():
-            lim = 3
+            for j in range(3):
+                print(self.label_msg[j].cget('text'))
+                if self.label_msg[j].cget('text'):
+                    return
         else:
+            for j in range(3, 5):
+                print(self.label_msg[j].cget('text'))
+                if self.label_msg[j].cget('text'):
+                    return
             # if 3d points aren't initialized
-            if not self.object_pattern.any():
+            if self.object_pattern is None:
                 return
-        for j in range(lim, 5):
-            if self.label_msg[j].cget('text'):
+            elif not self.object_pattern.any():
                 return
 
         # checks
@@ -1062,7 +1116,7 @@ class MRTCalibrationToolbox:
 
     def popupmsg(self):
         '''
-        Function to create popup for failure in importing images 
+        Function to create popup for failure in importing images
         '''
         self.popup = tk.Toplevel(self.master)
         self.popup.withdraw()
@@ -1095,7 +1149,7 @@ class MRTCalibrationToolbox:
 
     def updateSelectionperclick(self, selection, i):
         '''
-        Function for the click event over the error bars 
+        Function for the click event over the error bars
         '''
         # This corresponds to a click over the RMS reprojection error chart
         if i == 0:
@@ -1373,7 +1427,7 @@ class MRTCalibrationToolbox:
 
     def modify_play_popup(self, *args):
         '''
-        Function to adjust the GUI according to the selected calibration method 
+        Function to adjust the GUI according to the selected calibration method
         '''
         self.bot[8].config(state="disable")  # enable export parameters button
         self.bot[9].config(state="disable")  # enable export parameters button

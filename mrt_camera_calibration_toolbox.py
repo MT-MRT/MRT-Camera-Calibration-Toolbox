@@ -1763,7 +1763,7 @@ class MRTCalibrationToolbox:
             self.samples, k = combination(len(self.objpoints), c_r, c_k)
 
             if k != c_k:
-                self.c_k.set(k)
+                self.c_k.set(int(k))
                 self.label_msg[1].config(text='Number of groups changed from %d to %d (maximum possible)' % (c_k, k))
                 self.popup.update()  # for updating while running other process
 

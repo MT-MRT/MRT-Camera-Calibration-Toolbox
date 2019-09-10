@@ -1,6 +1,5 @@
 import tkinter as tk
-
-import MRTCalibrationToolbox
+from toolboxClass import MRTCalibrationToolbox
 
 root = tk.Tk()
 

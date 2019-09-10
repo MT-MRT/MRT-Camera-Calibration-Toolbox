@@ -1,11 +1,4 @@
-import _GUI
-import _Load
-import _Popups
-import _Update
-import _Calibration
-import _Plot
-import _Export
-import _Delete
+from toolboxClass import _GUI, _Load, _Popups, _Update, _Calibration, _Plot, _Export, _Delete
 
 class MRTCalibrationToolbox(_GUI.Mixin, _Load.Mixin, _Popups.Mixin, _Update.Mixin, _Calibration.Mixin, _Plot.Mixin, _Export.Mixin, _Delete.Mixin,):
     def __init__(self, master, *args, **kwargs):

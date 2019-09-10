@@ -1,5 +1,6 @@
 import tkinter as tk
-from mrt_camera_calibration_toolbox import MRTCalibrationToolbox
+
+import MRTCalibrationToolbox
 
 root = tk.Tk()
 

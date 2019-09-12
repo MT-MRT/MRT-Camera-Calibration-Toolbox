@@ -1,11 +1,9 @@
 import logging
-import os
 import tkinter as tk
-from tkinter import ttk
-from tkinter import filedialog
-from misc_tools import float2StringVar
+from toolboxClass.miscTools.misc_tools import float2StringVar
 
 logging.basicConfig(level=logging.ERROR)
+
 
 class Mixin:
     def updateSelection(self, event):
@@ -18,7 +16,7 @@ class Mixin:
         if self.r_error[0]:
             self.loadBarError([1])
             self.updateBarError(0)
-            
+
     def loadImagesBrowser(self):
         '''
         Function to update items in data browser
@@ -34,10 +32,11 @@ class Mixin:
                     self.index.set(0)
                 else:
                     self.listbox.select_set(self.index.get())
-                    
+
     def updateCameraParametersGUI(self):
         '''
-        Function to update all the labels values from the calculated parameters in the calibration
+        Function to update all the labels values from the calculated parameters
+        in the calibration
         '''
         if self.n_cameras == 0:
             r_cameras1 = 2

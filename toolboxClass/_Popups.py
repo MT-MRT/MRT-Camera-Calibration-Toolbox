@@ -3,8 +3,8 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
 import numpy as np
-from misc_tools import validate
-from plot_patterns import plot_chessboard, plot_asymmetric_grid, plot_symmetric_grid, plot_custom
+from toolboxClass.miscTools.misc_tools import validate
+from toolboxClass.miscTools.plot_patterns import plot_chessboard, plot_asymmetric_grid, plot_symmetric_grid, plot_custom
 
 logging.basicConfig(level=logging.ERROR)
 

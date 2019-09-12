@@ -2,7 +2,7 @@ import logging
 import tkinter as tk
 from tkinter import filedialog
 import numpy as np
-import datastring
+import toolboxClass.miscTools.datastring
 
 logging.basicConfig(level=logging.ERROR)
 

@@ -8,6 +8,7 @@ import numpy as np
 
 logging.basicConfig(level=logging.ERROR)
 
+
 class Mixin:
     def load_3D_points(self):
         '''

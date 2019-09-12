@@ -13,3 +13,4 @@ class MRTCalibrationToolbox(_GUI.Mixin, _Load.Mixin, _Popups.Mixin, _Update.Mixi
         self.initUI()
         self.traces_GUI()
         self.updateCameraParametersGUI()
+        self.add_session_popup()

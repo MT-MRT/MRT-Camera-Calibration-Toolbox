@@ -1,6 +1,6 @@
 # MRT Camera Calibration Toolbox
 
-![MRT](https://github.com/MT-MRT/MRT-Camera-Calibration-Toolbox/blob/master/docs/MRT-Logo.png)
+![MRT](https://github.com/MT-MRT/MRT-Camera-Calibration-Toolbox/blob/master/docs/MRT-Logo.png =300x)
 
 ## Introduction
 

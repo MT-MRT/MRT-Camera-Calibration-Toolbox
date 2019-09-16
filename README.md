@@ -72,9 +72,10 @@ So far no publication has been written on the current toolbox, we recommend the 
 ## Contact
 
 If you have any questions, please email Daniela Aguirre Salazar at daguirres@unal.edu.co or Sebastian Schramm at sebastian.schramm@mrt.uni-kassel.de.
- 
- <p align="center">
-  [Visit us](https://www.uni-kassel.de/maschinenbau/institute/mess-und-regelungstechnik/mrt.html)
-  <img src="https://github.com/MT-MRT/MRT-Camera-Calibration-Toolbox/blob/master/docs/MRT-Logo.png" alt="MRT" width="250"/>
+
+[Visit us](https://www.uni-kassel.de/maschinenbau/institute/mess-und-regelungstechnik/mrt.html)
+
+<p align="center">
+  <a href="https://www.uni-kassel.de/maschinenbau/institute/mess-und-regelungstechnik/mrt.html"><img src="https://github.com/MT-MRT/MRT-Camera-Calibration-Toolbox/blob/master/docs/MRT-Logo.png" alt="MRT" width="250"/>
 </p>
 

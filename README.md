@@ -1,6 +1,8 @@
 # MRT Camera Calibration Toolbox
 
-<img src="https://github.com/MT-MRT/MRT-Camera-Calibration-Toolbox/blob/master/docs/MRT-Logo.png" alt="MRT" width="300"/>
+<p align="center">
+  <img src="https://github.com/MT-MRT/MRT-Camera-Calibration-Toolbox/blob/master/docs/MRT-Logo.png" alt="MRT" width="250"/>
+</p>
 
 ## Introduction
 

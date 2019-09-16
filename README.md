@@ -1,8 +1,12 @@
 # MRT Camera Calibration Toolbox
 
+![MRT](https://github.com/MT-MRT/MRT-Camera-Calibration-Toolbox/blob/master/docs/MRT-Logo.png)
+
 ## Introduction
 
-The MRT Camera Calibration Toolbox is an application, developed in Python using OpenCV, which determines the parameters of a camera's perspective projection by performing an intrinsic and extrinsic geometric calibration. The application provides intrinsics, extrinsics and lens distortion parameters for each camera (two for stereo mode). For stereo mode, the transformations between the individual camera coordinate systems are given as well. The information for each camera pose can be loaded using images or text files with the 2D points of the pattern. The calibration can be also made using random subgroups from the total set of images. The computed parameters are the averaged over all iterations (subgroups), and both the final results and results per calibration can be exported to text files. 
+The MRT Camera Calibration Toolbox is an application, developed in Python using OpenCV and tkinter, which determines the parameters of a camera's perspective projection by performing an intrinsic and extrinsic geometric calibration.
+
+The application provides intrinsics, extrinsics and lens distortion parameters for each camera (two for stereo mode). For the stereo mode, the transformations between the individual camera coordinate systems are given as well. The information for each camera pose can be loaded using images or text files with the 2D points of the pattern. The calibration can be also made by using random subgroups from the total set of images. The computed parameters are the averaged over all iterations, and both the final results and the results per calibration can be exported to text files. 
 
 ## Why use this Toolbox?
 
@@ -72,4 +76,3 @@ So far no publication has been written on the current toolbox, we recommend the 
 If you have any questions, please email Daniela Aguirre Salazar at daguirres@unal.edu.co or Sebastian Schramm at sebastian.schramm@mrt.uni-kassel.de.
  
 [Visit us](https://www.uni-kassel.de/maschinenbau/institute/mess-und-regelungstechnik/mrt.html)
-

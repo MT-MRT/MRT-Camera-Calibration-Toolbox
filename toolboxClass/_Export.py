@@ -2,26 +2,36 @@ import logging
 import tkinter as tk
 from tkinter import filedialog
 import numpy as np
-import toolboxClass.miscTools.datastring
+import toolboxClass.miscTools.datastring as datastring
 
 logging.basicConfig(level=logging.ERROR)
+
 
 class Mixin:
     def exportCalibrationParameters(self):
         '''
         Function to export the calibration parameters
         '''
-        default_filenames = ['intrinsics_first_camera', 'intrinsics_second_camera', 'extrinsics']
+        default_filenames = ['intrinsics_first_camera',
+                             'intrinsics_second_camera',
+                             'extrinsics']
         for j in range(2 * int(self.m_stereo) + 1):
-            filename = tk.filedialog.asksaveasfilename(initialfile=default_filenames[j], defaultextension='.txt',
-                                                       filetypes=[('Text files', '*.txt')])
+            filename = tk.filedialog\
+                         .asksaveasfilename(initialfile=default_filenames[j],
+                                            defaultextension='.txt',
+                                            filetypes=[('Text files',
+                                                        '*.txt')])
             if filename != '':
                 f = open(filename, 'w')
                 if j < 2:
-                    c_string = datastring.instrinsic2string(self.camera_matrix[j], self.dist_coefs[j])
+                    c_string = datastring\
+                               .instrinsic2string(self.camera_matrix[j],
+                                                  self.dist_coefs[j])
                     f.write(c_string)
                 else:
-                    c_string = datastring.extrinsic2string(self.R_stereo, self.T_stereo)
+                    c_string = datastring\
+                               .extrinsic2string(self.R_stereo,
+                                                 self.T_stereo)
                     f.write(c_string)
                 f.close()
             else:
@@ -34,7 +44,8 @@ class Mixin:
         logging.info('exporting results per calibration')
 
         t_choose = 'Please select a folder'
-        path_folder = tk.filedialog.askdirectory(parent=self.master, title=t_choose)
+        path_folder = tk.filedialog.askdirectory(parent=self.master,
+                                                 title=t_choose)
 
         if path_folder != '':
             for j in range(self.n_cameras):

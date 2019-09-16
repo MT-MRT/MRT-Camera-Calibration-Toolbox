@@ -1,9 +1,5 @@
 # MRT Camera Calibration Toolbox
 
-<p align="center">
-  <img src="https://github.com/MT-MRT/MRT-Camera-Calibration-Toolbox/blob/master/docs/MRT-Logo.png" alt="MRT" width="250"/>
-</p>
-
 ## Introduction
 
 The MRT Camera Calibration Toolbox is an application, developed in Python using OpenCV and tkinter, which determines the parameters of a camera's perspective projection by performing an intrinsic and extrinsic geometric calibration.
@@ -77,4 +73,8 @@ So far no publication has been written on the current toolbox, we recommend the 
 
 If you have any questions, please email Daniela Aguirre Salazar at daguirres@unal.edu.co or Sebastian Schramm at sebastian.schramm@mrt.uni-kassel.de.
  
-[Visit us](https://www.uni-kassel.de/maschinenbau/institute/mess-und-regelungstechnik/mrt.html)
+ <p align="center">
+  [Visit us](https://www.uni-kassel.de/maschinenbau/institute/mess-und-regelungstechnik/mrt.html)
+  <img src="https://github.com/MT-MRT/MRT-Camera-Calibration-Toolbox/blob/master/docs/MRT-Logo.png" alt="MRT" width="250"/>
+</p>
+

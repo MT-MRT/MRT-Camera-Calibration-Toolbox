@@ -296,17 +296,17 @@ class Mixin:
                 for j in range(self.p_width):
                     a = projections[camera][index][j * self.p_height + i]
                     if j * self.p_height + i == self.index_corner:
-                        cv2.circle(im3, (a[0][0], a[0][1]), 5, (255, 0, 0))
+                        cv2.circle(im3, (a[0][0], a[0][1]), 5, (154, 12, 70))
                     if i < self.p_height - 1:
                         b = projections[camera][index][j * self.p_height
                                                        + i + 1]
                         cv2.line(im3, (a[0][0], a[0][1]),
-                                 (b[0][0], b[0][1]), (255, 0, 0))
+                                 (b[0][0], b[0][1]), (154, 12, 70))
                     if j < self.p_width - 1:
                         c = projections[camera][index][(j + 1)
                                                        * self.p_height + i]
                         cv2.line(im3, (a[0][0], a[0][1]),
-                                 (c[0][0], c[0][1]), (255, 0, 0))
+                                 (c[0][0], c[0][1]), (154, 12, 70))
 
         # plot original mesh of features using green lines
         for i in range(self.p_height):
@@ -314,18 +314,18 @@ class Mixin:
                 a = self.detected_features[camera][index][j * self.p_height
                                                           + i]
                 if j * self.p_height + i == self.index_corner:
-                    cv2.circle(im3, (a[0][0], a[0][1]), 5, (0, 255, 0))
+                    cv2.circle(im3, (a[0][0], a[0][1]), 5, (80, 149, 200))
                 if i < self.p_height - 1:
                     b = self.detected_features[camera][index][j * self.p_height
                                                               + i + 1]
                     cv2.line(im3, (a[0][0], a[0][1]),
-                             (b[0][0], b[0][1]), (0, 255, 0))
+                             (b[0][0], b[0][1]), (80, 149, 200))
                 if j < self.p_width - 1:
                     c = self.detected_features[camera][index][(j + 1)
                                                               * self.p_height
                                                               + i]
                     cv2.line(im3, (a[0][0], a[0][1]),
-                             (c[0][0], c[0][1]), (0, 255, 0))
+                             (c[0][0], c[0][1]), (80, 149, 200))
 
         return im3
 
@@ -344,9 +344,9 @@ class Mixin:
             if self.r_error[j]:
                 for i in range(len(self.dr[k][j])):
                     if i == index:
-                        self.dr[k][j][i].set_color('r')
+                        self.dr[k][j][i].set_color('#9a1046')
                     else:
-                        self.dr[k][j][i].set_color('b')
+                        self.dr[k][j][i].set_color('#5095c8')
                 self.bar[k][j].draw()
 
     def loadBarError(self, r_up):
@@ -386,9 +386,9 @@ class Mixin:
                     for rect, i in zip(rects, ind):
                         rect.set_label(i + 1)
                         if i == index:
-                            rect.set_color('r')
+                            rect.set_color('#9a1046')
                         else:
-                            rect.set_color('b')
+                            rect.set_color('#5095c8')
                         self.dr[k][j].append(rect)
                     # set tick of labels for the x and y axes
                     self.ax[k][j].set_xticks(ind)
@@ -422,7 +422,7 @@ class Mixin:
                     else:
                         self.ax[k][j].set_title(title_names[k]
                                                 + ' (Not Updated)',
-                                                color='r',
+                                                color='#9a1046',
                                                 fontsize=10)
                 # for empty error data, only set the chart titles
                 else:

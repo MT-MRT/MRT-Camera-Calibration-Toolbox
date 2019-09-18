@@ -282,24 +282,6 @@ class Mixin:
         self.bot[6].config(state="normal")  # enable delete session button
         self.bot[7].config(state="normal")  # settings button
 
-        # Binding the hint boxes to the buttons
-        self.bot[0].bind('<Enter>',
-                         lambda event,
-                         message='Start a new session.':
-                         self.entry_mouse_enter(event, message))
-        self.bot[1].bind('<Enter>',
-                         lambda event,
-                         message='Adding single image files.':
-                         self.entry_mouse_enter(event, message))
-        self.bot[2].bind('<Enter>',
-                         lambda event,
-                         message='Adding image files of a folder.':
-                         self.entry_mouse_enter(event, message))
-        self.bot[0].bind('<Leave>', self.entry_mouse_leave)
-        self.bot[1].bind('<Leave>', self.entry_mouse_leave)
-        self.bot[2].bind('<Leave>', self.entry_mouse_leave)
-        # TODO: Write text for each infobox!
-
         if self.m_stereo:
             self.n_cameras = 2
             # disable adding images per file button
@@ -488,6 +470,24 @@ class Mixin:
                                   command=self.
                                   exportCalibrationParametersIteration))
 
+        # Binding the hint boxes to the buttons
+        self.bot[0].bind('<Enter>',
+                         lambda event,
+                         message='Start a new session.':
+                         self.entry_mouse_enter(event, message))
+        self.bot[1].bind('<Enter>',
+                         lambda event,
+                         message='Adding single image files.':
+                         self.entry_mouse_enter(event, message))
+        self.bot[2].bind('<Enter>',
+                         lambda event,
+                         message='Adding image files of a folder.':
+                         self.entry_mouse_enter(event, message))
+        self.bot[0].bind('<Leave>', self.entry_mouse_leave)
+        self.bot[1].bind('<Leave>', self.entry_mouse_leave)
+        self.bot[2].bind('<Leave>', self.entry_mouse_leave)
+        # TODO: Write text for each infobox!
+
         # buttons positioning
         for i in range(len(self.bot)):
             self.bot[i].grid(row=0, column=i, sticky=tk.W)
@@ -582,34 +582,43 @@ class Mixin:
             self.c_labels[j][3].config(text='SD')
             self.c_labels[j][4].config(text='fx')
             self.c_labels[j][5].config(textvariable=self.fx[j])
-            self.c_labels[j][6].config(textvariable=self.sd_fx[j], fg='green')
+            self.c_labels[j][6].config(textvariable=self.sd_fx[j],
+                                       fg='#9a1046')
             self.c_labels[j][7].config(text='fy')
             self.c_labels[j][8].config(textvariable=self.fy[j])
-            self.c_labels[j][9].config(textvariable=self.sd_fy[j], fg='green')
+            self.c_labels[j][9].config(textvariable=self.sd_fy[j],
+                                       fg='#9a1046')
             self.c_labels[j][10].config(text='cx')
             self.c_labels[j][11].config(textvariable=self.cx[j])
-            self.c_labels[j][12].config(textvariable=self.sd_cx[j], fg='green')
+            self.c_labels[j][12].config(textvariable=self.sd_cx[j],
+                                        fg='#9a1046')
             self.c_labels[j][13].config(text='cy')
             self.c_labels[j][14].config(textvariable=self.cy[j])
-            self.c_labels[j][15].config(textvariable=self.sd_cy[j], fg='green')
+            self.c_labels[j][15].config(textvariable=self.sd_cy[j],
+                                        fg='#9a1046')
             self.c_labels[j][16].config(text='DISTORTION COEFFICIENTS')
             self.c_labels[j][18].config(text=u'\u03bc')
             self.c_labels[j][19].config(text='SD')
             self.c_labels[j][20].config(text='k1')
             self.c_labels[j][21].config(textvariable=self.k1[j])
-            self.c_labels[j][22].config(textvariable=self.sd_k1[j], fg='green')
+            self.c_labels[j][22].config(textvariable=self.sd_k1[j],
+                                        fg='#9a1046')
             self.c_labels[j][23].config(text='k2')
             self.c_labels[j][24].config(textvariable=self.k2[j])
-            self.c_labels[j][25].config(textvariable=self.sd_k2[j], fg='green')
+            self.c_labels[j][25].config(textvariable=self.sd_k2[j],
+                                        fg='#9a1046')
             self.c_labels[j][26].config(text='k3')
             self.c_labels[j][27].config(textvariable=self.k3[j])
-            self.c_labels[j][28].config(textvariable=self.sd_k3[j], fg='green')
+            self.c_labels[j][28].config(textvariable=self.sd_k3[j],
+                                        fg='#9a1046')
             self.c_labels[j][29].config(text='k4')
             self.c_labels[j][30].config(textvariable=self.k4[j])
-            self.c_labels[j][31].config(textvariable=self.sd_k4[j], fg='green')
+            self.c_labels[j][31].config(textvariable=self.sd_k4[j],
+                                        fg='#9a1046')
             self.c_labels[j][32].config(text='k5')
             self.c_labels[j][33].config(textvariable=self.k5[j])
-            self.c_labels[j][34].config(textvariable=self.sd_k5[j], fg='green')
+            self.c_labels[j][34].config(textvariable=self.sd_k5[j],
+                                        fg='#9a1046')
             self.c_labels[j][35].config(text='REPROJECTION ERROR')
             self.c_labels[j][36].config(text='RMS')
             self.c_labels[j][37].config(textvariable=self.rms_tk[j])

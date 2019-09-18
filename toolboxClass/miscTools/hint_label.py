@@ -19,7 +19,6 @@ class MyHintLabel(tk.Toplevel):
         self.TIP_X_OFFSET = 8
         self.TIP_Y_OFFSET = 8
         self.AUTO_CLEAR_TIME = 1000  # ms
-        self.TIP_SYMBOL = 'Bla Bla Bla!'
 
         tk.Toplevel.__init__(self)
         self.overrideredirect(True)

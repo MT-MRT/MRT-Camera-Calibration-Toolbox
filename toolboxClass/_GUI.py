@@ -706,13 +706,13 @@ class Mixin:
 
     def entry_mouse_enter(self, event, message='I got no message!'):
         """
-        Mouseover-event loading hint
+        Mouseover event loading hint
         """
         self.my_hint_label = hl.MyHintLabel(event.x_root, event.y_root,
                                             message)
 
     def entry_mouse_leave(self, event):
         """
-        Mouseleave-event destroying hinz
+        Mouseleave event destroying hint
         """
         self.my_hint_label.destroy()

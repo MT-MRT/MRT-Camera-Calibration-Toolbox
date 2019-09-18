@@ -5,6 +5,7 @@ from tkinter import ttk
 import numpy as np
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
+import toolboxClass.miscTools.hint_label as hl
 
 logging.basicConfig(level=logging.ERROR)
 
@@ -280,6 +281,24 @@ class Mixin:
         self.bot[2].config(state="normal")  # enable adding images per folder
         self.bot[6].config(state="normal")  # enable delete session button
         self.bot[7].config(state="normal")  # settings button
+
+        # Binding the hint boxes to the buttons
+        self.bot[0].bind('<Enter>',
+                         lambda event,
+                         message='Start a new session.':
+                         self.entry_mouse_enter(event, message))
+        self.bot[1].bind('<Enter>',
+                         lambda event,
+                         message='Adding single image files.':
+                         self.entry_mouse_enter(event, message))
+        self.bot[2].bind('<Enter>',
+                         lambda event,
+                         message='Adding image files of a folder.':
+                         self.entry_mouse_enter(event, message))
+        self.bot[0].bind('<Leave>', self.entry_mouse_leave)
+        self.bot[1].bind('<Leave>', self.entry_mouse_leave)
+        self.bot[2].bind('<Leave>', self.entry_mouse_leave)
+        # TODO: Write text for each infobox!
 
         if self.m_stereo:
             self.n_cameras = 2
@@ -684,3 +703,16 @@ class Mixin:
         self.master.bind('<Delete>', lambda e: self.del_single())
         self.master.bind('<Alt-F4>', self.master.quit)
         self.master.bind("<F5>", lambda event: self.bot[5].invoke())
+
+    def entry_mouse_enter(self, event, message='I got no message!'):
+        """
+        Mouseover-event loading hint
+        """
+        self.my_hint_label = hl.MyHintLabel(event.x_root, event.y_root,
+                                            message)
+
+    def entry_mouse_leave(self, event):
+        """
+        Mouseleave-event destroying hinz
+        """
+        self.my_hint_label.destroy()

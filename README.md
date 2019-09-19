@@ -29,7 +29,7 @@ To use the toolbox, the modules listed below have to be installed on your comput
 
 ## Installation
 
-You can download the source code and excecute the toolbox [main.py](https://github.com/MT-MRT/MRT-Camera-Calibration-Toolbox/blob/master/main.py) directly on your computer through the Linux or Windows terminal:
+You can download the source code and execute the toolbox [main.py](https://github.com/MT-MRT/MRT-Camera-Calibration-Toolbox/blob/master/main.py) directly on your computer through the Linux or Windows terminal:
 
 ```
 cd path/to/your/toolbox

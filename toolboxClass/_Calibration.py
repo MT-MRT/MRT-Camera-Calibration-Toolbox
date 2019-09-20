@@ -134,8 +134,10 @@ class Mixin:
                         ip = np.array(ip)
                         index_min = self.size.index(min(self.size))
                         index_max = self.size.index(max(self.size))
-                        w_adj, h_adj = self.size[index_max]
-                        w, h = self.size[index_min]
+                        w_max, h_max = self.size[index_max]
+                        w_min, h_min = self.size[index_min]
+                        w_adj = (w_max - w_min) / 2
+                        h_adj = (h_max - h_min) / 2
                         n_poses, n_points, _, _ = ip[index_min].shape
                         logging.debug('Transforming coordinates for camera \
                                       %s', index_min + 1)
@@ -143,8 +145,7 @@ class Mixin:
                             for point in range(n_points):
                                 ip[index_min][pose][point] = \
                                     np.sum([ip[index_min][pose][point],
-                                            [[(h_adj - h) / 2,
-                                              (w_adj - w) / 2]]],
+                                            [[h_adj,w_adj]]],
                                            axis=0)
                     width = max(self.size[0][1], self.size[1][1])
                     height = max(self.size[0][0], self.size[1][0])
@@ -220,8 +221,8 @@ class Mixin:
                     if self.size[0] != self.size[1]:
                         logging.debug('Correcting cx an cy for camera {0}'
                                       .format(index_min + 1))
-                        self.camera_matrix[index_min][0][2] -= (h_adj - h) / 2
-                        self.camera_matrix[index_min][1][2] -= (w_adj - w) / 2
+                        self.camera_matrix[index_min][0][2] -= h_adj
+                        self.camera_matrix[index_min][1][2] -= w_adj
             else:
                 self.reset_camera_parameters()
 

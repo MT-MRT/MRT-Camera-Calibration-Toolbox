@@ -300,23 +300,23 @@ class Mixin:
                                                                   + tk.E)
 
         # struct Frame add session text (m_frm[2]) #
-        # -----------------------------
-        # | Image width               |
-        # -----------------------------
-        # | *Text width*              |
-        # -----------------------------
-        # | Label error width         |
-        # -----------------------------
-        # | Image height              |
-        # -----------------------------
-        # | *Text height*             |
-        # -----------------------------
-        # | Label error height        |
-        # -----------------------------
-        # ||  3D points of pattern   ||
-        # -----------------------------
-        # | Label error 3D points     |
-        # -----------------------------
+        # ---------------------------------
+        # | Image width                   |
+        # ---------------------------------
+        # | *Text width*                  |
+        # ---------------------------------
+        # | Label error width             |
+        # ---------------------------------
+        # | Image height                  |
+        # ---------------------------------
+        # | *Text height*                 |
+        # ---------------------------------
+        # | Label error height            |
+        # ---------------------------------
+        # ||  3D points of pattern (mm)  ||
+        # ---------------------------------
+        # | Label error 3D points         |
+        # ---------------------------------
 
         self.m_frm[2].grid_forget()
         self.label_msg[2] = tk.Label(self.m_frm[1], font='TkDefaultFont 6',
@@ -347,7 +347,7 @@ class Mixin:
                                      fg='red')
         self.label_msg[4].grid(row=5, column=0, sticky=tk.W)
 
-        tk.Button(self.m_frm[2], text="3D points of pattern",
+        tk.Button(self.m_frm[2], text="3D points of pattern (mm)",
                   command=self.load_3D_points).grid(row=6, column=0)
         self.l_load_files[0] = tk.Label(self.m_frm[2], font='TkDefaultFont 6')
         self.l_load_files[0].grid(row=7, column=0)

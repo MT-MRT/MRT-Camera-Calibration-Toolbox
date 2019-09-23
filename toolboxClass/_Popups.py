@@ -83,7 +83,7 @@ class Mixin:
                 self.p_width = self.pattern_width.get()
                 if self.p_width < 2:
                     self.label_msg[0].configure(
-                            text='width parameter muss be greater than one')
+                            text='width parameter must be greater than one')
                     b_continue = False
                 else:
                     self.label_msg[0].configure(text='')
@@ -97,7 +97,7 @@ class Mixin:
                 self.p_height = self.pattern_height.get()
                 if self.p_height < 2:
                     self.label_msg[1].configure(
-                            text='height parameter muss be greater than one')
+                            text='height parameter must be greater than one')
                     b_continue = False
                 else:
                     self.label_msg[1].configure(text='')
@@ -110,7 +110,7 @@ class Mixin:
                 self.f_distance = self.feature_distance.get()
                 if self.f_distance == 0:
                     self.label_msg[2].configure(
-                            text='length parameter muss be greater than zero')
+                            text='length parameter must be greater than zero')
                 else:
                     self.label_msg[2].configure(text='')
             except ValueError:
@@ -151,7 +151,7 @@ class Mixin:
             try:
                 if self.image_width.get() == 0:
                     self.label_msg[3].configure(
-                            text='width parameter muss be greater than zero')
+                            text='width parameter must be greater than zero')
                 else:
                     self.label_msg[3].configure(text='')
             except ValueError:
@@ -162,7 +162,7 @@ class Mixin:
             try:
                 if self.image_height.get() == 0:
                     self.label_msg[4].configure(
-                            text='height parameter muss be greater than zero')
+                            text='height parameter must be greater than zero')
                 else:
                     self.label_msg[4].configure(text='')
             except ValueError:

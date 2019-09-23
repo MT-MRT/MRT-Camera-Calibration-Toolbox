@@ -55,13 +55,13 @@ class Mixin:
             b_continue = True
             try:
                 c_r = self.c_r.get()
-                if c_r == 0:
+                if c_r < 3:
                     self.label_msg[1].configure(
-                            text='R parameter muss be greater than zero')
+                            text='R parameter must be greater than two')
                     b_continue = False
                 elif c_r > self.n_total.get():
                     self.label_msg[1].configure(
-                            text='R parameter muss be smaller or equal than n')
+                            text='R parameter must be smaller or equal than n')
                     b_continue = False
                 else:
                     self.label_msg[1].configure(text='')
@@ -71,9 +71,9 @@ class Mixin:
                 b_continue = False
             try:
                 c_k = self.c_k.get()
-                if c_k == 0:
+                if c_k < 1:
                     self.label_msg[0].configure(
-                            text='K parameter muss be greater than zero')
+                            text='K parameter must be greater than zero')
                     b_continue = False
                 else:
                     self.label_msg[0].configure(text='')

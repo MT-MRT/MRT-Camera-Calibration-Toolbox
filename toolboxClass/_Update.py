@@ -12,7 +12,8 @@ class Mixin:
         '''
         widget = event.widget
         self.zoomhandler = 0
-        self.index.set(widget.curselection()[0])
+        if widget.curselection():
+            self.index.set(widget.curselection()[0])
         if self.r_error[0]:
             self.loadBarError([1])
             self.updateBarError(0)

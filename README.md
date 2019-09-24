@@ -1,4 +1,4 @@
-# MRT Camera Calibration Toolbox
+# MRT Camera Calibration Toolbox [![Codacy Badge](https://api.codacy.com/project/badge/Grade/67ad4a269978453c836973f0d2b3e9f0)](https://www.codacy.com/manual/MT-MRT/MRT-Camera-Calibration-Toolbox?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=MT-MRT/MRT-Camera-Calibration-Toolbox&amp;utm_campaign=Badge_Grade)
 
 ## Introduction
 

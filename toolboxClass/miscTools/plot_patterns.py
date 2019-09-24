@@ -131,8 +131,9 @@ def plot_symmetric_grid(c_pattern, p_width, p_height, w, h):
 def plot_custom(c_pattern, all_points, w, h):
     w -= 2
     h -= 2
-    points = [(SystemRandom.randint(0, w - 1),
-               SystemRandom.randint(0, h - 1)) for _ in range(all_points)]
+    randGenerator = SystemRandom()
+    points = [(randGenerator.randint(0, w - 1),
+               randGenerator.randint(0, h - 1)) for _ in range(all_points)]
     for p in points:
         c_pattern.create_oval([(p[0] - 2, p[1] - 2),
                                (p[0] + 2, p[1] + 2)],

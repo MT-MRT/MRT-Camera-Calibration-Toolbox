@@ -145,7 +145,7 @@ class Mixin:
                             for point in range(n_points):
                                 ip[index_min][pose][point] = \
                                     np.sum([ip[index_min][pose][point],
-                                            [[h_adj,w_adj]]],
+                                            [[h_adj, w_adj]]],
                                            axis=0)
                     width = max(self.size[0][1], self.size[1][1])
                     height = max(self.size[0][0], self.size[1][0])

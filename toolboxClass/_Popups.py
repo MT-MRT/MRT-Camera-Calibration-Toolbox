@@ -64,14 +64,14 @@ class Mixin:
         adding a new session also shows error and warnings depending of the
         range of the parameters
         '''
-        
+
         # delete grid_line objects
         if self.c_pattern:
             self.c_pattern.delete('grid_line')
         else:
             logging.error('c_pattern does not exist')
             return
-        
+
         # Clear warnings
         self.l_error.config(image='', text='', bg='#d9d9d9')
         if "Image" in self.pattern_load.get():

@@ -4,8 +4,7 @@ from tkinter import ttk
 import numpy as np
 from toolboxClass.miscTools.misc_tools import validate
 from toolboxClass.miscTools.plot_patterns import plot_chessboard,\
-                                                 plot_asymmetric_grid,\
-                                                 plot_symmetric_grid
+                                                 plot_circle_grid
 
 logging.basicConfig(level=logging.ERROR)
 
@@ -87,7 +86,7 @@ class Mixin:
                     b_continue = False
                 else:
                     self.label_msg[0].configure(text='')
-            except ValueError:
+            except (ValueError, tk.TclError):
                 self.label_msg[0].configure(
                         text='width parameter can not be empty')
                 b_continue = False
@@ -101,7 +100,7 @@ class Mixin:
                     b_continue = False
                 else:
                     self.label_msg[1].configure(text='')
-            except ValueError:
+            except (ValueError, tk.TclError):
                 self.label_msg[1].configure(
                         text='height parameter can not be empty')
                 b_continue = False
@@ -113,7 +112,7 @@ class Mixin:
                             text='length parameter must be greater than zero')
                 else:
                     self.label_msg[2].configure(text='')
-            except ValueError:
+            except (ValueError, tk.TclError):
                 self.label_msg[2].configure(
                         text='length parameter can not be empty')
 
@@ -125,17 +124,19 @@ class Mixin:
                                     self.c_pattern.winfo_width(),
                                     self.c_pattern.winfo_height())
                 elif "Asymmetric Grid" in self.pattern_type.get():
-                    plot_asymmetric_grid(self.c_pattern,
-                                         self.p_width,
-                                         self.p_height,
-                                         self.c_pattern.winfo_width(),
-                                         self.c_pattern.winfo_height())
+                    plot_circle_grid(self.c_pattern,
+                                     self.p_width,
+                                     self.p_height,
+                                     self.c_pattern.winfo_width(),
+                                     self.c_pattern.winfo_height(),
+                                     symmetric=False)
                 elif "Symmetric Grid" in self.pattern_type.get():
-                    plot_symmetric_grid(self.c_pattern,
-                                        self.p_width,
-                                        self.p_height,
-                                        self.c_pattern.winfo_width(),
-                                        self.c_pattern.winfo_height())
+                    plot_circle_grid(self.c_pattern,
+                                     self.p_width,
+                                     self.p_height,
+                                     self.c_pattern.winfo_width(),
+                                     self.c_pattern.winfo_height(),
+                                     symmetric=True)
 
                 # check if width and height parameters are an odd-even pair
                 # and show warnings if applies

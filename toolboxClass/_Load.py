@@ -1,8 +1,6 @@
 import logging
 import os
 import tkinter as tk
-from tkinter import ttk
-from tkinter import filedialog
 import cv2
 import numpy as np
 import toolboxClass.miscTools.datastring as datastring
@@ -125,7 +123,7 @@ class Mixin:
         rejected_images = []
         repeated_images = []
 
-        for i in range(len(file_names_2D_points)):
+        for i, _ in enumerate(file_names_2D_points):
             file_name_2D_points = file_names_2D_points[i]
             j = 0
             if self.m_stereo:
@@ -182,11 +180,11 @@ class Mixin:
                         # find features for asymmetric grid pattern type
                         elif 'Symmetric Grid' in self.pattern_type.get():
                             features = np.array([], np.float32)
-                            '''
+                            """
                             Since the findCirclesGrid algorithm for symmetric
                             grid usually fails for a wrong height - width
                             configuration, we invert here those parameters
-                            '''
+                            """
                             for inner_cycle in range(2):
                                 if inner_cycle == 0:
                                     logging.debug('height - width')

@@ -1,13 +1,9 @@
 import logging
 import tkinter as tk
-from tkinter import ttk
-from tkinter import filedialog
 import cv2
 import numpy as np
 from PIL import Image, ImageTk
 from matplotlib import cm
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from matplotlib.figure import Figure
 
 logging.basicConfig(level=logging.ERROR)
 
@@ -60,11 +56,11 @@ class Mixin:
             self.zoomhandler -= 1
         self.updatePicture()
 
-    def scroll_to_zoom(self, type, event):
+    def scroll_to_zoom(self, ztype, event):
         self.scale = 1.0
         self.x = event.x
         self.y = event.y
-        if type == 'm' and self.zoomhandler < 10:
+        if ztype == 'm' and self.zoomhandler < 10:
             self.scale /= self.delta
             self.imscale /= self.delta
             self.zoomhandler += 1
@@ -161,10 +157,10 @@ class Mixin:
     # self.panel1.itemconfig(self.image_on_panel1, image = None)
 
     def image_features(self, camera, index):
-        '''
-        Function to create an picture with the original one and its 
+        """
+        Function to create an picture with the original one and its
         detected features with markers
-        '''
+        """
         # get the features for the selected image
         features = self.detected_features[camera][index]
         # get original of the selected image
@@ -452,7 +448,7 @@ class Mixin:
                 # compares if the click is inside the bar,
                 # for each bar in the chart
                 for rect in self.dr[i][j]:
-                    contains, attrd = rect.contains(event)
+                    contains, _ = rect.contains(event)
                     # update for the selected bar
                     if contains:
                         self.updateSelectionperclick(int(rect.get_label()), i)

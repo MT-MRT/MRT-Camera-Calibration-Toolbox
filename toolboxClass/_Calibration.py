@@ -149,14 +149,14 @@ class Mixin:
                                            axis=0)
                     width = max(self.size[0][1], self.size[1][1])
                     height = max(self.size[0][0], self.size[1][0])
-                    rms, c[0], d[0], c[1], d[1], R, T, E, F = \
+                    rms, c[0], d[0], c[1], d[1], R, T, E, _ = \
                         cv2.stereoCalibrate(op, ip[0], ip[1], c[0], d[0], c[1],
                                             d[1], (width, height),
                                             flags=flags_parameters)
                 else:
                     width = self.size[0][1]
                     height = self.size[0][0]
-                    rms, c[0], d[0], r, t = \
+                    rms, c[0], d[0], r, _ = \
                         cv2.calibrateCamera(op, ip[0], (width, height),
                                             c[0], d[0], flags=flags_parameters)
 
@@ -369,7 +369,7 @@ class Mixin:
         for j in range(self.n_cameras):
             self.projected[j] = []
             self.projected_stereo[(j + 1) % 2] = []
-            for i in range(len(op)):
+            for i, _ in enumerate(op):
                 if not r:
                     _, r1, t1, _ = cv2.solvePnPRansac(op[i],
                                                       ip[j][i],
@@ -404,7 +404,7 @@ class Mixin:
             ip = self.imgpoints[j]
             self.r_error_p[j] = []
             self.r_error[j] = []
-            for i in range(len(ip)):
+            for i, _ in enumerate(ip):
                 if self.m_stereo:
                     imgpoints2 = self.projected_stereo[j][i]
                 else:

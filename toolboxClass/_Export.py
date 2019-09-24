@@ -1,6 +1,5 @@
 import logging
 import tkinter as tk
-from tkinter import filedialog
 import numpy as np
 import toolboxClass.miscTools.datastring as datastring
 

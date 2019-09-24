@@ -282,7 +282,7 @@ class Mixin:
                             height = max(self.size[0][0], self.size[1][0])
                             rms, self.camera_matrix[0], self.dist_coefs[0],\
                                 self.camera_matrix[1], self.dist_coefs[1],\
-                                R, T, E, _ = cv2.stereoCalibrate(
+                                R, T, _, _ = cv2.stereoCalibrate(
                                                         self.objpoints,
                                                         self.imgpoints[0],
                                                         self.imgpoints[1],

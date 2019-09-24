@@ -1,4 +1,4 @@
-from random import randint
+from random import SystemRandom
 
 
 def plot_chessboard(c_pattern, p_width, p_height, w, h):
@@ -35,8 +35,11 @@ def plot_chessboard(c_pattern, p_width, p_height, w, h):
     for i in range(h_down, h_limit + 1, h_step):
         c_pattern.create_line([(w_down, i), (w_limit, i)], tag='grid_line')
 
-    c_pattern.create_oval([(w_down + w_step - w_step / 3, h_down + h_step - h_step / 3),
-                           (w_down + w_step + w_step / 3, h_down + h_step + h_step / 3)], tag='grid_line', fill="red")
+    c_pattern.create_oval([(w_down + w_step - w_step / 3,
+                            h_down + h_step - h_step / 3),
+                           (w_down + w_step + w_step / 3,
+                            h_down + h_step + h_step / 3)],
+                          tag='grid_line', fill="red")
 
 
 def plot_asymmetric_grid(c_pattern, p_width, p_height, w, h):
@@ -69,10 +72,15 @@ def plot_asymmetric_grid(c_pattern, p_width, p_height, w, h):
         for j in range(int(i % 2 != 0), p_h, 2):
             index_i = i * w_step + w_down
             index_j = j * h_step + h_down
-            c_pattern.create_oval([(index_i, index_j), (index_i + w_step, index_j + h_step)], tag='grid_line')
+            c_pattern.create_oval([(index_i, index_j),
+                                   (index_i + w_step, index_j + h_step)],
+                                  tag='grid_line')
 
-    c_pattern.create_oval([(w_down + w_step / 2 - w_step / 5.0, h_down + h_step / 2 - h_step / 5.0),
-                           (w_down + w_step / 2 + w_step / 5.0, h_down + h_step / 2 + h_step / 5.0)], tag='grid_line',
+    c_pattern.create_oval([(w_down + w_step / 2 - w_step / 5.0,
+                            h_down + h_step / 2 - h_step / 5.0),
+                           (w_down + w_step / 2 + w_step / 5.0,
+                            h_down + h_step / 2 + h_step / 5.0)],
+                          tag='grid_line',
                           fill="red")
 
 
@@ -106,18 +114,27 @@ def plot_symmetric_grid(c_pattern, p_width, p_height, w, h):
         for j in range(0, p_h, 1):
             index_i = i * w_step + w_down
             index_j = j * h_step + h_down
-            c_pattern.create_oval([(index_i + w_step / 2 - w_step / 5.0, index_j + h_step / 2 - h_step / 5.0),
-                                   (index_i + w_step / 2 + w_step / 5.0, index_j + h_step / 2 + h_step / 5.0)],
+            c_pattern.create_oval([(index_i + w_step / 2 - w_step / 5.0,
+                                    index_j + h_step / 2 - h_step / 5.0),
+                                   (index_i + w_step / 2 + w_step / 5.0,
+                                    index_j + h_step / 2 + h_step / 5.0)],
                                   tag='grid_line')
 
-    c_pattern.create_oval([(w_down + w_step / 2 - w_step / 5.0, h_down + h_step / 2 - h_step / 5.0),
-                           (w_down + w_step / 2 + w_step / 5.0, h_down + h_step / 2 + h_step / 5.0)], tag='grid_line',
+    c_pattern.create_oval([(w_down + w_step / 2 - w_step / 5.0,
+                            h_down + h_step / 2 - h_step / 5.0),
+                           (w_down + w_step / 2 + w_step / 5.0,
+                            h_down + h_step / 2 + h_step / 5.0)],
+                          tag='grid_line',
                           fill="red")
 
 
 def plot_custom(c_pattern, all_points, w, h):
     w -= 2
     h -= 2
-    points = [(randint(0, w - 1), randint(0, h - 1)) for _ in range(all_points)]
+    points = [(SystemRandom.randint(0, w - 1),
+               SystemRandom.randint(0, h - 1)) for _ in range(all_points)]
     for p in points:
-        c_pattern.create_oval([(p[0] - 2, p[1] - 2), (p[0] + 2, p[1] + 2)], tag='grid_line', fill="red")
+        c_pattern.create_oval([(p[0] - 2, p[1] - 2),
+                               (p[0] + 2, p[1] + 2)],
+                              tag='grid_line',
+                              fill="red")

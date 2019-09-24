@@ -180,11 +180,9 @@ class Mixin:
                         # find features for asymmetric grid pattern type
                         elif 'Symmetric Grid' in self.pattern_type.get():
                             features = np.array([], np.float32)
-                            """
-                            Since the findCirclesGrid algorithm for symmetric
-                            grid usually fails for a wrong height - width
-                            configuration, we invert here those parameters
-                            """
+                            # Since the findCirclesGrid algorithm for symmetric
+                            # grid usually fails for a wrong height - width
+                            # configuration, we invert here those parameters.
                             for inner_cycle in range(2):
                                 if inner_cycle == 0:
                                     logging.debug('height - width')

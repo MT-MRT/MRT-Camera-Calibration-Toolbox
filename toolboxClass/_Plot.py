@@ -256,11 +256,11 @@ class Mixin:
 
         # normalized the picture
         grid = ((grid - grid.min()) / (grid.max() - grid.min()))
-        '''
-        for k in list_features:
-            for c in k:
-                grid[int(c[0][1]),int(c[0][0])]=1.0
-        '''
+
+        # for k in list_features:
+        #    for c in k:
+        #        grid[int(c[0][1]),int(c[0][0])]=1.0
+
         # create heatmap of the normalized picture. Check:
         # https://stackoverflow.com/questions/10965417/how-to-convert-numpy-
         # array-to-pil-image-applying-matplotlib-colormap

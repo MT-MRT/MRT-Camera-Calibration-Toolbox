@@ -149,14 +149,14 @@ class Mixin:
                                            axis=0)
                     width = max(self.size[0][1], self.size[1][1])
                     height = max(self.size[0][0], self.size[1][0])
-                    rms, c[0], d[0], c[1], d[1], R, T, E, _ = \
+                    rms, c[0], d[0], c[1], d[1], R, T, _, _ = \
                         cv2.stereoCalibrate(op, ip[0], ip[1], c[0], d[0], c[1],
                                             d[1], (width, height),
                                             flags=flags_parameters)
                 else:
                     width = self.size[0][1]
                     height = self.size[0][0]
-                    rms, c[0], d[0], r, _ = \
+                    rms, c[0], d[0], _, _ = \
                         cv2.calibrateCamera(op, ip[0], (width, height),
                                             c[0], d[0], flags=flags_parameters)
 
@@ -282,7 +282,7 @@ class Mixin:
                             height = max(self.size[0][0], self.size[1][0])
                             rms, self.camera_matrix[0], self.dist_coefs[0],\
                                 self.camera_matrix[1], self.dist_coefs[1],\
-                                R, T, E, F = cv2.stereoCalibrate(
+                                R, T, E, _ = cv2.stereoCalibrate(
                                                         self.objpoints,
                                                         self.imgpoints[0],
                                                         self.imgpoints[1],

@@ -4,9 +4,9 @@ from random import SystemRandom
 def plot_chessboard(c_pattern, p_width, p_height, w, h):
     p_width += 1
     p_height += 1
-    w, h, w_step, w_down, w_limit, h_step, h_down, h_limit = pre_plot(p_width,
-                                                                      p_height,
-                                                                      w, h)
+    w_step, w_down, w_limit, h_step, h_down, h_limit = pre_plot(p_width,
+                                                                p_height,
+                                                                w, h)
 
     # Creates all vertical lines at intervals of 100
     for i in range(w_down, w_limit + 1, w_step):
@@ -24,9 +24,7 @@ def plot_chessboard(c_pattern, p_width, p_height, w, h):
 
 
 def plot_circle_grid(c_pattern, p_width, p_height, w, h, symmetric=True):
-    w, h, w_step, w_down, w_limit, h_step, h_down, h_limit = pre_plot(p_width,
-                                                                      p_height,
-                                                                      w, h)
+    w_step, w_down, _, h_step, h_down, _ = pre_plot(p_width, p_height, w, h)
 
     for i in range(0, p_width, 1):
         if symmetric is True:
@@ -77,7 +75,7 @@ def pre_plot(p_width, p_height, w, h):
         h_down = int((h_down + 1) / 2)
         h_limit += h_down + 1
 
-    return w, h, w_step, w_down, w_limit, h_step, h_down, h_limit
+    return w_step, w_down, w_limit, h_step, h_down, h_limit
 
 
 def plot_custom(c_pattern, all_points, w, h):

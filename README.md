@@ -44,7 +44,7 @@ Check this animation of a running example of the MRT Camera Calibration Toolbox.
 
 ## Documentation
 
-Documentation is currently under development...
+Further information on the use of the Toolbox and the underlying calculations can be found in [this pdf](https://github.com/MT-MRT/MRT-Camera-Calibration-Toolbox/blob/master/docs/UserManual.pdf).
 
 ## Contributing 
 

@@ -2,7 +2,7 @@ import tkinter as tk
 from toolboxClass import MRTCalibrationToolbox
 
 # 'en' or 'de'
-language = 'EN'
+language = 'en'
 
 root = tk.Tk()
 root.wait_visibility()

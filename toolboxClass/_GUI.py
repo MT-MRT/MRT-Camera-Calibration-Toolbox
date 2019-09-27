@@ -101,7 +101,7 @@ class Mixin:
         y = self.master.winfo_rooty() \
             + (self.master.winfo_height() // 2) \
             - (height // 2)
-        self.popup.geometry("+%d+%d" % (x, y))
+        self.popup.geometry('+%d+%d' % (x, y))
         if self.master.winfo_viewable():
             self.popup.transient(self.master)
         self.popup.deiconify()  # become visible now
@@ -130,7 +130,7 @@ class Mixin:
         self.index = tk.IntVar()
         # method for calibration variable
         self.how_to_calibrate = tk.StringVar()
-        self.how_to_calibrate.set("Clustering calculation")
+        self.how_to_calibrate.set(self._(u'Clustering calculation'))
         # loading parameters from file variables
         self.load_files = [None, None, None]
         self.l_load_files = [None, None, None]
@@ -199,7 +199,7 @@ class Mixin:
         Enables and disables the corresponding buttons
         Adjust the GUI for a single/stereo mode
         '''
-        if 'Images' in self.pattern_load.get():
+        if self._(u'Images') in self.pattern_load.get():
             for j in range(3):
                 print(self.label_msg[j].cget('text'))
                 if self.label_msg[j].cget('text'):
@@ -216,9 +216,9 @@ class Mixin:
                 return
 
         # checks
-        if 'Images' in self.pattern_load.get():
+        if self._(u'Images') in self.pattern_load.get():
             # creates object from Chessboard pattern
-            if "Chessboard" in self.pattern_type.get():
+            if self._(u'Chessboard') in self.pattern_type.get():
                 self.object_pattern = np.zeros((self.p_width
                                                 * self.p_height, 3),
                                                np.float32)
@@ -227,7 +227,7 @@ class Mixin:
                 self.object_pattern[:, 0] = -grid[:, 1]
                 self.object_pattern[:, 1] = grid[:, 0]
             # creates object from Grid pattern
-            elif "Asymmetric Grid" in self.pattern_type.get():
+            elif self._(u'Asymmetric Grid') in self.pattern_type.get():
                 pattern_size = (self.p_height, self.p_width)
                 self.object_pattern = np.zeros((np.prod(pattern_size), 3),
                                                np.float32)
@@ -246,7 +246,7 @@ class Mixin:
                         self.object_pattern[i, 0] = self.object_pattern[i, 0] \
                             * self.f_distance / 2
             # returns for led pattern (not yet implemented)
-            elif "Symmetric Grid" in self.pattern_type.get():
+            elif self._(u'Symmetric Grid') in self.pattern_type.get():
                 self.object_pattern = np.zeros((self.p_width
                                                 * self.p_height, 3),
                                                np.float32)
@@ -256,36 +256,36 @@ class Mixin:
                 self.object_pattern[:, 1] = grid[:, 0]
 
             # set default image type
-            self.valid_files = [".jpg", ".png"]
-            self.ftypes = [('All image files',
+            self.valid_files = ['.jpg', '.png']
+            self.ftypes = [(self._(u'All image files'),
                             tuple(x + y for x, y in
                                   zip(('*', '*'), tuple(self.valid_files)))), ]
         else:
-            self.valid_files = [".txt"]
-            self.ftypes = [('Text files', '*.txt')]
+            self.valid_files = ['.txt']
+            self.ftypes = [(self._(u'Text files'), '*.txt')]
             # Disable tab for original image
-            self.tabControl[0].tab(0, state="disable")
+            self.tabControl[0].tab(0, state='disable')
 
         self.m_stereo = self.mode_stereo.get()
 
         self.popup.destroy()
 
-        self.bot[0].config(state="disable")  # disable add session button
-        self.bot[0].config(relief="raised")  # change raise add session button
-        self.bot[3].config(state="disable")  # disable zoom in button
-        self.bot[4].config(state="disable")  # disable zoom out button
-        self.bot[5].config(state="disable")  # disable run calibration button
-        self.bot[8].config(state="disable")  # disable export button
-        self.bot[9].config(state="disable")  # disable export button
+        self.bot[0].config(state='disable')  # disable add session button
+        self.bot[0].config(relief='raised')  # change raise add session button
+        self.bot[3].config(state='disable')  # disable zoom in button
+        self.bot[4].config(state='disable')  # disable zoom out button
+        self.bot[5].config(state='disable')  # disable run calibration button
+        self.bot[8].config(state='disable')  # disable export button
+        self.bot[9].config(state='disable')  # disable export button
 
-        self.bot[2].config(state="normal")  # enable adding images per folder
-        self.bot[6].config(state="normal")  # enable delete session button
-        self.bot[7].config(state="normal")  # settings button
+        self.bot[2].config(state='normal')  # enable adding images per folder
+        self.bot[6].config(state='normal')  # enable delete session button
+        self.bot[7].config(state='normal')  # settings button
 
         if self.m_stereo:
             self.n_cameras = 2
             # disable adding images per file button
-            self.bot[1].config(state="disable")
+            self.bot[1].config(state='disable')
             # set GUI for two camera
             # frame for extrinsics
             self.frm[4].grid(row=1, column=3, sticky=tk.N + tk.S)
@@ -298,7 +298,7 @@ class Mixin:
             # frame for second grafic second camera
             self.frm[10].grid(row=1, column=1)
             # Enable tab for extrinsic Reprojection
-            self.tabControl[0].tab(4, state="normal")
+            self.tabControl[0].tab(4, state='normal')
         else:
             self.n_cameras = 1
             # set GUI for one camera
@@ -307,9 +307,9 @@ class Mixin:
             self.frm[6].grid_forget()
             self.frm[8].grid_forget()
             self.frm[10].grid_forget()
-            self.bot[1].config(state="normal")  # enable adding per file
+            self.bot[1].config(state='normal')  # enable adding per file
             # Disable tab for extrinsic Reprojection
-            self.tabControl[0].tab(4, state="disable")
+            self.tabControl[0].tab(4, state='disable')
 
     def traces_GUI(self):
         '''
@@ -473,15 +473,15 @@ class Mixin:
         # Binding the hint boxes to the buttons
         self.bot[0].bind('<Enter>',
                          lambda event,
-                         message='Start a new session.':
+                         message=self._(u'Start a new session.'):
                          self.entry_mouse_enter(event, message))
         self.bot[1].bind('<Enter>',
                          lambda event,
-                         message='Adding single image files.':
+                         message=self._(u'Adding single image files.'):
                          self.entry_mouse_enter(event, message))
         self.bot[2].bind('<Enter>',
                          lambda event,
-                         message='Adding image files of a folder.':
+                         message=self._(u'Adding image files of a folder.'):
                          self.entry_mouse_enter(event, message))
         self.bot[0].bind('<Leave>', self.entry_mouse_leave)
         self.bot[1].bind('<Leave>', self.entry_mouse_leave)
@@ -493,12 +493,12 @@ class Mixin:
             self.bot[i].grid(row=0, column=i, sticky=tk.W)
 
         # scrollbar and listbox initialization #
-        tk.Label(self.frm[1], text="Data Browser").pack()
-        sb = tk.Scrollbar(self.frm[1], orient="vertical")
+        tk.Label(self.frm[1], text=self._(u'Data Browser')).pack()
+        sb = tk.Scrollbar(self.frm[1], orient='vertical')
         sb.pack(side=tk.RIGHT, fill=tk.Y)
         self.listbox = tk.Listbox(self.frm[1], yscrollcommand=sb.set)
         self.listbox.pack(expand=True, fill=tk.Y)
-        self.listbox.bind("<<ListboxSelect>>", self.updateSelection)
+        self.listbox.bind('<<ListboxSelect>>', self.updateSelection)
         sb.config(command=self.listbox.yview)
 
         # variables initialization for tabs of images and camera #
@@ -512,11 +512,11 @@ class Mixin:
         self.list_panel = []
         self.list_image_on_panel = []
         self.c_labels = [[], [], []]
-        tab_names = ['Original',
-                     'Features',
-                     'Cloud Map',
-                     'Intrinsic',
-                     'Extrinsic']
+        tab_names = [self._(u'Original'),
+                     self._(u'Features'),
+                     self._(u'Cloud Map'),
+                     self._(u'Intrinsic'),
+                     self._(u'Extrinsic')]
 
         # panel for pictures definition
         for j in range(2):
@@ -577,7 +577,7 @@ class Mixin:
                                     rowspan=13, sticky=tk.N + tk.S)
         # definition of text of labels
         for j in range(2):
-            self.c_labels[j][0].config(text='CAMERA MATRIX')
+            self.c_labels[j][0].config(text=self._(u'CAMERA MATRIX'))
             self.c_labels[j][2].config(text=u'\u03bc')
             self.c_labels[j][3].config(text='SD')
             self.c_labels[j][4].config(text='fx')
@@ -596,7 +596,8 @@ class Mixin:
             self.c_labels[j][14].config(textvariable=self.cy[j])
             self.c_labels[j][15].config(textvariable=self.sd_cy[j],
                                         fg='#9a1046')
-            self.c_labels[j][16].config(text='DISTORTION COEFFICIENTS')
+            self.c_labels[j][16].config(text=self
+                                        ._(u'DISTORTION COEFFICIENTS'))
             self.c_labels[j][18].config(text=u'\u03bc')
             self.c_labels[j][19].config(text='SD')
             self.c_labels[j][20].config(text='k1')
@@ -619,7 +620,7 @@ class Mixin:
             self.c_labels[j][33].config(textvariable=self.k5[j])
             self.c_labels[j][34].config(textvariable=self.sd_k5[j],
                                         fg='#9a1046')
-            self.c_labels[j][35].config(text='REPROJECTION ERROR')
+            self.c_labels[j][35].config(text=self._(u'REPROJECTION ERROR'))
             self.c_labels[j][36].config(text='RMS')
             self.c_labels[j][37].config(textvariable=self.rms_tk[j])
 
@@ -650,9 +651,9 @@ class Mixin:
         self.c_labels[2][-1].grid(row=16, column=1, columnspan=3,
                                   sticky=tk.N + tk.S)
         # definition of text of labels
-        self.c_labels[2][0].config(text='ROTATION MATRIX')
-        self.c_labels[2][10].config(text='TRANSLATIONAL VECTOR')
-        self.c_labels[2][14].config(text='REPROJECTION ERROR')
+        self.c_labels[2][0].config(text=self._(u'ROTATION MATRIX'))
+        self.c_labels[2][10].config(text=self._(u'TRANSLATIONAL VECTOR'))
+        self.c_labels[2][14].config(text=self._(u'REPROJECTION ERROR'))
         for j in range(3):
             self.c_labels[2][11 + j].config(textvariable=self.T_tk[j])
             for i in range(3):
@@ -664,8 +665,9 @@ class Mixin:
         # event for the bars bases on:
         # https://matplotlib.org/users/event_handling.html
         # Draggable rectangle exercise
-        xlabel_names = ['Images', 'Features']
-        title_names = ['RMS Reprojection Error', 'Pixel Distance Error']
+        xlabel_names = [self._(u'Images'), self._(u'Features')]
+        title_names = [self._(u'RMS Reprojection Error'),
+                       self._(u'Pixel Distance Error')]
         for i in range(2):
             for j in range(2):
                 # figure and subplot declaration
@@ -699,7 +701,7 @@ class Mixin:
                 self.ax[i][-1].clear()
                 self.ax[i][-1].set_title(title_names[i], fontsize=10)
                 self.ax[i][-1].set_xlabel(xlabel_names[i], fontsize=7)
-                self.ax[i][-1].set_ylabel('Pixels', fontsize=7)
+                self.ax[i][-1].set_ylabel(self._(u'Pixels'), fontsize=7)
                 self.f[i][-1].tight_layout()  # Adjust size
 
         # set GUI for one camera
@@ -711,17 +713,17 @@ class Mixin:
         # Binding keyboard events with toolbar functions
         self.master.bind('<Delete>', lambda e: self.del_single())
         self.master.bind('<Alt-F4>', self.master.quit)
-        self.master.bind("<F5>", lambda event: self.bot[5].invoke())
+        self.master.bind('<F5>', lambda event: self.bot[5].invoke())
 
     def entry_mouse_enter(self, event, message='I got no message!'):
-        """
+        '''
         Mouseover event loading hint
-        """
+        '''
         self.my_hint_label = hl.MyHintLabel(event.x_root, event.y_root,
                                             message)
 
     def entry_mouse_leave(self, event):
-        """
+        '''
         Mouseleave event destroying hint
-        """
+        '''
         self.my_hint_label.destroy()

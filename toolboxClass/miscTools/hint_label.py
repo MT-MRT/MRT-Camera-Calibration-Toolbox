@@ -26,7 +26,7 @@ class MyHintLabel(tk.Toplevel):
         self.message_label = tk.Label(self, compound='left', text=self.message,
                                       bg='white', fg='#9A1046')
         self.message_label.pack()
-        self.geometry("+%d+%d" % (self.xpos+self.TIP_X_OFFSET,
+        self.geometry('+%d+%d' % (self.xpos+self.TIP_X_OFFSET,
                                   self.ypos+self.TIP_Y_OFFSET))
 
         if self.auto_clear:

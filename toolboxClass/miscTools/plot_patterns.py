@@ -20,7 +20,7 @@ def plot_chessboard(c_pattern, p_width, p_height, w, h):
                             h_down + h_step - h_step / 3),
                            (w_down + w_step + w_step / 3,
                             h_down + h_step + h_step / 3)],
-                          tag='grid_line', fill="red")
+                          tag='grid_line', fill='red')
 
 
 def plot_circle_grid(c_pattern, p_width, p_height, w, h, symmetric=True):
@@ -48,7 +48,7 @@ def plot_circle_grid(c_pattern, p_width, p_height, w, h, symmetric=True):
                            (w_down + w_step / 2 + w_step / 5.0,
                             h_down + h_step / 2 + h_step / 5.0)],
                           tag='grid_line',
-                          fill="red")
+                          fill='red')
 
 
 def pre_plot(p_width, p_height, w, h):
@@ -88,4 +88,4 @@ def plot_custom(c_pattern, all_points, w, h):
         c_pattern.create_oval([(p[0] - 2, p[1] - 2),
                                (p[0] + 2, p[1] + 2)],
                               tag='grid_line',
-                              fill="red")
+                              fill='red')

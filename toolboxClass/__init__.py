@@ -1,16 +1,22 @@
 from toolboxClass import _GUI, _Load, _Popups, _Update, _Calibration, _Plot,\
-                         _Export, _Delete
+                         _Export, _Delete, _Language
 
 
 class MRTCalibrationToolbox(_GUI.Mixin, _Load.Mixin, _Popups.Mixin,
                             _Update.Mixin, _Calibration.Mixin, _Plot.Mixin,
-                            _Export.Mixin, _Delete.Mixin,):
+                            _Export.Mixin, _Delete.Mixin, _Language.Mixin):
+
     def __init__(self, master, *args, **kwargs):
         self.master = master
+        if args and args[0] in ('en', 'de'):
+            self.language = args[0]
+        else:
+            self.language = 'en'
+        self.set_language()
         # For two screens, divide by corresponding factor 2
         self.screen_width = master.winfo_screenwidth()
         self.screen_height = master.winfo_screenheight()
-        master.title("MRT Camera Calibration Toolbox")
+        master.title(self._(u'MRT Camera Calibration Toolbox'))
         self.initialize_GUI_variables()
         self.initializeVariables()
         self.reset_camera_parameters()

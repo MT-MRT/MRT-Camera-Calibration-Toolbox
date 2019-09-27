@@ -1,6 +1,7 @@
 import logging
 import os
-import tkinter as tk
+# import tkinter as tk
+from tkinter import filedialog
 import cv2
 import numpy as np
 import toolboxClass.miscTools.datastring as datastring
@@ -13,19 +14,21 @@ class Mixin:
         '''
         Function to load 3D points from text
         '''
-        self.load_files[0] = tk.filedialog \
-                               .askopenfilenames(parent=self.popup,
-                                                 filetypes=[('Text files',
-                                                             '*.txt')])
+        self.load_files[0] \
+            = filedialog.askopenfilenames(parent=self.popup,
+                                          filetypes=[(self._('Text files'),
+                                                      '*.txt')])
         if len(self.load_files[0]) == 0:
             self.object_pattern = None
-            self.l_load_files[0].config(text='File missing, please add',
+            self.l_load_files[0].config(text=self
+                                        ._('File missing, please add'),
                                         fg='red')
         else:
             set_3D_points = np.fromfile(self.load_files[0][0],
                                         dtype=np.float32, sep=',')
             if len(set_3D_points) % 3 != 0:
-                self.l_load_files[0].config(text='No 3D points', fg='red')
+                self.l_load_files[0].config(text=self._('No 3D points'),
+                                            fg='red')
                 self.object_pattern = None
             else:
                 self.l_load_files[0].config(text=self.load_files[0][0]
@@ -40,21 +43,21 @@ class Mixin:
         filenames = []
         # this is adding per file
         if typeof == 'p':
-            t_choose = 'Please select a file for ' + title_dialog
-            filenames = tk.filedialog.askopenfilenames(parent=self.master,
-                                                       title=t_choose,
-                                                       filetypes=self.ftypes)
+            t_choose = self._('Please select a file for ') + title_dialog
+            filenames = filedialog.askopenfilenames(parent=self.master,
+                                                    title=t_choose,
+                                                    filetypes=self.ftypes)
         # this is adding per folder
         else:
             list_path = []
-            t_options = [' (first camera)', ' (second camera)']
+            t_options = [self._(' (first camera)'), self._(' (second camera)')]
             while len(list_path) < self.n_cameras:
                 # create dialog for adding folders
-                t_choose = 'Please select a folder for ' \
+                t_choose = self._('Please select a folder for ') \
                             + title_dialog \
                             + t_options[len(list_path)]
-                path_folder = tk.filedialog.askdirectory(parent=self.master,
-                                                         title=t_choose)
+                path_folder = filedialog.askdirectory(parent=self.master,
+                                                      title=t_choose)
                 # checks that the selected folder exists
                 if path_folder:
                     list_path.append(path_folder)
@@ -74,16 +77,16 @@ class Mixin:
                     file_no_path.sort(key=lambda f:
                                       int(''.join(filter(str.isdigit, f))))
                 except ValueError:
-                    logging.warning('non-indexable filenames')
+                    logging.warning(self._('non-indexable filenames'))
                 for f in file_no_path:
                     filenames.append(os.path.join(p, f))
         return filenames
 
     def assign_filename(self, j):
-        self.load_files[j] = tk.filedialog.askopenfilenames(parent=self.popup,
-                                                            filetypes=[
-                                                             ('Text files',
-                                                              '*.txt')])
+        self.load_files[j] \
+            = filedialog.askopenfilenames(parent=self.popup,
+                                          filetypes=[(self._('Text files'),
+                                                      '*.txt')])
         if len(self.load_files[j]) == 0:
             self.l_load_files[j].config(text='', fg='black')
             # clear status check
@@ -103,7 +106,8 @@ class Mixin:
             # update status check
             self.label_status_l[j + 1][1].config(text=u'\u2714')
             if j == 2:
-                self.label_status_l[3][0].config(text='3. Loading Extrinsics')
+                self.label_status_l[3][0]\
+                    .config(text=self._('3. Loading Extrinsics'))
             self.rms = [0, 0, 0]
             self.reset_error()
             self.updateCameraParametersGUI()
@@ -113,7 +117,7 @@ class Mixin:
         '''
         Function to add files to the session
         '''
-        file_names_2D_points = self.get_file_names(typeof, '2D points')
+        file_names_2D_points = self.get_file_names(typeof, self._('2D points'))
 
         if len(file_names_2D_points) == 0:
             return
@@ -148,10 +152,10 @@ class Mixin:
                     for cycle in range(2):
                         logging.debug('Cycle... %d', cycle + 1)
                         if cycle == 1:
-                            logging.debug('Inverting image')
+                            logging.debug(self._('Inverting image'))
                             im2 = 255 - im2
                         # find features for chessboard pattern type
-                        if 'Chessboard' in self.pattern_type.get():
+                        if self._(u'Chessboard') in self.pattern_type.get():
                             ret, features = \
                                 cv2.findChessboardCorners(im2,
                                                           (self.p_height,
@@ -167,7 +171,8 @@ class Mixin:
                                                  (-1, -1), criteria)
                                 break
                         # find features for asymmetric grid pattern type
-                        elif 'Asymmetric Grid' in self.pattern_type.get():
+                        elif self._(u'Asymmetric Grid') \
+                                in self.pattern_type.get():
                             features = np.array([], np.float32)
                             ret, features = \
                                 cv2.findCirclesGrid(im2, (self.p_height,
@@ -178,14 +183,15 @@ class Mixin:
                             if ret:
                                 break
                         # find features for asymmetric grid pattern type
-                        elif 'Symmetric Grid' in self.pattern_type.get():
+                        elif self._(u'Symmetric Grid') \
+                                in self.pattern_type.get():
                             features = np.array([], np.float32)
                             # Since the findCirclesGrid algorithm for symmetric
                             # grid usually fails for a wrong height - width
                             # configuration, we invert here those parameters.
                             for inner_cycle in range(2):
                                 if inner_cycle == 0:
-                                    logging.debug('height - width')
+                                    logging.debug(self._('height - width'))
                                     ret, features = \
                                         cv2.findCirclesGrid(
                                                 im2,
@@ -195,7 +201,7 @@ class Mixin:
                                     if ret:
                                         break
                                 else:
-                                    logging.debug('width - height')
+                                    logging.debug(self._('width - height'))
                                     ret, features = \
                                         cv2.findCirclesGrid(
                                                 im2,
@@ -258,28 +264,26 @@ class Mixin:
 
             # percentage of completion of process
             c_porcent = (i + 1) / float(len(file_names_2D_points))
-            self.progbar["value"] = c_porcent * 10.0
+            self.progbar['value'] = c_porcent * 10.0
             # update label
             self.style_pg.configure('text.Horizontal.TProgressbar',
                                     text='{:g} %'.format(c_porcent * 100.0))
             # if one or more images failed the importing, show info popup
-            message = 'Imported images: {0} of {1}\n'\
-                      .format(i + 1
-                              - len(rejected_images)
-                              - len(repeated_images),
-                              len(file_names_2D_points))
+            message = self._('Imported images: {0} of {1}\n')\
+                .format(i + 1 - len(rejected_images) - len(repeated_images),
+                        len(file_names_2D_points))
             if rejected_images or repeated_images:
                 # message += 'A total of {0} images could not be loaded\n'
                 # .format(len(rejected_images) + len(repeated_images))
-                message += 'Rejected images: {0}\n'\
-                           .format(len(rejected_images))
-                message += 'Repeated images: {0}\n'\
-                           .format(len(repeated_images))
+                message += self._('Rejected images: {0}\n')\
+                    .format(len(rejected_images))
+                message += self._('Repeated images: {0}\n')\
+                    .format(len(repeated_images))
                 if rejected_images:
-                    message += 'Rejected: \n {0}\n'\
+                    message += self._('Rejected: \n {0}\n')\
                                .format('\n'.join(rejected_images))
                 if repeated_images:
-                    message += 'Repeated: \n {0}'\
+                    message += self._('Repeated: \n {0}')\
                                .format('\n'.join(repeated_images))
             l_msg.configure(text=message)
 
@@ -305,10 +309,10 @@ class Mixin:
         # enable and disable buttons depending of the succeed of the
         # importing process
         if self.n_total.get() > 0:
-            self.bot[3].config(state="normal")  # enable zoom in button
-            self.bot[4].config(state="normal")  # enable zoom in button
-            self.bot[5].config(state="normal")  # enable run calib button
+            self.bot[3].config(state='normal')  # enable zoom in button
+            self.bot[4].config(state='normal')  # enable zoom in button
+            self.bot[5].config(state='normal')  # enable run calib button
         else:
-            self.bot[3].config(state="disable")  # disable zoom in button
-            self.bot[4].config(state="disable")  # disable zoom in button
-            self.bot[5].config(state="disable")  # disable run calib button
+            self.bot[3].config(state='disable')  # disable zoom in button
+            self.bot[4].config(state='disable')  # disable zoom in button
+            self.bot[5].config(state='disable')  # disable run calib button

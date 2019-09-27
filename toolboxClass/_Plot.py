@@ -75,10 +75,10 @@ class Mixin:
         Function to keep only one zoom button enable
         '''
         if self.bot[button1].config('relief')[-1] == 'sunken':
-            self.bot[button1].config(relief="raised")
+            self.bot[button1].config(relief='raised')
         else:
-            self.bot[button1].config(relief="sunken")
-            self.bot[button2].config(relief="raised")
+            self.bot[button1].config(relief='sunken')
+            self.bot[button2].config(relief='raised')
 
     def updatePicture(self, *args):
         '''
@@ -147,7 +147,7 @@ class Mixin:
         else:
             for j in range(self.n_cameras):
                 for i in range(5):
-                    self.list_panel[j][i].delete("all")
+                    self.list_panel[j][i].delete('all')
                     self.list_image_on_panel[j][i] = \
                         self.list_panel[j][i].create_image(0, 0,
                                                            anchor=tk.N
@@ -157,10 +157,10 @@ class Mixin:
     # self.panel1.itemconfig(self.image_on_panel1, image = None)
 
     def image_features(self, camera, index):
-        """
+        '''
         Function to create an picture with the original one and its
         detected features with markers
-        """
+        '''
         # get the features for the selected image
         features = self.detected_features[camera][index]
         # get original of the selected image
@@ -349,8 +349,9 @@ class Mixin:
         '''
         Function to update error bar chart
         '''
-        xlabel_names = ['Images', 'Features']
-        title_names = ['RMS Reprojection Error', 'Pixel Distance Error']
+        xlabel_names = [self._('Images'), self._('Features')]
+        title_names = [self._('RMS Reprojection Error'),
+                       self._('Pixel Distance Error')]
         factor_width = [10, 7]
         for k in r_up:
             self.dr[k] = []
@@ -403,11 +404,12 @@ class Mixin:
                     # create dashed line for RMS reprojection mean
                     if k == 0:
                         self.ax[k][j].axhline(y=m_error, color='k',
-                                              linestyle='--', label="z")
+                                              linestyle='--', label='z')
                         handles, _ = self.ax[k][j].get_legend_handles_labels()
                         self.ax[k][j].\
                             legend(handles[0:1],
-                                   ['Mean RMS Reprojection Error is: %.5f'
+                                   [self
+                                    ._('Mean RMS Reprojection Error is: %.5f')
                                     % m_error],
                                    loc='lower center',
                                    prop={'size': self.ax[k][j].
@@ -417,7 +419,7 @@ class Mixin:
                         self.ax[k][j].set_title(title_names[k], fontsize=10)
                     else:
                         self.ax[k][j].set_title(title_names[k]
-                                                + ' (Not Updated)',
+                                                + self._(' (Not Updated)'),
                                                 color='#9a1046',
                                                 fontsize=10)
                 # for empty error data, only set the chart titles

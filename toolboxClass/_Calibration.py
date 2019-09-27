@@ -11,12 +11,12 @@ logging.basicConfig(level=logging.ERROR)
 class Mixin:
     def play(self, calib_button):
 
-        calib_button.config(state="disabled")
-        self.bot[5].config(relief="sunken")
-        self.bot[5].config(state="active")
+        calib_button.config(state='disabled')
+        self.bot[5].config(relief='sunken')
+        self.bot[5].config(state='active')
 
         self.style_pg.configure('text.Horizontal.TProgressbar', text='0 %')
-        self.progbar["value"] = 0
+        self.progbar['value'] = 0
 
         # reset values status for clustering
         self.label_status[1][1].config(text='')
@@ -47,8 +47,7 @@ class Mixin:
             int(self.p_zero_tangent_distance.get())*cv2.CALIB_ZERO_TANGENT_DIST
 
         logging.debug('%s', self.how_to_calibrate.get())
-
-        if "Clustering" in self.how_to_calibrate.get():
+        if self._(u'Clustering') in self.how_to_calibrate.get():
             c_r = None
             c_k = None
 
@@ -57,34 +56,35 @@ class Mixin:
                 c_r = self.c_r.get()
                 if c_r < 3:
                     self.label_msg[1].configure(
-                            text='R parameter must be greater than two')
+                        text=self._('R parameter must be greater than two'))
                     b_continue = False
                 elif c_r > self.n_total.get():
                     self.label_msg[1].configure(
-                            text='R parameter must be smaller or equal than n')
+                        text=self.
+                        _('R parameter must be smaller or equal than n'))
                     b_continue = False
                 else:
                     self.label_msg[1].configure(text='')
             except ValueError:
                 self.label_msg[1].configure(
-                            text='R parameter can not be empty')
+                    text=self._('R parameter can not be empty'))
                 b_continue = False
             try:
                 c_k = self.c_k.get()
                 if c_k < 1:
                     self.label_msg[0].configure(
-                            text='K parameter must be greater than zero')
+                        text=self._('K parameter must be greater than zero'))
                     b_continue = False
                 else:
                     self.label_msg[0].configure(text='')
             except ValueError:
                 self.label_msg[0].configure(
-                            text='K parameter can not be empty')
+                    text=self._('K parameter can not be empty'))
                 b_continue = False
             if not b_continue:
-                self.bot[5].config(relief="raised")
-                self.bot[5].config(state="normal")
-                calib_button.config(state="active")
+                self.bot[5].config(relief='raised')
+                self.bot[5].config(state='normal')
+                calib_button.config(state='active')
                 return
 
             # n, number of all images
@@ -93,8 +93,8 @@ class Mixin:
             if k != c_k:
                 self.c_k.set(int(k))
                 self.label_msg[1].config(
-                        text='Number of groups changed from %d to %d \
-                        (maximum possible)' % (c_k, k))
+                    text=(self._('Number of groups changed from ')
+                          + self._('%d to %d (maximum possible)') % (c_k, k)))
                 self.popup.update()  # for updating while running other process
 
             time_play = chronometer()
@@ -130,7 +130,7 @@ class Mixin:
                 if self.m_stereo:
                     # move coordinates when images size are different
                     if self.size[0] != self.size[1]:
-                        logging.debug('Different camera resolution')
+                        logging.debug(self._('Different camera resolution'))
                         ip = np.array(ip)
                         index_min = self.size.index(min(self.size))
                         index_max = self.size.index(max(self.size))
@@ -139,8 +139,9 @@ class Mixin:
                         w_adj = (w_max - w_min) / 2
                         h_adj = (h_max - h_min) / 2
                         n_poses, n_points, _, _ = ip[index_min].shape
-                        logging.debug('Transforming coordinates for camera \
-                                      %s', index_min + 1)
+                        logging.debug(
+                            self._('Transforming coordinates for camera %s'),
+                            index_min + 1)
                         for pose in range(n_poses):
                             for point in range(n_points):
                                 ip[index_min][pose][point] = \
@@ -160,7 +161,7 @@ class Mixin:
                         cv2.calibrateCamera(op, ip[0], (width, height),
                                             c[0], d[0], flags=flags_parameters)
 
-                logging.info('this is stereo rms error: %s', rms)
+                logging.info(self._('this is stereo rms error: %s'), rms)
 
                 if rms != 0:
                     counter += 1
@@ -194,10 +195,10 @@ class Mixin:
 
                     # percentage of completion of process
                     c_porcent = counter / float(len(self.samples))
-                    self.progbar["value"] = c_porcent * 10.0
+                    self.progbar['value'] = c_porcent * 10.0
                     elapsed_time_1 = time_play.gettime()
                     self.lb_time.config(
-                        text='Estimated time left: %0.5f seconds'
+                        text=self._('Estimated time left: %0.5f seconds')
                         % max(elapsed_time_1 * (1 / c_porcent - 1), 0))
                     # update label
                     self.style_pg.configure('text.Horizontal.TProgressbar',
@@ -219,7 +220,8 @@ class Mixin:
                     self.T_stereo = np.mean(np.array(self.T_array), axis=0)
                     # Correction for cx and cy parameters
                     if self.size[0] != self.size[1]:
-                        logging.debug('Correcting cx an cy for camera {0}'
+                        logging.debug(self
+                                      ._('Correcting cx an cy for camera {0}')
                                       .format(index_min + 1))
                         self.camera_matrix[index_min][0][2] -= h_adj
                         self.camera_matrix[index_min][1][2] -= w_adj
@@ -236,7 +238,7 @@ class Mixin:
                 self.reset_camera_parameters()
                 self.reset_error()
             else:
-                logging.debug('Correct!')
+                logging.debug(self._('Correct!'))
                 # Camera projections
                 self.calculate_projection()
                 elapsed_time_3 = time_play.gettime()
@@ -253,28 +255,29 @@ class Mixin:
                                                 - elapsed_time_3))
                 self.label_status[5][2].config(text='%0.5f' % elapsed_time_4)
                 # enable export parameters buttons
-                self.bot[8].config(state="normal")
-                self.bot[9].config(state="normal")
+                self.bot[8].config(state='normal')
+                self.bot[9].config(state='normal')
                 for e in self.rms:
-                    if e == float("inf") or e == float("-inf"):
-                        logging.warning('Error is too high')
+                    if e == float('inf') or e == float('-inf'):
+                        logging.warning(self._('Error is too high'))
                         # mark X for step 3 and 4
                         self.label_status[4][1].config(text=u'\u2718')
                         self.label_status[4][1].config(text=u'\u2718')
                         self.reset_camera_parameters()
                         self.reset_error()
                         # disable export parameters button
-                        self.bot[8].config(state="disable")
-                        self.bot[9].config(state="disable")
+                        self.bot[8].config(state='disable')
+                        self.bot[9].config(state='disable')
                         break
 
-        elif "Load" in self.how_to_calibrate.get():
+        elif self._(u'Load') in self.how_to_calibrate.get():
             b_continue = True
             for j in range(2 * (self.n_cameras - 1) + 1):
                 if '.txt' not in self.l_load_files[j].cget('text'):
                     if j == 2:
-                        self.l_load_files[j].config(text='Missing Extrinsics',
-                                                    fg='green')
+                        self.l_load_files[j]\
+                            .config(text=self._('Missing Extrinsics'),
+                                    fg='green')
                         self.label_status_l[3][1].config(text=u'\u2718')
                         if b_continue:
                             # TODO: Adjust for different sizes in Load mode
@@ -298,11 +301,12 @@ class Mixin:
                                 self.R_stereo = R
                                 self.T_stereo = T
                                 self.label_status_l[3][0].config(
-                                        text='3. Calculating Extrinsics')
+                                        text=self
+                                        ._('3. Calculating Extrinsics'))
                                 self.label_status_l[3][1].config(
                                         text=u'\u2714')
                             else:
-                                logging.error('Calibration fails')
+                                logging.error(self._('Calibration fails'))
                                 b_continue = False
                                 self.label_status_l[j + 1][1].config(
                                         text=u'\u2718')
@@ -310,7 +314,8 @@ class Mixin:
                                         text=u'\u2718')
                     else:
                         self.l_load_files[j].config(
-                                         text='File missing, please add',
+                                         text=self
+                                         ._('File missing, please add'),
                                          fg='red')
                         b_continue = False
                         self.label_status_l[j + 1][1].config(text=u'\u2718')
@@ -320,7 +325,8 @@ class Mixin:
                 for i in range(self.n_cameras):
                     # Fx is zero only when reset
                     if self.camera_matrix[i][0][0] == 0:
-                        logging.debug('Data for camera %s not available',
+                        logging.debug(self
+                                      ._('Data for camera %s not available'),
                                       i + 1)
                         self.reset_camera_parameters()
                         self.reset_error()
@@ -332,18 +338,18 @@ class Mixin:
                         # Calculate RMS error
                         self.calculate_error()
                         # enable export parameters button
-                        self.bot[8].config(state="normal")
-                        self.bot[9].config(state="normal")
+                        self.bot[8].config(state='normal')
+                        self.bot[9].config(state='normal')
 
                 for e in self.rms:
-                    if e == float("inf") or e == float("-inf"):
-                        logging.warning('Error is too high')
+                    if e == float('inf') or e == float('-inf'):
+                        logging.warning(self._('Error is too high'))
                         self.reset_camera_parameters()
                         self.reset_error()
                         self.label_status_l[4][1].config(text=u'\u2718')
                         # disable export parameters button
-                        self.bot[8].config(state="disable")
-                        self.bot[9].config(state="disable")
+                        self.bot[8].config(state='disable')
+                        self.bot[9].config(state='disable')
                         break
                     else:
                         self.label_status_l[4][1].config(text=u'\u2714')
@@ -352,9 +358,9 @@ class Mixin:
 
         self.updateCameraParametersGUI()
         self.loadBarError([0, 1])
-        calib_button.config(state="normal")
-        self.bot[5].config(relief="raised")
-        self.bot[5].config(state="normal")
+        calib_button.config(state='normal')
+        self.bot[5].config(relief='raised')
+        self.bot[5].config(state='normal')
 
     def calculate_projection(self, r=None, t=None):
         if t is None:
@@ -417,7 +423,7 @@ class Mixin:
                 # Calculated value to update progressbar
                 c_porcent = (j * len(ip) + i + 1) \
                     / float(self.n_cameras * len(ip))
-                self.progbar["value"] = c_porcent * 10.0
+                self.progbar['value'] = c_porcent * 10.0
                 # update label
                 self.style_pg.configure('text.Horizontal.TProgressbar',
                                         text='{:g} %'
@@ -425,7 +431,7 @@ class Mixin:
                 self.popup.update()  # for updating while running other process
                 # update rms when the error for all the images is calculated
                 if len(self.r_error[j]) == len(ip):
-                    logging.info("Updating RMS for camera %d", j + 1)
+                    logging.info(self._('Updating RMS for camera %d'), j + 1)
                     self.rms[j] = np.sqrt(np.sum(np.square(self.r_error[j])) /
                                           len(self.r_error[j]))
                     if j == 1:

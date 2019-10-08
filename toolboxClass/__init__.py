@@ -14,8 +14,12 @@ class MRTCalibrationToolbox(_GUI.Mixin, _Load.Mixin, _Popups.Mixin,
             self.language = 'en'
         self.set_language()
         # For two screens, divide by corresponding factor 2
-        self.screen_width = master.winfo_screenwidth()
-        self.screen_height = master.winfo_screenheight()
+        w = master.winfo_screenwidth()
+        h = master.winfo_screenheight()
+        if (w / h == 32 / 9):
+            w /= 2
+        self.screen_width = w
+        self.screen_height = h
         master.title(self._(u'MRT Camera Calibration Toolbox'))
         self.initialize_GUI_variables()
         self.initializeVariables()

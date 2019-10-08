@@ -1,0 +1,417 @@
+# Translation for MRT Calibration Toolbox
+# Copyright (C) 2019 MRT, University of Kassel
+# Sebastian Schramm <sebastian.schramm@mrt.uni-kassel.de>, 2019.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2019-09-25 16:27+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDREss>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=cp1252\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+
+msgid 'MRT Camera Calibration Toolbox'
+msgstr 'MRT Kamera Kalibriertoolbox'
+
+msgid 'Original'
+msgstr 'Original'
+
+msgid 'Features'
+msgstr 'Merkmale'
+
+msgid 'Cloud Map'
+msgstr 'Targetverteilung'
+
+msgid 'Intrinsic'
+msgstr 'Intrinsisch'
+
+msgid 'Extrinsic'
+msgstr 'Extrinsisch'
+
+msgid 'DISTORTION COEFFICIENTS'
+msgstr 'DISTORSIONS KOEFFIZIENTEN'
+
+msgid 'R parameter must be greater than two'
+msgstr 'R muss groesser 2 sein'
+
+msgid 'R parameter must be smaller or equal than n'
+msgstr 'R muss kleiner gleich n sein'
+
+msgid 'R parameter can not be empty'
+msgstr 'R darf nicht leer sein'
+
+msgid 'K parameter must be greater than zero'
+msgstr 'K muss groesser 0 sein'
+
+msgid 'K parameter can not be empty'
+msgstr 'K darf nicht leer sein'
+
+msgid 'Different camera resolution'
+msgstr 'Unterschiedliche Kamera Aufloesungen'
+
+msgid 'Number of groups changed from '
+msgstr 'Gruppenanzahl von '
+
+msgid '%d to %d (maximum possible)'
+msgstr '%d auf %d reduziert (Maximalwert)'
+
+msgid 'Transforming coordinates for camera %s'
+msgstr 'Koordinatentransformation auf Kamera %s'
+
+msgid 'this is stereo rms error: %s'
+msgstr 'Das ist der RMS: %s'
+
+msgid 'Estimated time left: %0.5f seconds'
+msgstr 'Kalkulierte Restdauer: %0.5f Sekunden'
+
+msgid 'Correcting cx an cy for camera {0}'
+msgstr 'Korrektur von cx und cy fuer Kamera {0}'
+
+msgid 'Missing Extrinsics'
+msgstr 'Fehlende Extrinsische Parameter'
+
+msgid '3. Calculating Extrinsics'
+msgstr '3. Berechnung der Ext. Parameter'
+
+msgid 'Calibration fails'
+msgstr 'Kalibrierung fehlgeschlagen'
+
+msgid 'File missing, please add'
+msgstr 'Datei fehlt, bitte hinzufuegen'
+
+msgid 'Data for camera %s not available'
+msgstr 'Daten fuer Kamera %s nicht verfuegbar'
+
+msgid 'Error is too high'
+msgstr 'Fehler zu hoch'
+
+msgid 'Updating RMS for camera %d'
+msgstr 'Aktualisierung des RMS fuer Kamera %d'
+
+msgid 'All image files'
+msgstr 'Alle Bild Dateien'
+
+msgid 'Text files'
+msgstr 'Text Dateien'
+
+msgid 'Start a new session.'
+msgstr 'Starte eine neue Sitzung.'
+
+msgid 'Adding single image files.'
+msgstr 'Hinzufuegen einzelner Dateien.'
+
+msgid 'Adding image files of a folder.'
+msgstr 'Hinzufuegen eines Ordners.'
+
+msgid 'Data Browser'
+msgstr 'Datei Explorer'
+
+msgid 'CAMERA MATRIX'
+msgstr 'KAMERA MATRIX'
+
+msgid 'REPROJECTION ERROR'
+msgstr 'REPROJEKTIONS FEHLER'
+
+msgid 'ROTATION MATRIX'
+msgstr 'ROTATIONS MATRIX'
+
+msgid 'TRANSLATIONAL VECTOR'
+msgstr 'TRANSLATIONS VEKTOR'
+
+msgid 'Images'
+msgstr 'Bilder'
+
+msgid 'Features'
+msgstr 'Merkmale'
+
+msgid 'RMS Reprojection Error'
+msgstr 'RMS Reprojektionsfehler'
+
+msgid 'Pixel Distance Error'
+msgstr 'Pixel Abstandsfehler'
+
+msgid 'Pixels'
+msgstr 'Pixel'
+
+msgid 'Text files'
+msgstr 'Textdateien'
+
+msgid 'File missing, please add'
+msgstr 'Datei fehlt, bitte hinzufuegen'
+
+msgid 'No 3D points'
+msgstr 'Keine 3D-Punkte'
+
+msgid 'Please select a file for '
+msgstr 'Waehle bitte eine Datei fuer '
+
+msgid ' (first camera)'
+msgstr ' (1. Kamera)'
+
+msgid ' (second camera)'
+msgstr ' (2. Kamera)'
+
+msgid 'Please select a folder for '
+msgstr 'Waehle bitte einen Ordner fuer '
+
+msgid 'non-indexable filenames'
+msgstr 'nicht-indizierbare Dateinamen'
+
+msgid '3. Loading Extrinsics'
+msgstr '3. Laden der Ext. Parameter'
+
+msgid '2D points'
+msgstr '2D-Punkte'
+
+msgid 'Cycle... %d'
+msgstr 'Durchgang... %d'
+
+msgid 'Inverting image'
+msgstr 'Bildinvertierung'
+
+msgid 'height - width'
+msgstr 'Hoehe - Breite'
+
+msgid 'width - height'
+msgstr 'Breite - Hoehe'
+
+msgid 'Imported images: {0} of {1}\n'
+msgstr 'Importierte Bilder: {0} von {1}\n'
+
+msgid 'Rejected images: {0}\n'
+msgstr 'Verworfene Bilder: {0}\n'
+
+msgid 'Repeated images: {0}\n'
+msgstr 'Bildwiederholungen: {0}\n'
+
+msgid 'Rejected: \n {0}\n'
+msgstr 'Verworfen: \n {0}\n'
+
+msgid 'Repeated: \n {0}'
+msgstr 'Wiederholung: \n {0}'
+
+msgid 'intrinsics_first_camera'
+msgstr 'intrinsisch_erste_kamera'
+
+msgid 'intrinsics_second_camera'
+msgstr 'intrinsisch_zweite_kamera'
+
+msgid 'extrinsics'
+msgstr 'extrinsisch'
+
+msgid 'exporting results per calibration'
+msgstr 'Exportiere Resultate pro Kalibrierung'
+
+msgid 'Please select a folder'
+msgstr 'Waehle einen Ordner aus'
+
+msgid '/rotation.txt'
+msgstr '/rotation.txt'
+
+msgid '/translation.txt'
+msgstr '/translation.txt'
+
+msgid '/samples'
+msgstr '/beispiele'
+
+msgid 'Mean RMS Reprojection Error is: %.5f'
+msgstr 'Mittlerer RMS Reprojektions Fehler: %.5f'
+
+msgid ' (Not Updated)'
+msgstr ' (Nicht aktualisiert)'
+
+msgid 'Settings calibration'
+msgstr 'Kalibriereinstellungen'
+
+msgid 'Use intrinsics guess'
+msgstr 'Benutze intrisische Startwerte'
+
+msgid 'Fix principal point'
+msgstr 'Fixiere Bildhauptpunkt'
+
+msgid 'Fix aspect ratio'
+msgstr 'Fixiere Seitenverhaeltnis'
+
+msgid 'Set zero tangent distance'
+msgstr 'Setze tangentiale Distorsion auf 0'
+
+msgid 'Exit'
+msgstr 'Beenden'
+
+msgid 'c_pattern does not exist'
+msgstr 'c_pattern existiert nicht'
+
+msgid 'width parameter must be greater than one'
+msgstr 'Breite muss groesser 1 sein'
+
+msgid 'width parameter can not be empty'
+msgstr 'Breite darf nicht leer sein'
+
+msgid 'height parameter must be greater than one'
+msgstr 'Hoehe muss groesser 1 sein'
+
+msgid 'height parameter can not be empty'
+msgstr 'Breite darf nicht leer sein'
+
+msgid 'length parameter must be greater than zero'
+msgstr 'Laenge muss groesser 0 sein'
+
+msgid 'length parameter can not be empty'
+msgstr 'Laenge darf nicht leer sein'
+
+msgid 'width and height parameters\n'
+msgstr 'Breite und Hoehe müssen\n'
+
+msgid 'should be an odd-even pair'
+msgstr 'ein gerade/ungerade-Paar sein'
+
+msgid 'width parameter must be greater than zero'
+msgstr 'Breite muss groesser 0 sein'
+
+msgid 'height parameter must be greater than zero'
+msgstr 'Hoehe muss groesser 0 sein'
+
+msgid 'Add Session'
+msgstr 'Neue Sitzung'
+
+msgid 'Select file type to load'
+msgstr 'Waehle Dateityp aus'
+
+msgid 'Stereo mode?'
+msgstr 'Stereomodus?'
+
+msgid 'Start'
+msgstr 'Start'
+
+msgid 'Cancel'
+msgstr 'Abbrechen'
+
+msgid 'Chessboard'
+msgstr 'Schachbrett'
+
+msgid 'Asymmetric Grid'
+msgstr 'Asymmetrisches Kreistarget'
+
+msgid 'Symmetric Grid'
+msgstr 'Symmetrisches Kreistarget'
+
+msgid 'Pattern width '
+msgstr 'Anzahl Merkmale in Breite '
+
+msgid 'Pattern height '
+msgstr 'Anzahl Merkmale in Hoehe '
+
+msgid 'Feature distance (mm) '
+msgstr 'Merkmalsentfernung (mm) '
+
+msgid 'Image width '
+msgstr 'Bildbreite '
+
+msgid 'Image height '
+msgstr 'Bildhoehe '
+
+msgid '3D points of pattern (mm)'
+msgstr '3D-Punkte des Targets (mm)'
+
+msgid 'Information imported images'
+msgstr 'Informationen der importierten Bilder'
+
+msgid 'Okay'
+msgstr 'Okay'
+
+msgid 'Camera Calibration'
+msgstr 'Kamerakalibrierung'
+
+msgid 'How to get camera parameters?'
+msgstr 'Typ der Parameterberechnung'
+
+msgid 'Clustering calculation'
+msgstr 'Clusterberechnung'
+
+msgid 'Load from file'
+msgstr 'Laden aus Datei'
+
+msgid 'Intrinsics 1 camera'
+msgstr 'Int. Parameter Kamera 1'
+
+msgid 'Intrinsics 2 camera'
+msgstr 'Int. Parameter Kamera 1'
+
+msgid 'Extrinsics'
+msgstr 'Ext. Parameter'
+
+msgid 'Steps'
+msgstr 'Schritte'
+
+msgid 'State'
+msgstr 'Status'
+
+msgid '1. Loading Intrinsics 1'
+msgstr '1. Laden der Int. Parameter 1'
+
+msgid '2. Calculating Error'
+msgstr '2. Fehlerberechung'
+
+msgid '2. Loading Intrinsics 2'
+msgstr '2. Laden der Int. Parameter 2'
+
+msgid '3. Loading Extrinsics'
+msgstr '3. Laden der Ext. Parameter'
+
+msgid '4. Calculating Error'
+msgstr '4. Fehlerberechung'
+
+msgid 'Number of images (n) '
+msgstr 'Bildanzahl (n) '
+
+msgid 'Number of groups (k) '
+msgstr 'Anzahl an Wiederholungen (k) '
+
+msgid 'Number of elements per group (r) '
+msgstr 'Bilder pro Whd. (r) '
+
+msgid 'Time (s)'
+msgstr 'Dauer (s)'
+
+msgid '1. Clustering'
+msgstr '1. Clustern'
+
+msgid '2. Averaging'
+msgstr '2. Mittelung'
+
+msgid '3. Calculating Projections'
+msgstr '3. Berechnung der Projektionen'
+
+msgid '4. Calculating Error'
+msgstr '4. Fehlerberechnung'
+
+msgid 'TOTAL'
+msgstr 'TOTAL'
+
+msgid 'Calibrate'
+msgstr 'Kalibriere'
+
+msgid 'Delete session'
+msgstr 'Loesche Sitzung'
+
+msgid '\nAre you sure you want to delete the session?\n'
+msgstr '\nSitzung wirklich loeschen?\n'
+
+msgid 'Yes'
+msgstr 'Ja'
+
+msgid 'Cancel'
+msgstr 'Abbrechen'
+
+msgid 'Pattern type '
+msgstr 'Targettyp '
+
+msgid 'Clustering'
+msgstr 'Clusterberechnung'
+
+msgid 'Load'
+msgstr 'Laden aus Datei'

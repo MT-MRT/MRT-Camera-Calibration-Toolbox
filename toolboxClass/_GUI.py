@@ -394,12 +394,67 @@ class Mixin:
 
         # frame for first grafic first camera
         self.frm[7].grid(row=0, column=0)
-        # frame for second grafic first camera
-        self.frm[8].grid(row=0, column=1)
         # frame for first grafic second camera
+        self.frm[8].grid(row=0, column=1)
+        # frame for second grafic first camera
         self.frm[9].grid(row=1, column=0)
         # frame for second grafic second camera
         self.frm[10].grid(row=1, column=1)
+
+        self.frm[1].bind('<Enter>', lambda event,
+                         message=self._(u'The data browser shows all images '
+                                        u'used for calibration. To see an '
+                                        u'image on the right, click on its '
+                                        u'name in the list.'):
+                         self.entry_mouse_enter(event, message))
+        self.frm[3].bind('<Enter>', lambda event,
+                         message=self._(u'Mean results and the standard '
+                                        u'deviation of the first cameras '
+                                        u'intrinsics.'):
+                         self.entry_mouse_enter(event, message))
+        self.frm[4].bind('<Enter>', lambda event,
+                         message=self._(u'Mean results and the standard '
+                                        u'deviation of the stereo '
+                                        u'extrinsics.'):
+                         self.entry_mouse_enter(event, message))
+        self.frm[5].bind('<Enter>', lambda event,
+                         message=self._(u'Mean results and the standard '
+                                        u'deviation of the second cameras '
+                                        u'intrinsics.'):
+                         self.entry_mouse_enter(event, message))
+        self.frm[7].bind('<Enter>', lambda event,
+                         message=self._(u'RMS Diagramm over all images of the '
+                                        u'first camera. To view an image, '
+                                        u'select its error block.'):
+                         self.entry_mouse_enter(event, message))
+        self.frm[8].bind('<Enter>', lambda event,
+                         message=self._(u'RMS Diagramm over all images of the '
+                                        u'second camera. To view an image, '
+                                        u'select its error block.'):
+                         self.entry_mouse_enter(event, message))
+        self.frm[9].bind('<Enter>', lambda event,
+                         message=self._(u'Pixel distance error of the above '
+                                        u'selected image over all of its '
+                                        u'features. By selecting an error '
+                                        u'block, the feature is higlighted in '
+                                        u'the intrinsic and extrinsic tab.'):
+                         self.entry_mouse_enter(event, message))
+        self.frm[10].bind('<Enter>', lambda event,
+                          message=self._(u'Pixel distance error of the above '
+                                         u'selected image over all of its '
+                                         u'features. By selecting an error '
+                                         u'block, the feature is higlighted '
+                                         u'in the intrinsic and extrinsic '
+                                         u'tab.'):
+                          self.entry_mouse_enter(event, message))
+        self.frm[1].bind('<Leave>', self.entry_mouse_leave)
+        self.frm[3].bind('<Leave>', self.entry_mouse_leave)
+        self.frm[4].bind('<Leave>', self.entry_mouse_leave)
+        self.frm[5].bind('<Leave>', self.entry_mouse_leave)
+        self.frm[7].bind('<Leave>', self.entry_mouse_leave)
+        self.frm[8].bind('<Leave>', self.entry_mouse_leave)
+        self.frm[9].bind('<Leave>', self.entry_mouse_leave)
+        self.frm[10].bind('<Leave>', self.entry_mouse_leave)
 
         # loading icons for toolbar #
         # defining icons path
@@ -471,21 +526,49 @@ class Mixin:
                                   exportCalibrationParametersIteration))
 
         # Binding the hint boxes to the buttons
-        self.bot[0].bind('<Enter>',
-                         lambda event,
+        self.bot[0].bind('<Enter>', lambda event,
                          message=self._(u'Start a new session.'):
                          self.entry_mouse_enter(event, message))
-        self.bot[1].bind('<Enter>',
-                         lambda event,
+        self.bot[1].bind('<Enter>', lambda event,
                          message=self._(u'Adding single image files.'):
                          self.entry_mouse_enter(event, message))
-        self.bot[2].bind('<Enter>',
-                         lambda event,
+        self.bot[2].bind('<Enter>', lambda event,
                          message=self._(u'Adding image files of a folder.'):
+                         self.entry_mouse_enter(event, message))
+        self.bot[3].bind('<Enter>', lambda event,
+                         message=self._(u'Activate zoom-in function for '
+                                        u'images.'):
+                         self.entry_mouse_enter(event, message))
+        self.bot[4].bind('<Enter>', lambda event,
+                         message=self._(u'Activate zoom-out function for '
+                                        u'images.'):
+                         self.entry_mouse_enter(event, message))
+        self.bot[5].bind('<Enter>', lambda event,
+                         message=self._(u'Start a calibration run.'):
+                         self.entry_mouse_enter(event, message))
+        self.bot[6].bind('<Enter>', lambda event,
+                         message=self._(u'Delete the active session.'):
+                         self.entry_mouse_enter(event, message))
+        self.bot[7].bind('<Enter>', lambda event,
+                         message=self._(u'Set different calibration flags.'):
+                         self.entry_mouse_enter(event, message))
+        self.bot[8].bind('<Enter>', lambda event,
+                         message=self._(u'Export the mean parameters.'):
+                         self.entry_mouse_enter(event, message))
+        self.bot[9].bind('<Enter>', lambda event,
+                         message=self._(u'Export the parameters of every '
+                                        u'subsample.'):
                          self.entry_mouse_enter(event, message))
         self.bot[0].bind('<Leave>', self.entry_mouse_leave)
         self.bot[1].bind('<Leave>', self.entry_mouse_leave)
         self.bot[2].bind('<Leave>', self.entry_mouse_leave)
+        self.bot[3].bind('<Leave>', self.entry_mouse_leave)
+        self.bot[4].bind('<Leave>', self.entry_mouse_leave)
+        self.bot[5].bind('<Leave>', self.entry_mouse_leave)
+        self.bot[6].bind('<Leave>', self.entry_mouse_leave)
+        self.bot[7].bind('<Leave>', self.entry_mouse_leave)
+        self.bot[8].bind('<Leave>', self.entry_mouse_leave)
+        self.bot[9].bind('<Leave>', self.entry_mouse_leave)
         # TODO: Write text for each infobox!
 
         # buttons positioning
@@ -575,6 +658,44 @@ class Mixin:
                                                        image=None))
             self.tabControl[j].grid(row=0, column=0,
                                     rowspan=13, sticky=tk.N + tk.S)
+
+            self.list_panel[j][0]\
+                .bind('<Enter>', lambda event,
+                      message=self._(u'The original image is shown here.'):
+                      self.entry_mouse_enter(event, message))
+            self.list_panel[j][1]\
+                .bind('<Enter>', lambda event,
+                      message=self._(u'The detected calibration target is '
+                                     u'shown here.'):
+                      self.entry_mouse_enter(event, message))
+            self.list_panel[j][2]\
+                .bind('<Enter>', lambda event,
+                      message=self._(u'The distribution of the features over '
+                                     u'all images are shown here. Dark blue '
+                                     u'areas mean that the target was never '
+                                     u'in this image region.'):
+                      self.entry_mouse_enter(event, message))
+            self.list_panel[j][3]\
+                .bind('<Enter>', lambda event,
+                      message=self._(u'The detected calibration target is '
+                                     u'shown here. After the calibration, the '
+                                     u'target reprojection is drawn in '
+                                     u'additionally.'):
+                      self.entry_mouse_enter(event, message))
+            self.list_panel[j][4]\
+                .bind('<Enter>', lambda event,
+                      message=self._(u'The detected calibration target is '
+                                     u'shown here. After the calibration, the '
+                                     u'target reprojection from the view of '
+                                     u'the other camera is drawn in '
+                                     u'additionally.'):
+                      self.entry_mouse_enter(event, message))
+            self.list_panel[j][0].bind('<Leave>', self.entry_mouse_leave)
+            self.list_panel[j][1].bind('<Leave>', self.entry_mouse_leave)
+            self.list_panel[j][2].bind('<Leave>', self.entry_mouse_leave)
+            self.list_panel[j][3].bind('<Leave>', self.entry_mouse_leave)
+            self.list_panel[j][4].bind('<Leave>', self.entry_mouse_leave)
+
         # definition of text of labels
         for j in range(2):
             self.c_labels[j][0].config(text=self._(u'CAMERA MATRIX'))
@@ -719,8 +840,7 @@ class Mixin:
         '''
         Mouseover event loading hint
         '''
-        self.my_hint_label = hl.MyHintLabel(event.x_root, event.y_root,
-                                            message)
+        self.my_hint_label = hl.MyHintLabel(message)
 
     def entry_mouse_leave(self, event):
         '''

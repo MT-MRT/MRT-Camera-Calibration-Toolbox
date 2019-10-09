@@ -264,7 +264,7 @@ msgid 'length parameter can not be empty'
 msgstr 'Laenge darf nicht leer sein'
 
 msgid 'width and height parameters\n'
-msgstr 'Breite und Hoehe müssen\n'
+msgstr 'Breite und Hoehe muessen\n'
 
 msgid 'should be an odd-even pair'
 msgstr 'ein gerade/ungerade-Paar sein'
@@ -415,3 +415,81 @@ msgstr 'Clusterberechnung'
 
 msgid 'Load'
 msgstr 'Laden aus Datei'
+
+msgid 'The textfiles with the saved intrinsic parameters are to be loaded.'
+msgstr 'Die Textdateien mit den bereits gespeicherten intrinischen Parametern muessen geladen werden.'
+
+msgid 'The parameters for the number of calibrations and the number of images per calibration must be set here. For \na simple calibration, enter k=1 and the maximum number of images (presettings). For a good calibration, at \nleast r = 10 images should be selected usually.'
+msgstr 'Die Anzahl an Kalibrierungen und die Anzahl an Bildern pro Kalibrierung werden hier parametriert. Fuer eine \neinfache Kalibrierung sind k = 1 und die Gesamtbildanzahl einzutragen (Voreinstellung). Fuer eine gute \nKalibrierung sollten idR mindestens r = 10 Bilder verwendet werden.'
+
+msgid 'Start of the calibration.'
+msgstr 'Starten der Kalibrierung.'
+
+msgid 'The toolbox is capable of chessboard, asymetric and symmetric circle targets (choose images). If the \nused target is none of them, please input txt-files with the given features (see documentation).'
+msgstr 'Die Toolbox kann Schachbrettmuster sowie symmetrischen und asymmetrischen Kreistargets verarbeiten. Bei anderen \nTargets besteht die Moeglichkeit eine txt-file mit bereits erkannten Merkmalen zu laden (siehe Dokumentation).'
+
+msgid 'The parameters of the target must be entered: The number of features in the width and height, as well \nas their real world distance. Examples for the parameterization are given in the documentation.'
+msgstr 'Die Parameter des verwendeten Targets muessen eingestellt werden: Anzahl an Merkmalen in Hoehe \nund Breite sowie Abstand der Merkmale. Beispiele sind in der Dokumentation gegeben.'
+
+msgid 'The width and height of the images must be entered.'
+msgstr 'Die Breite und Hoehe der Bilder sind einzutragen.'
+
+msgid 'Setting whether stereo mode should be used. Starting a new session.'
+msgstr 'Auswahl ob Mono oder Stereokalibrierung durchgefuehrt werden soll und start einer neuen Sitzung.'
+
+msgid 'The original image is shown here.'
+msgstr 'Hier werden die eingelesenen Bilder angezeigt.'
+
+msgid 'The detected calibration target is shown here.'
+msgstr 'Hier wird das erkannte Kalibriertarget dargestellt.'
+
+msgid 'The distribution of the features over all images are shown here. Dark blue areas mean that the target was never in this image region.'
+msgstr 'Hier wird die Merkmalsverteilung ueber alle Bilder angezeigt. Dunkelblaue \nFlaechen bedeuten, dass das Target in dieser Bildregion nicht aufgenommen wurde.'
+
+msgid 'The detected calibration target is shown here. After the calibration, the target reprojection is drawn in additionally.'
+msgstr 'Hier werden die Merkmale des Kalibriertargets sowie nach der Kalibrierung deren Reprojektion dargestellt.'
+
+msgid 'The detected calibration target is shown here. After the calibration, the target reprojection from the view of the other camera is drawn in additionally.'
+msgstr 'Hier werden die Merkmale des Kalibriertargets sowie nach der Stereokalibrierung \nderen Reprojektion aus der Sicht der anderen Kamera dargestellt.'
+
+msgid 'Activate zoom-in function for images.'
+msgstr 'Aktiviert die Funktion zum Zoom-In der Bilder.'
+
+msgid 'Activate zoom-out function for images.'
+msgstr 'Aktiviert die Funktion zum Zoom-Out der Bilder.'
+
+msgid 'Start a calibration run.'
+msgstr 'Starte die Kalibrierung.'
+
+msgid 'Delete the active session.'
+msgstr 'Beende die aktive Sitzung.'
+
+msgid 'Set different calibration flags.'
+msgstr 'Setze allgemeine Kalibriereinstellungen.'
+
+msgid 'Export the mean parameters.'
+msgstr 'Export der gemittelten Parameter.'
+
+msgid 'Export the parameters of every subsample.'
+msgstr 'Export der Parameter jeder Einzelkalibrierung.'
+
+msgid 'The data browser shows all images used for calibration. To see an image on the right, click on its name in the list.'
+msgstr 'Der Datei-Browser zeigt alle Bilddateien fuer die Kalibrierung. Das ausgewaehlte Bild wird rechts angezeigt.'
+
+msgid 'Mean results and the standard deviation of the first cameras intrinsics.'
+msgstr 'Gemittelte Ergebnisse sowie Standardabweichung der intrinischen Parameter der ersten Kamera.'
+
+msgid 'Mean results and the standard deviation of the stereo extrinsics.'
+msgstr 'Gemittelte Ergebnisse sowie Standardabweichung der extrinsischen Parameter.'
+
+msgid 'Mean results and the standard deviation of the second cameras intrinsics.'
+msgstr 'Gemittelte Ergebnisse sowie Standardabweichung der intrinischen Parameter der zweiten Kamera.'
+
+msgid 'RMS Diagramm over all images of the first camera. To view an image, select its error block.'
+msgstr 'RMS Diagramm ueber alle Bilder der ersten Kamera. Um ein Bild anzuzeigen, kann der Fehlerblock ausgewaehlt werden.'
+
+msgid 'RMS Diagramm over all images of the second camera. To view an image, select its error block.'
+msgstr 'RMS Diagramm ueber alle Bilder der zweiten Kamera. Um ein Bild anzuzeigen, kann der Fehlerblock ausgewaehlt werden.'
+
+msgid 'Pixel distance error of the above selected image over all of its features. By selecting an error block, the feature is higlighted in the intrinsic and extrinsic tab.'
+msgstr 'Pixelabstands Fehler des ausgewaehlten Bildes ueber alle Merkmale. Mit der Auswahl eines Fehlerblockes \nwird das entsprechende Merkmal in den intrinsischen und extrinsischen Abbildungen dargestellt.'

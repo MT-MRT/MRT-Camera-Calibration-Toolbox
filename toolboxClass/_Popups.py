@@ -272,9 +272,8 @@ class Mixin:
                       self._(u'Asymmetric Grid'),
                       self._(u'Symmetric Grid')).grid(row=1, column=0,
                                                       sticky=tk.W + tk.E)
-        tk.Label(self.m_frm[1],
-                 text=self._(u'Pattern width ')).grid(row=2, column=0,
-                                                      sticky=tk.W)
+        self.labelP = tk.Label(self.m_frm[1], text=self._(u'Pattern width '))\
+            .grid(row=2, column=0, sticky=tk.W)
         tk.Entry(self.m_frm[1], textvariable=self.pattern_width,
                  validate='key', validatecommand=vcmd_int).grid(row=3,
                                                                 column=0,
@@ -361,6 +360,37 @@ class Mixin:
                   command=self.load_3D_points).grid(row=6, column=0)
         self.l_load_files[0] = tk.Label(self.m_frm[2], font='TkDefaultFont 6')
         self.l_load_files[0].grid(row=7, column=0)
+
+        self.m_frm[0]\
+            .bind('<Enter>', lambda event,
+                  message=self._(u'The toolbox is capable of chessboard, '
+                                 u'asymetric and symmetric circle targets '
+                                 u'(choose images). If the \nused target is '
+                                 u'none of them, please input txt-files with '
+                                 u'the given features (see documentation).'):
+                  self.entry_mouse_enter(event, message))
+        self.m_frm[1]\
+            .bind('<Enter>', lambda event,
+                  message=self._(u'The parameters of the target must be '
+                                 u'entered: The number of features in the '
+                                 u'width and height, as well \nas their real '
+                                 u'world distance. Examples for the '
+                                 u'parameterization are given in the '
+                                 u'documentation.'):
+                  self.entry_mouse_enter(event, message))
+        self.m_frm[2].bind('<Enter>', lambda event,
+                           message=self._(u'The width and height of the '
+                                          u'images must be entered.'):
+                           self.entry_mouse_enter(event, message))
+        self.m_frm[3].bind('<Enter>', lambda event,
+                           message=self._(u'Setting whether stereo mode '
+                                          u'should be used. Starting a new '
+                                          u'session.'):
+                           self.entry_mouse_enter(event, message))
+        self.m_frm[0].bind('<Leave>', self.entry_mouse_leave)
+        self.m_frm[1].bind('<Leave>', self.entry_mouse_leave)
+        self.m_frm[2].bind('<Leave>', self.entry_mouse_leave)
+        self.m_frm[3].bind('<Leave>', self.entry_mouse_leave)
 
         # Setting pattern feature variables
         self.mode_stereo.set(False)
@@ -463,14 +493,16 @@ class Mixin:
         self.popup.withdraw()
 
         self.popup.wm_title(self._(u'Camera Calibration'))
+        self.f_frm = tk.Frame(self.popup)
+        self.f_frm.grid(row=0, column=0)
 
-        tk.Label(self.popup,
+        tk.Label(self.f_frm,
                  text=self
                  ._(u'How to get camera parameters?')).grid(row=0, column=0,
                                                             sticky=tk.E
                                                             + tk.W
                                                             + tk.N)
-        tk.OptionMenu(self.popup, self.how_to_calibrate,
+        tk.OptionMenu(self.f_frm, self.how_to_calibrate,
                       self._(u'Clustering calculation'),
                       self._(u'Load from file'),
                       command=self.modify_play_popup).grid(row=1, column=0,
@@ -687,6 +719,34 @@ class Mixin:
         tk.Button(self.m_frm[2], text=self._(u'Exit'),
                   command=self.popup.destroy).grid(row=0, column=1,
                                                    sticky=tk.E + tk.W + tk.N)
+
+        self.f_frm.bind('<Enter>', lambda event,
+                        message=self._(u'Choose between .'):
+                        self.entry_mouse_enter(event, message))
+        self.m_frm[0].bind('<Enter>', lambda event,
+                           message=self._(u'The textfiles with the saved '
+                                          u'intrinsic parameters are to be '
+                                          u'loaded.'):
+                           self.entry_mouse_enter(event, message))
+        self.m_frm[1].bind('<Enter>', lambda event,
+                           message=self._(u'The parameters for the number of '
+                                          u'calibrations and the number of '
+                                          u'images per calibration must be '
+                                          u'set here. For \na simple '
+                                          u'calibration, enter k=1 and the '
+                                          u'maximum number of images '
+                                          u'(presettings). For a good '
+                                          u'calibration, at \nleast r = 10 '
+                                          u'images should be selected '
+                                          u'usually.'):
+                           self.entry_mouse_enter(event, message))
+        self.m_frm[2].bind('<Enter>', lambda event,
+                           message=self._(u'Start of the calibration.'):
+                           self.entry_mouse_enter(event, message))
+        self.f_frm.bind('<Leave>', self.entry_mouse_leave)
+        self.m_frm[0].bind('<Leave>', self.entry_mouse_leave)
+        self.m_frm[1].bind('<Leave>', self.entry_mouse_leave)
+        self.m_frm[2].bind('<Leave>', self.entry_mouse_leave)
 
         self.modify_play_popup()
         self.center()

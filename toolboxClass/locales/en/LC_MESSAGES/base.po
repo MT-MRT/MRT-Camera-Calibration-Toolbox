@@ -409,3 +409,81 @@ msgstr 'Clustering'
 
 msgid 'Load'
 msgstr 'Load'
+
+msgid 'The textfiles with the saved intrinsic parameters are to be loaded.'
+msgstr 'The textfiles with the saved intrinsic parameters are to be loaded.'
+
+msgid 'The parameters for the number of calibrations and the number of images per calibration must be set here. For \na simple calibration, enter k=1 and the maximum number of images (presettings). For a good calibration, at \nleast r = 10 images should be selected usually.'
+msgstr 'The parameters for the number of calibrations and the number of images per calibration must be set here. For \na simple calibration, enter k=1 and the maximum number of images (presettings). For a good calibration, at \nleast r = 10 images should be selected usually.'
+
+msgid 'Start of the calibration.'
+msgstr 'Start of the calibration.'
+
+msgid 'The toolbox is capable of chessboard, asymetric and symmetric circle targets (choose images). If the \nused target is none of them, please input txt-files with the given features (see documentation).'
+msgstr 'The toolbox is capable of chessboard, asymetric and symmetric circle targets (choose images). If the \nused target is none of them, please input txt-files with the given features (see documentation).'
+
+msgid 'The parameters of the target must be entered: The number of features in the width and height, as well \nas their real world distance. Examples for the parameterization are given in the documentation.'
+msgstr 'The parameters of the target must be entered: The number of features in the width and height, as well \nas their real world distance. Examples for the parameterization are given in the documentation.'
+
+msgid 'The width and height of the images must be entered.'
+msgstr 'The width and height of the images must be entered.'
+
+msgid 'Setting whether stereo mode should be used. Starting a new session.'
+msgstr 'Setting whether stereo mode should be used. Starting a new session.'
+
+msgid 'The original image is shown here.'
+msgstr 'The original image is shown here.'
+
+msgid 'The detected calibration target is shown here.'
+msgstr 'The detected calibration target is shown here.'
+
+msgid 'The distribution of the features over all images are shown here. Dark blue areas mean that the target was never in this image region.'
+msgstr 'The distribution of the features over all images are shown here. Dark blue areas mean that the target was never in this image region.'
+
+msgid 'The detected calibration target is shown here. After the calibration, the target reprojection is drawn in additionally.'
+msgstr 'The detected calibration target is shown here. After the calibration, the target reprojection is drawn in additionally.'
+
+msgid 'The detected calibration target is shown here. After the calibration, the target reprojection from the view of the other camera is drawn in additionally.'
+msgstr 'The detected calibration target is shown here. After the calibration, the target reprojection from the view of the other camera is drawn in additionally.'
+
+msgid 'Activate zoom-in function for images.'
+msgstr 'Activate zoom-in function for images.'
+
+msgid 'Activate zoom-out function for images.'
+msgstr 'Activate zoom-out function for images.'
+
+msgid 'Start a calibration run.'
+msgstr 'Start a calibration run.'
+
+msgid 'Delete the active session.'
+msgstr 'Delete the active session.'
+
+msgid 'Set different calibration flags.'
+msgstr 'Set different calibration flags.'
+
+msgid 'Export the mean parameters.'
+msgstr 'Export the mean parameters.'
+
+msgid 'Export the parameters of every subsample.'
+msgstr 'Export the parameters of every subsample.'
+
+msgid 'The data browser shows all images used for calibration. To see an image on the right, click on its name in the list.'
+msgstr 'The data browser shows all images used for calibration. To see an image on the right, click on its name in the list.'
+
+msgid 'Mean results and the standard deviation of the first cameras intrinsics.'
+msgstr 'Mean results and the standard deviation of the first cameras intrinsics.'
+
+msgid 'Mean results and the standard deviation of the stereo extrinsics.'
+msgstr 'Mean results and the standard deviation of the stereo extrinsics.'
+
+msgid 'Mean results and the standard deviation of the second cameras intrinsics.'
+msgstr 'Mean results and the standard deviation of the second cameras intrinsics.'
+
+msgid 'RMS Diagramm over all images of the first camera. To view an image, select its error block.'
+msgstr 'RMS Diagramm over all images of the first camera. To view an image, select its error block.'
+
+msgid 'RMS Diagramm over all images of the second camera. To view an image, select its error block.'
+msgstr 'RMS Diagramm over all images of the second camera. To view an image, select its error block.'
+
+msgid 'Pixel distance error of the above selected image over all of its features. By selecting an error block, the feature is higlighted in the intrinsic and extrinsic tab.'
+msgstr 'Pixel distance error of the above selected image over all of its features. By selecting an error block, the feature is higlighted in the intrinsic and extrinsic tab.'

@@ -68,6 +68,7 @@ class Mixin:
         # delete grid_line objects
         if self.c_pattern:
             self.c_pattern.delete('grid_line')
+            self.c_pattern.delete('grid_oval')
         else:
             logging.error(self._(u'c_pattern does not exist'))
             return

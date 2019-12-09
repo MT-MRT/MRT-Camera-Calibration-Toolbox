@@ -1,5 +1,9 @@
 from random import SystemRandom
 
+color_pattern_width = '#aaaaf2'
+color_pattern_mix = '#cb83cb'
+color_pattern_height = '#f57dac'
+
 
 def plot_chessboard(c_pattern, p_width, p_height, w, h):
     p_width += 1
@@ -11,19 +15,34 @@ def plot_chessboard(c_pattern, p_width, p_height, w, h):
     # Creates all vertical lines at intervals of 100
     for i in range(w_down, w_limit + 1, w_step):
         c_pattern.create_line([(i, h_down), (i, h_limit)], tag='grid_line')
+        if i == w_down:
+            c_pattern.create_oval([(i + w_step - w_step / 5.0,
+                                    h_down + h_step - h_step / 5.0),
+                                   (i + w_step + w_step / 5.0,
+                                    h_down + h_step + h_step / 5.0)], fill=color_pattern_mix,
+                                  tag='grid_oval')
+        elif w_down < i < w_limit - w_step:
+            c_pattern.create_oval([(i + w_step - w_step / 5.0,
+                                    h_down + h_step - h_step / 5.0),
+                                   (i + w_step + w_step / 5.0,
+                                    h_down + h_step + h_step / 5.0)], fill=color_pattern_width,
+                                  tag='grid_oval')
 
     # Creates all horizontal lines at intervals of 100
     for i in range(h_down, h_limit + 1, h_step):
         c_pattern.create_line([(w_down, i), (w_limit, i)], tag='grid_line')
+        if h_down < i < h_limit - h_step:
+            c_pattern.create_oval([(w_down + w_step - w_step / 5.0,
+                                    i + h_step - h_step / 5.0),
+                                   (w_down + w_step + w_step / 5.0,
+                                    i + h_step + h_step / 5.0)],
+                                  tag='grid_oval', fill=color_pattern_height)
 
-    c_pattern.create_oval([(w_down + w_step - w_step / 3,
-                            h_down + h_step - h_step / 3),
-                           (w_down + w_step + w_step / 3,
-                            h_down + h_step + h_step / 3)],
-                          tag='grid_line', fill='red')
+    c_pattern.tag_raise('grid_oval')
 
 
 def plot_circle_grid(c_pattern, p_width, p_height, w, h, symmetric=True):
+    p_height += p_height * int(symmetric == False)
     w_step, w_down, _, h_step, h_down, _ = pre_plot(p_width, p_height, w, h)
 
     for i in range(0, p_width, 1):
@@ -31,24 +50,51 @@ def plot_circle_grid(c_pattern, p_width, p_height, w, h, symmetric=True):
             for j in range(0, p_height, 1):
                 index_i = i * w_step + w_down
                 index_j = j * h_step + h_down
-                c_pattern.create_oval([(index_i + w_step / 2 - w_step / 5.0,
-                                        index_j + h_step / 2 - h_step / 5.0),
-                                       (index_i + w_step / 2 + w_step / 5.0,
-                                        index_j + h_step / 2 + h_step / 5.0)],
-                                      tag='grid_line')
+                if j == 0:
+                    if i == 0:
+                        c_pattern.create_oval([(index_i + w_step / 2 - w_step / 5.0,
+                                                index_j + h_step / 2 - h_step / 5.0),
+                                               (index_i + w_step / 2 + w_step / 5.0,
+                                                index_j + h_step / 2 + h_step / 5.0)], fill=color_pattern_mix,
+                                              tag='grid_oval')
+                    else:
+                        c_pattern.create_oval([(index_i + w_step / 2 - w_step / 5.0,
+                                                index_j + h_step / 2 - h_step / 5.0),
+                                               (index_i + w_step / 2 + w_step / 5.0,
+                                                index_j + h_step / 2 + h_step / 5.0)], fill=color_pattern_width,
+                                              tag='grid_oval')
+                elif i == 0:
+                    c_pattern.create_oval([(index_i + w_step / 2 - w_step / 5.0,
+                                            index_j + h_step / 2 - h_step / 5.0),
+                                           (index_i + w_step / 2 + w_step / 5.0,
+                                            index_j + h_step / 2 + h_step / 5.0)], fill=color_pattern_height,
+                                          tag='grid_oval')
+                else:
+                    c_pattern.create_oval([(index_i + w_step / 2 - w_step / 5.0,
+                                            index_j + h_step / 2 - h_step / 5.0),
+                                           (index_i + w_step / 2 + w_step / 5.0,
+                                            index_j + h_step / 2 + h_step / 5.0)], fill='white', tag='grid_oval')
         else:
             for j in range(int(i % 2 != 0), p_height, 2):
                 index_i = i * w_step + w_down
                 index_j = j * h_step + h_down
-                c_pattern.create_oval([(index_i, index_j),
-                                       (index_i + w_step, index_j + h_step)],
-                                      tag='grid_line')
-    c_pattern.create_oval([(w_down + w_step / 2 - w_step / 5.0,
-                            h_down + h_step / 2 - h_step / 5.0),
-                           (w_down + w_step / 2 + w_step / 5.0,
-                            h_down + h_step / 2 + h_step / 5.0)],
-                          tag='grid_line',
-                          fill='red')
+                if j == int(i % 2 != 0):
+                    if i == 0:
+                        c_pattern.create_oval([(index_i, index_j),
+                                               (index_i + w_step, index_j + h_step)], fill=color_pattern_mix,
+                                              tag='grid_oval')
+                    else:
+                        c_pattern.create_oval([(index_i, index_j),
+                                               (index_i + w_step, index_j + h_step)], fill=color_pattern_width,
+                                              tag='grid_oval')
+
+                elif i == 0:
+                    c_pattern.create_oval([(index_i, index_j),
+                                           (index_i + w_step, index_j + h_step)], fill=color_pattern_height,
+                                          tag='grid_line')
+                else:
+                    c_pattern.create_oval([(index_i, index_j),
+                                           (index_i + w_step, index_j + h_step)], fill='white', tag='grid_oval')
 
 
 def pre_plot(p_width, p_height, w, h):

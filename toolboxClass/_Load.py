@@ -126,6 +126,7 @@ class Mixin:
 
         rejected_images = []
         repeated_images = []
+        no_valid_sized_images = []
 
         for i, _ in enumerate(file_names_2D_points):
             file_name_2D_points = file_names_2D_points[i]
@@ -229,12 +230,22 @@ class Mixin:
 
                     # checks if the detection of features succeed
                     if ret:
-                        # add file path to path
-                        self.paths[j].append(file_name_2D_points)
-                        # add original of image to img_original
-                        self.img_original[j].append(im)
-                        # add features to detected_features
-                        self.detected_features[j].append(features)
+                        # check if image size is already initialized
+                        if self.size[j] is None or len(self.paths[j]) == 0:
+                           self.size[j] = im.shape
+                           logging.error('Initialized image size for camera %d...', j + 1)
+                        # check if image size is valid
+                        if im.shape == self.size[j]:
+                            logging.debug('Loading valid sized image')                
+                            # add file path to path
+                            self.paths[j].append(file_name_2D_points)
+                            # add original of image to img_original
+                            self.img_original[j].append(im)
+                            # add features to detected_features
+                            self.detected_features[j].append(features)
+                        else:
+                            # add image path to no_valid_sized_images
+                            no_valid_sized_images.append(file_name_2D_points)
                     else:
                         # add image path to rejected_images
                         rejected_images.append(file_name_2D_points)
@@ -270,21 +281,26 @@ class Mixin:
                                     text='{:g} %'.format(c_porcent * 100.0))
             # if one or more images failed the importing, show info popup
             message = self._('Imported images: {0} of {1}\n')\
-                .format(i + 1 - len(rejected_images) - len(repeated_images),
+                .format(i + 1 - len(rejected_images) - len(repeated_images) - len(no_valid_sized_images),
                         len(file_names_2D_points))
-            if rejected_images or repeated_images:
+            if rejected_images or repeated_images or no_valid_sized_images:
                 # message += 'A total of {0} images could not be loaded\n'
                 # .format(len(rejected_images) + len(repeated_images))
                 message += self._('Rejected images: {0}\n')\
                     .format(len(rejected_images))
                 message += self._('Repeated images: {0}\n')\
                     .format(len(repeated_images))
+                message += self._('Invalid sized images: {0}\n')\
+                    .format(len(no_valid_sized_images))
                 if rejected_images:
                     message += self._('Rejected: \n {0}\n')\
                                .format('\n'.join(rejected_images))
                 if repeated_images:
-                    message += self._('Repeated: \n {0}')\
+                    message += self._('Repeated: \n {0}\n')\
                                .format('\n'.join(repeated_images))
+                if no_valid_sized_images:
+                    message += self._('Invalid sized images: \n{0}\n')\
+                               .format('\n'.join(no_valid_sized_images))
             l_msg.configure(text=message)
 
             self.popup.update()

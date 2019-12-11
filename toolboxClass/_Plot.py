@@ -185,8 +185,6 @@ class Mixin:
         self.zoomhandler = 0
         if self.n_total.get() > 0:
             for j in range(self.n_cameras):
-                if self.size[j] is None:
-                    self.size[j] = self.img_original[j][0].shape
                 # recalculate heat_map
                 self.heat_map[j] = self.density_cloud_heat_map(j)
         # update data browser

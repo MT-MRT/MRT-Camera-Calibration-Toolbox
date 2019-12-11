@@ -233,7 +233,7 @@ class Mixin:
                         # check if image size is already initialized
                         if self.size[j] is None or len(self.paths[j]) == 0:
                            self.size[j] = im.shape
-                           logging.error('Initialized image size for camera %d...', j + 1)
+                           logging.debug('Initialized image size for camera %d...', j + 1)
                         # check if image size is valid
                         if im.shape == self.size[j]:
                             logging.debug('Loading valid sized image')                

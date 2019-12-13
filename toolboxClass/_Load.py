@@ -122,188 +122,198 @@ class Mixin:
         if len(file_names_2D_points) == 0:
             return
 
-        l_msg = self.popupmsg()
+        l_msg, text_detail, b_cancel = self.popupmsg()
 
         rejected_images = []
         repeated_images = []
         no_valid_sized_images = []
 
+        self.continue_importing = True
         for i, _ in enumerate(file_names_2D_points):
-            file_name_2D_points = file_names_2D_points[i]
-            j = 0
-            if self.m_stereo:
-                # this corresponds to the right camera
-                if i >= len(file_names_2D_points) / 2:
-                    j = 1
-            # checks if images isn't repeated
-            if file_name_2D_points not in self.paths[j]:
-                if '.txt' not in self.valid_files:
-                    # read image file
-                    im = np.float32(cv2.imread(file_name_2D_points, 0))
-                    # original: normalized read image
-                    im = (255.0 * (im - im.min())
-                          / (im.max() - im.min())).astype(np.uint8)
-                    ret = False
-                    features = None
+            if self.continue_importing:
+                message = self._('Processing {0} of {1} images\n').format(i + 1, len(file_names_2D_points))
+                l_msg.configure(text=message)
+                file_name_2D_points = file_names_2D_points[i]
+                j = 0
+                if self.m_stereo:
+                    # this corresponds to the right camera
+                    if i >= len(file_names_2D_points) / 2:
+                        j = 1
+                # checks if images isn't repeated
+                if file_name_2D_points not in self.paths[j]:
+                    if '.txt' not in self.valid_files:
+                        # read image file
+                        im = np.float32(cv2.imread(file_name_2D_points, 0))
+                        # original: normalized read image
+                        im = (255.0 * (im - im.min())
+                              / (im.max() - im.min())).astype(np.uint8)
+                        ret = False
+                        features = None
 
-                    # creates copy of im, performance test found in
-                    # https://stackoverflow.com/questions/48106028/ \
-                    # python-copy-an-array-array
-                    im2 = im * 1
-                    for cycle in range(2):
-                        logging.debug('Cycle... %d', cycle + 1)
-                        if cycle == 1:
-                            logging.debug(self._('Inverting image'))
-                            im2 = 255 - im2
-                        # find features for chessboard pattern type
-                        if self._(u'Chessboard') in self.pattern_type.get():
-                            ret, features = \
-                                cv2.findChessboardCorners(im2,
-                                                          (self.p_height,
-                                                           self.p_width))
-                            if ret:
-                                # EPS realistisch einstellen je nach
-                                # Bildaufloesung (z.B fuer (240x320) 0.1, 0.25)
-                                # improve feature detection
-                                criteria = (cv2.TERM_CRITERIA_EPS
-                                            + cv2.TERM_CRITERIA_MAX_ITER,
-                                            130, 0.25)
-                                cv2.cornerSubPix(im2, features, (3, 3),
-                                                 (-1, -1), criteria)
-                                break
-                        # find features for asymmetric grid pattern type
-                        elif self._(u'Asymmetric Grid') \
-                                in self.pattern_type.get():
-                            features = np.array([], np.float32)
-                            ret, features = \
-                                cv2.findCirclesGrid(im2, (self.p_height,
-                                                          self.p_width),
-                                                    features,
-                                                    cv2
-                                                    .CALIB_CB_ASYMMETRIC_GRID)
-                            if ret:
-                                break
-                        # find features for asymmetric grid pattern type
-                        elif self._(u'Symmetric Grid') \
-                                in self.pattern_type.get():
-                            features = np.array([], np.float32)
-                            # Since the findCirclesGrid algorithm for symmetric
-                            # grid usually fails for a wrong height - width
-                            # configuration, we invert here those parameters.
-                            for inner_cycle in range(2):
-                                if inner_cycle == 0:
-                                    logging.debug(self._('height - width'))
-                                    ret, features = \
-                                        cv2.findCirclesGrid(
+                        # creates copy of im, performance test found in
+                        # https://stackoverflow.com/questions/48106028/ \
+                        # python-copy-an-array-array
+                        im2 = im * 1
+                        for cycle in range(2):
+                            logging.debug('Cycle... %d', cycle + 1)
+                            if cycle == 1:
+                                logging.debug(self._('Inverting image'))
+                                im2 = 255 - im2
+                            # find features for chessboard pattern type
+                            if self._(u'Chessboard') in self.pattern_type.get():
+                                ret, features = \
+                                    cv2.findChessboardCorners(im2,
+                                                              (self.p_height,
+                                                               self.p_width))
+                                if ret:
+                                    # EPS realistisch einstellen je nach
+                                    # Bildaufloesung (z.B fuer (240x320) 0.1, 0.25)
+                                    # improve feature detection
+                                    criteria = (cv2.TERM_CRITERIA_EPS
+                                                + cv2.TERM_CRITERIA_MAX_ITER,
+                                                130, 0.25)
+                                    cv2.cornerSubPix(im2, features, (3, 3),
+                                                     (-1, -1), criteria)
+                                    break
+                            # find features for asymmetric grid pattern type
+                            elif self._(u'Asymmetric Grid') \
+                                    in self.pattern_type.get():
+                                features = np.array([], np.float32)
+                                ret, features = \
+                                    cv2.findCirclesGrid(im2, (self.p_height,
+                                                              self.p_width),
+                                                        features,
+                                                        cv2
+                                                        .CALIB_CB_ASYMMETRIC_GRID)
+                                if ret:
+                                    break
+                            # find features for asymmetric grid pattern type
+                            elif self._(u'Symmetric Grid') \
+                                    in self.pattern_type.get():
+                                features = np.array([], np.float32)
+                                # Since the findCirclesGrid algorithm for symmetric
+                                # grid usually fails for a wrong height - width
+                                # configuration, we invert here those parameters.
+                                for inner_cycle in range(2):
+                                    if inner_cycle == 0:
+                                        logging.debug(self._('height - width'))
+                                        ret, features = \
+                                            cv2.findCirclesGrid(
                                                 im2,
                                                 (self.p_height, self.p_width),
                                                 features,
                                                 cv2.CALIB_CB_SYMMETRIC_GRID)
-                                    if ret:
-                                        break
-                                else:
-                                    logging.debug(self._('width - height'))
-                                    ret, features = \
-                                        cv2.findCirclesGrid(
+                                        if ret:
+                                            break
+                                    else:
+                                        logging.debug(self._('width - height'))
+                                        ret, features = \
+                                            cv2.findCirclesGrid(
                                                 im2,
                                                 (self.p_width, self.p_height),
                                                 features,
                                                 cv2.CALIB_CB_SYMMETRIC_GRID)
 
-                                    if ret:
-                                        # trasform the detected features
-                                        # configuration to match the original
-                                        # (height, width)
-                                        features = features \
-                                                   .reshape(self.p_height,
-                                                            self.p_width,
-                                                            1, 2)
-                                        features = np.transpose(features,
-                                                                (1, 0, 2, 3))
-                                        features = features\
-                                            .reshape(self.p_width
-                                                     * self.p_height,
-                                                     1, 2)
-                                        break
-                            if ret:
-                                break
+                                        if ret:
+                                            # trasform the detected features
+                                            # configuration to match the original
+                                            # (height, width)
+                                            features = features \
+                                                .reshape(self.p_height,
+                                                         self.p_width,
+                                                         1, 2)
+                                            features = np.transpose(features,
+                                                                    (1, 0, 2, 3))
+                                            features = features \
+                                                .reshape(self.p_width
+                                                         * self.p_height,
+                                                         1, 2)
+                                            break
+                                if ret:
+                                    break
 
-                    # checks if the detection of features succeed
-                    if ret:
-                        # check if image size is already initialized
-                        if self.size[j] is None or len(self.paths[j]) == 0:
-                           self.size[j] = im.shape
-                           logging.debug('Initialized image size for camera %d...', j + 1)
-                        # check if image size is valid
-                        if im.shape == self.size[j]:
-                            logging.debug('Loading valid sized image')                
-                            # add file path to path
-                            self.paths[j].append(file_name_2D_points)
-                            # add original of image to img_original
-                            self.img_original[j].append(im)
-                            # add features to detected_features
-                            self.detected_features[j].append(features)
+                        # checks if the detection of features succeed
+                        if ret:
+                            # check if image size is already initialized
+                            if self.size[j] is None or len(self.paths[j]) == 0:
+                                self.size[j] = im.shape
+                                logging.debug('Initialized image size for camera %d...', j + 1)
+                            # check if image size is valid
+                            if im.shape == self.size[j]:
+                                logging.debug('Loading valid sized image')
+                                # add file path to path
+                                self.paths[j].append(file_name_2D_points)
+                                # add original of image to img_original
+                                self.img_original[j].append(im)
+                                # add features to detected_features
+                                self.detected_features[j].append(features)
+                            else:
+                                # add image path to no_valid_sized_images
+                                no_valid_sized_images.append(file_name_2D_points)
                         else:
-                            # add image path to no_valid_sized_images
-                            no_valid_sized_images.append(file_name_2D_points)
+                            # add image path to rejected_images
+                            rejected_images.append(file_name_2D_points)
+                            # add file path to path
+                            self.paths[j].append(None)
+                            # add original of image to img_original
+                            self.img_original[j].append(None)
+                            # add features to detected_features
+                            self.detected_features[j].append(None)
+
                     else:
-                        # add image path to rejected_images
-                        rejected_images.append(file_name_2D_points)
+                        a = np.fromfile(file_name_2D_points,
+                                        dtype=np.float32, sep=',')
+                        a = a.reshape((len(a) / 2, 1, 2))
+                        self.p_height = 1
+                        self.p_width = len(a)
                         # add file path to path
-                        self.paths[j].append(None)
+                        self.paths[j].append(file_name_2D_points)
                         # add original of image to img_original
-                        self.img_original[j].append(None)
+                        im = np.zeros((self.image_height.get(),
+                                       self.image_width.get()))
+                        self.img_original[j].append(im)
                         # add features to detected_features
-                        self.detected_features[j].append(None)
-
+                        self.detected_features[j].append(a)
                 else:
-                    a = np.fromfile(file_name_2D_points,
-                                    dtype=np.float32, sep=',')
-                    a = a.reshape((len(a) / 2, 1, 2))
-                    self.p_height = 1
-                    self.p_width = len(a)
-                    # add file path to path
-                    self.paths[j].append(file_name_2D_points)
-                    # add original of image to img_original
-                    im = np.zeros((self.image_height.get(),
-                                   self.image_width.get()))
-                    self.img_original[j].append(im)
-                    # add features to detected_features
-                    self.detected_features[j].append(a)
-            else:
-                repeated_images.append(file_name_2D_points)
+                    repeated_images.append(file_name_2D_points)
 
-            # percentage of completion of process
-            c_porcent = (i + 1) / float(len(file_names_2D_points))
-            self.progbar['value'] = c_porcent * 10.0
-            # update label
-            self.style_pg.configure('text.Horizontal.TProgressbar',
-                                    text='{:g} %'.format(c_porcent * 100.0))
-            # if one or more images failed the importing, show info popup
-            message = self._('Imported images: {0} of {1}\n')\
-                .format(i + 1 - len(rejected_images) - len(repeated_images) - len(no_valid_sized_images),
-                        len(file_names_2D_points))
-            if rejected_images or repeated_images or no_valid_sized_images:
-                # message += 'A total of {0} images could not be loaded\n'
-                # .format(len(rejected_images) + len(repeated_images))
-                message += self._('Rejected images: {0}\n')\
-                    .format(len(rejected_images))
-                message += self._('Repeated images: {0}\n')\
-                    .format(len(repeated_images))
-                message += self._('Invalid sized images: {0}\n')\
-                    .format(len(no_valid_sized_images))
+                # percentage of completion of process
+                c_porcent = (i + 1) / float(len(file_names_2D_points))
+                self.progbar['value'] = c_porcent * 10.0
+                # update label
+                self.style_pg.configure('text.Horizontal.TProgressbar',
+                                        text='{:g} %'.format(c_porcent * 100.0))
+                # if one or more images failed the importing, add info
+                message += self._('Imported: {0}\n').format(i + 1 - len(rejected_images) - len(repeated_images) - len(no_valid_sized_images))
+                message += self._('Rejected: {0}\n').format(len(rejected_images))
+                message += self._('Repeated: {0}\n').format(len(repeated_images))
+                message += self._('Invalid sized: {0}\n').format(len(no_valid_sized_images))
+                l_msg.configure(text=message)
+                message = ''
                 if rejected_images:
-                    message += self._('Rejected: \n {0}\n')\
-                               .format('\n'.join(rejected_images))
+                    message += self._('Rejected: \n{0}\n').format('\n'.join(rejected_images))
                 if repeated_images:
-                    message += self._('Repeated: \n {0}\n')\
-                               .format('\n'.join(repeated_images))
+                    message += self._('Repeated: \n{0}\n').format('\n'.join(repeated_images))
                 if no_valid_sized_images:
-                    message += self._('Invalid sized images: \n{0}\n')\
-                               .format('\n'.join(no_valid_sized_images))
-            l_msg.configure(text=message)
+                    message += self._('Invalid sized images: \n{0}\n').format('\n'.join(no_valid_sized_images))
+                text_detail.config(state='normal')
+                text_detail.delete(1.0, 'end')
+                text_detail.insert(1.0, message)
+                text_detail.config(state='disable')
 
-            self.popup.update()
+                self.popup.update()
+            else:
+                message = self._('Processed {0} of {1} images\n').format(i + 1, len(file_names_2D_points))
+                message += self._('Imported: {0}\n').format(i + 1 - len(rejected_images) - len(repeated_images) - len(no_valid_sized_images))
+                message += self._('Rejected: {0}\n').format(len(rejected_images))
+                message += self._('Repeated: {0}\n').format(len(repeated_images))
+                message += self._('Invalid sized: {0}\n').format(len(no_valid_sized_images))
+                l_msg.configure(text=message)
+                l_msg.configure(text=message)
+                break
+
+        if self.continue_importing:
+            self.cancel_importing(b_cancel)
 
         index_to_delete = [i for i,
                            v in enumerate(self.paths[0]) if v is None]

@@ -466,28 +466,61 @@ class Mixin:
 
     def popupmsg(self):
         '''
-        Function to create popup for failure in importing images
+        Function to show popup with information about the importing images process
         '''
         self.popup = tk.Toplevel(self.master)
         self.popup.withdraw()
 
         self.popup.wm_title(self._(u'Information imported images'))
         l_msg = tk.Label(self.popup)
-        l_msg.grid(row=0, column=0, columnspan=2, sticky=tk.E + tk.W)
+        l_msg.grid(row=0, column=0, columnspan=3, sticky=tk.E + tk.W)
 
         # set initial text progressbar
         self.style_pg.configure('text.Horizontal.TProgressbar', text='0 %')
         self.progbar = ttk.Progressbar(self.popup,
                                        style='text.Horizontal.TProgressbar')
         self.progbar.config(maximum=10, mode='determinate')
-        self.progbar.grid(row=1, column=0, columnspan=2, sticky=tk.E + tk.W)
+        self.progbar.grid(row=1, column=0, columnspan=3, sticky=tk.E + tk.W)
 
-        tk.Button(self.popup, text=self._(u'Okay'),
-                  command=self.popup.destroy).grid(row=2, column=0,
-                                                   columnspan=2,
-                                                   sticky=tk.E + tk.W)
+        # text and its scrollbar for additional details
+        frm = tk.Frame(self.popup)
+        sb = tk.Scrollbar(frm, orient='vertical')
+        sb.pack(side=tk.RIGHT, fill=tk.Y)
+        text_detail = tk.Text(frm, yscrollcommand=sb.set)
+        text_detail.pack(expand=True, fill=tk.Y)
+        sb.config(command=text_detail.yview)
+
+        # button for getting more or less details
+        b_details = tk.Button(self.popup, text=self._(u'\u2b07 more details'))
+        b_details.configure(command=lambda: self.show_details(b_details, frm))
+        b_details.grid(row=3, column=0, sticky=tk.E + tk.W)
+        b_cancel = tk.Button(self.popup, text=self._(u'Cancel'))
+        b_cancel.configure(command=lambda: self.cancel_importing(b_cancel))
+        b_cancel.grid(row=3, column=1, columnspan=2,sticky=tk.E + tk.W)
         self.center()
-        return l_msg
+        return l_msg, text_detail, b_cancel
+
+    def cancel_importing(self, button):
+        '''
+        Function to cancel the importing images process and when finished, close the popup
+        '''
+        if 'Cancel' in button.cget('text'):
+            self.continue_importing = False
+            button.configure(text=self._('Exit'))
+        else:
+            self.popup.destroy()
+
+    def show_details(self, button, frm):
+        '''
+        Function to show more or less details about the rejected, repeated and invalid sized images
+        '''
+        if '\u2b07' in button.cget('text'):
+            frm.grid(row=2, column=0)
+            button.configure(text=self._('\u2b06 less details'))
+        else:
+            frm.grid_forget()
+            button.configure(text=self._('\u2b07 more details'))
+        self.center()
 
     def play_popup(self):
         self.popup = tk.Toplevel(self.master)

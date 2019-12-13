@@ -69,6 +69,7 @@ class Mixin:
         self.dr = [[], []]
 
         # variable for importing files
+        self.continue_importing = True
         self.ftypes = None
         self.valid_files = None
 
@@ -104,9 +105,10 @@ class Mixin:
         self.popup.geometry('+%d+%d' % (x, y))
         if self.master.winfo_viewable():
             self.popup.transient(self.master)
-        self.popup.deiconify()  # become visible now
-        self.popup.wait_visibility()
-        self.popup.grab_set()  # interact only with popup
+        if self.popup.state() != 'normal':
+            self.popup.deiconify()  # become visible now
+            self.popup.wait_visibility()
+            self.popup.grab_set()  # interact only with popup
 
     def initialize_GUI_variables(self):
         '''

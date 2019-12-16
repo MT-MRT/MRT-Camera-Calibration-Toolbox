@@ -785,6 +785,20 @@ class Mixin:
         self.modify_play_popup()
         self.center()
 
+    def popup_importing_fails(self, message):
+        '''
+        Function to create error popup when selecting invalid images folders
+        '''
+        self.popup = tk.Toplevel(self.master)
+        self.popup.withdraw()
+
+        self.popup.wm_title(self._(u'Importing error'))
+        l_error = tk.Label(self.popup, compound=tk.LEFT, image='::tk::icons::error', text=message)
+        l_error.grid(row=0, column=0, sticky=tk.W + tk.E)
+        tk.Button(self.popup, text=self._(u'Okay'), command=self.popup.destroy).grid(row=1, column=0,
+                                                                                     sticky=tk.W + tk.E)
+        self.center()
+
     def popupmsg_deleting(self):
         '''
         Function to create popup for deleting confirmation

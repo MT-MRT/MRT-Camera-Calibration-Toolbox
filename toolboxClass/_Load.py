@@ -157,20 +157,49 @@ class Mixin:
                         # check if image size is valid
                         if im.shape == self.size[j]:
                             # original: normalized read image
-                            im = (255.0 * (im - im.min())
-                                  / (im.max() - im.min())).astype(np.uint8)
+                            #im = cv2.normalize(img, normalizedImg, 0, 255, cv.NORM_MINMAX)
+                            im = (255.0 * (im - im.min()) / (im.max() - im.min())).astype(np.uint8)
                             ret = False
                             features = None
 
-                            # creates copy of im, performance test found in
-                            # https://stackoverflow.com/questions/48106028/ \
-                            # python-copy-an-array-array
-                            im2 = im * 1
-                            for cycle in range(2):
-                                logging.debug('Cycle... %d', cycle + 1)
-                                if cycle == 1:
-                                    logging.debug(self._('Inverting image'))
+                            pre_processing = 2
+                            if self._(u'Symmetric Grid') in self.pattern_type.get():
+                                pre_processing = 6
+                            for process in range(pre_processing):
+                                if process == 0:
+                                    logging.debug(self._('Normalized image (only)'))
+                                    # creates copy of im, performance test found in
+                                    # https://stackoverflow.com/questions/48106028/ \
+                                    # python-copy-an-array-array
+                                    im2 = im * 1
+                                elif process == 1:
+                                    logging.debug(self._('Normalized image + Inverting image'))
                                     im2 = 255 - im2
+                                elif process == 2:
+                                    logging.debug(self._('Normalized image + Gaussian Blur'))
+                                    im2 = cv2.GaussianBlur(im*1, (11, 11), 0)
+                                elif process == 3:
+                                    logging.debug(self._('Normalized image + Gaussian Blur + Inverting image'))
+                                    im2 = 255 - im2
+                                elif process == 4:
+                                    logging.debug(self._('Normalized image + Dilate'))
+                                    L = 3
+                                    # initialize grid for the circle matrix
+                                    grid_circle = np.zeros((L * 2 + 1, L * 2 + 1))
+                                    # Assign values to the grid from 1.0 to 0.0 as a circle representation,
+                                    # where the center gets 1.0 and the radius gets 0.0
+                                    for k in range(L):
+                                        for ii in range(L - k, L + k + 1):
+                                            for jj in range(L - k, L + k + 1):
+                                                r = ((ii - L) ** 2 + (jj - L) ** 2) ** 0.5
+                                                if r <= k:
+                                                    grid_circle[ii, jj] = 1
+                                    kernel = grid_circle.astype(np.uint8)
+                                    im2 = cv2.dilate(im * 1, kernel, iterations=1)
+                                elif process == 5:
+                                    logging.debug(self._('Normalized image + Dilate + Inverting image'))
+                                    im2 = 255 - im2
+
                                 # find features for chessboard pattern type
                                 if self._(u'Chessboard') in self.pattern_type.get():
                                     ret, features = \
@@ -227,7 +256,7 @@ class Mixin:
                                                     cv2.CALIB_CB_SYMMETRIC_GRID)
 
                                             if ret:
-                                                # trasform the detected features
+                                                # transform the detected features
                                                 # configuration to match the original
                                                 # (height, width)
                                                 features = features \

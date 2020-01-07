@@ -374,10 +374,12 @@ class Mixin:
         # enable and disable buttons depending of the succeed of the
         # importing process
         if self.n_total.get() > 0:
-            self.bot[3].config(state='normal')  # enable zoom in button
-            self.bot[4].config(state='normal')  # enable zoom in button
-            self.bot[5].config(state='normal')  # enable run calib button
+            self.btn_zoom_more.config(state='normal')  # enable zoom in button
+            self.btn_zoom_less.config(state='normal')  # enable zoom out button
+            self.btn_locate.config(state='normal')  # enable locate button
+            self.btn_play.config(state='normal')  # enable run calib button
         else:
-            self.bot[3].config(state='disable')  # disable zoom in button
-            self.bot[4].config(state='disable')  # disable zoom in button
-            self.bot[5].config(state='disable')  # disable run calib button
+            self.btn_zoom_more.config(state='disable')  # disable zoom in button
+            self.btn_zoom_less.config(state='disable')  # disable zoom out button
+            self.btn_locate.config(state='disable')  # disable locate button
+            self.btn_play.config(state='disable')  # disable run calib button

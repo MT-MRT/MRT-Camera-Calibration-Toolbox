@@ -68,6 +68,9 @@ class Mixin:
         # bar chart variables
         self.dr = [[], []]
 
+        # variable for selecting nearest image per click function
+        self.polygons = []
+
         # variable for importing files
         self.continue_importing = True
         self.ftypes = None
@@ -115,7 +118,17 @@ class Mixin:
         Function to initialize GUI related variables at the beginning
         '''
         # buttons
-        self.bot = []
+        self.btn_start = None
+        self.btn_add_file = None
+        self.btn_add_folder = None
+        self.btn_zoom_more = None
+        self.btn_zoom_less = None
+        self.btn_locate = None
+        self.btn_play = None
+        self.btn_delete = None
+        self.btn_settings = None
+        self.btn_export = None
+        self.btn_export2 = None
         # total images
         self.n_total = tk.IntVar()
         # pattern feature variables
@@ -203,12 +216,10 @@ class Mixin:
         '''
         if self._(u'Images') in self.pattern_load.get():
             for j in range(3):
-                print(self.label_msg[j].cget('text'))
                 if self.label_msg[j].cget('text'):
                     return
         else:
             for j in range(3, 5):
-                print(self.label_msg[j].cget('text'))
                 if self.label_msg[j].cget('text'):
                     return
             # if 3d points aren't initialized
@@ -272,22 +283,21 @@ class Mixin:
 
         self.popup.destroy()
 
-        self.bot[0].config(state='disable')  # disable add session button
-        self.bot[0].config(relief='raised')  # change raise add session button
-        self.bot[3].config(state='disable')  # disable zoom in button
-        self.bot[4].config(state='disable')  # disable zoom out button
-        self.bot[5].config(state='disable')  # disable run calibration button
-        self.bot[8].config(state='disable')  # disable export button
-        self.bot[9].config(state='disable')  # disable export button
-
-        self.bot[2].config(state='normal')  # enable adding images per folder
-        self.bot[6].config(state='normal')  # enable delete session button
-        self.bot[7].config(state='normal')  # settings button
+        self.btn_start.config(state='disable', relief='raised')  # disable add session button
+        self.btn_add_folder.config(state='normal')  # enable adding images per folder
+        self.btn_zoom_more.config(state='disable')  # disable zoom in button
+        self.btn_zoom_less.config(state='disable')  # disable zoom out button
+        self.btn_locate.config(state='disable')  # disable locate button
+        self.btn_play.config(state='disable')  # disable run calibration button
+        self.btn_delete.config(state='normal')  # enable delete session button
+        self.btn_settings.config(state='normal')  # enable settings button
+        self.btn_export.config(state='disable')  # disable export button
+        self.btn_export2.config(state='disable')  # disable export button
 
         if self.m_stereo:
             self.n_cameras = 2
             # disable adding images per file button
-            self.bot[1].config(state='disable')
+            self.btn_add_file.config(state='disable')
             # set GUI for two camera
             # frame for extrinsics
             self.frm[4].grid(row=1, column=3, sticky=tk.N + tk.S)
@@ -309,7 +319,7 @@ class Mixin:
             self.frm[6].grid_forget()
             self.frm[8].grid_forget()
             self.frm[10].grid_forget()
-            self.bot[1].config(state='normal')  # enable adding per file
+            self.btn_add_file.config(state='normal')  # enable adding per file
             # Disable tab for extrinsic Reprojection
             self.tabControl[0].tab(4, state='disable')
 
@@ -470,6 +480,7 @@ class Mixin:
         path_export = os.getcwd() + '/icons/export.png'
         path_settings = os.getcwd() + '/icons/settings.png'
         path_export2 = os.getcwd() + '/icons/exportall.png'
+        path_locate = os.getcwd() + '/icons/locate.png'
         # loading tk object for the icons
         self.icono_open = tk.PhotoImage(file=path_open)
         self.icono_zoommore = tk.PhotoImage(file=path_zoommore)
@@ -481,101 +492,68 @@ class Mixin:
         self.icono_export = tk.PhotoImage(file=path_export)
         self.icono_settings = tk.PhotoImage(file=path_settings)
         self.icono_export2 = tk.PhotoImage(file=path_export2)
+        self.icono_locate = tk.PhotoImage(file=path_locate)
 
         # toolbar configuration #
-        # icons assigment and trace of functions to the buttons
-        self.bot.append(tk.Button(self.frm[0],
-                                  image=self.icono_plus,
-                                  command=self.add_session_popup))
-        self.bot.append(tk.Button(self.frm[0],
-                                  state=tk.DISABLED,
-                                  image=self.icono_open,
-                                  command=lambda: self.add_file('p')))
-        self.bot.append(tk.Button(self.frm[0],
-                                  state=tk.DISABLED,
-                                  image=self.icono_folder,
-                                  command=lambda: self.add_file('f')))
-        self.bot.append(tk.Button(self.frm[0],
-                                  state=tk.DISABLED,
-                                  image=self.icono_zoommore,
-                                  command=lambda:
-                                      self.toggle_zoom_buttons(3, 4)))
-        self.bot.append(tk.Button(self.frm[0],
-                                  state=tk.DISABLED,
-                                  image=self.icono_zoomless,
-                                  command=lambda:
-                                      self.toggle_zoom_buttons(4, 3)))
-        self.bot.append(tk.Button(self.frm[0],
-                                  state=tk.DISABLED,
-                                  image=self.icono_play,
-                                  command=self.play_popup))
-        self.bot.append(tk.Button(self.frm[0],
-                                  state=tk.DISABLED,
-                                  image=self.icono_delete,
-                                  command=self.popupmsg_deleting))
-        self.bot.append(tk.Button(self.frm[0],
-                                  state=tk.DISABLED,
-                                  image=self.icono_settings,
-                                  command=self.popup_configuration))
-        self.bot.append(tk.Button(self.frm[0],
-                                  state=tk.DISABLED,
-                                  image=self.icono_export,
-                                  command=self.exportCalibrationParameters))
-        self.bot.append(tk.Button(self.frm[0],
-                                  state=tk.DISABLED,
-                                  image=self.icono_export2,
-                                  command=self.
-                                  exportCalibrationParametersIteration))
+        # icons assignment and trace of functions to the buttons
+        self.btn_start = tk.Button(self.frm[0], image=self.icono_plus, command=self.add_session_popup)
+        self.btn_add_file = tk.Button(self.frm[0], state=tk.DISABLED, image=self.icono_open,
+                                      command=lambda: self.add_file('p'))
+        self.btn_add_folder = tk.Button(self.frm[0], state=tk.DISABLED, image=self.icono_folder,
+                                        command=lambda: self.add_file('f'))
+        self.btn_zoom_more = tk.Button(self.frm[0], state=tk.DISABLED, image=self.icono_zoommore)
+        self.btn_zoom_less = tk.Button(self.frm[0], state=tk.DISABLED, image=self.icono_zoomless)
+        self.btn_zoom_more.config(command=lambda: self.toggle_zoom_buttons(self.btn_zoom_more, self.btn_zoom_less))
+        self.btn_zoom_less.config(command=lambda: self.toggle_zoom_buttons(self.btn_zoom_less, self.btn_zoom_more))
+        self.btn_locate = tk.Button(self.frm[0], state=tk.DISABLED, image=self.icono_locate, command=self.clickpoint_to_image)
+        self.btn_play = tk.Button(self.frm[0], state=tk.DISABLED, image=self.icono_play, command=self.play_popup)
+        self.btn_delete = tk.Button(self.frm[0], state=tk.DISABLED, image=self.icono_delete,
+                                    command=self.popupmsg_deleting)
+        self.btn_settings = tk.Button(self.frm[0], state=tk.DISABLED, image=self.icono_settings,
+                                      command=self.popup_configuration)
+        self.btn_export = tk.Button(self.frm[0], state=tk.DISABLED, image=self.icono_export,
+                                    command=self.exportCalibrationParameters)
+        self.btn_export2 = tk.Button(self.frm[0], state=tk.DISABLED, image=self.icono_export2,
+                                     command=self.exportCalibrationParametersIteration)
 
         # Binding the hint boxes to the buttons
-        self.bot[0].bind('<Enter>', lambda event,
-                         message=self._(u'Start a new session.'):
-                         self.entry_mouse_enter(event, message))
-        self.bot[1].bind('<Enter>', lambda event,
-                         message=self._(u'Adding single image files.'):
-                         self.entry_mouse_enter(event, message))
-        self.bot[2].bind('<Enter>', lambda event,
-                         message=self._(u'Adding image files of a folder.'):
-                         self.entry_mouse_enter(event, message))
-        self.bot[3].bind('<Enter>', lambda event,
-                         message=self._(u'Activate zoom-in function for '
-                                        u'images.'):
-                         self.entry_mouse_enter(event, message))
-        self.bot[4].bind('<Enter>', lambda event,
-                         message=self._(u'Activate zoom-out function for '
-                                        u'images.'):
-                         self.entry_mouse_enter(event, message))
-        self.bot[5].bind('<Enter>', lambda event,
-                         message=self._(u'Start a calibration run.'):
-                         self.entry_mouse_enter(event, message))
-        self.bot[6].bind('<Enter>', lambda event,
-                         message=self._(u'Delete the active session.'):
-                         self.entry_mouse_enter(event, message))
-        self.bot[7].bind('<Enter>', lambda event,
-                         message=self._(u'Set different calibration flags.'):
-                         self.entry_mouse_enter(event, message))
-        self.bot[8].bind('<Enter>', lambda event,
-                         message=self._(u'Export the mean parameters.'):
-                         self.entry_mouse_enter(event, message))
-        self.bot[9].bind('<Enter>', lambda event,
-                         message=self._(u'Export the parameters of every '
-                                        u'subsample.'):
-                         self.entry_mouse_enter(event, message))
-        self.bot[0].bind('<Leave>', self.entry_mouse_leave)
-        self.bot[1].bind('<Leave>', self.entry_mouse_leave)
-        self.bot[2].bind('<Leave>', self.entry_mouse_leave)
-        self.bot[3].bind('<Leave>', self.entry_mouse_leave)
-        self.bot[4].bind('<Leave>', self.entry_mouse_leave)
-        self.bot[5].bind('<Leave>', self.entry_mouse_leave)
-        self.bot[6].bind('<Leave>', self.entry_mouse_leave)
-        self.bot[7].bind('<Leave>', self.entry_mouse_leave)
-        self.bot[8].bind('<Leave>', self.entry_mouse_leave)
-        self.bot[9].bind('<Leave>', self.entry_mouse_leave)
+        self.btn_start.bind('<Enter>', lambda event, message=self._(u'Start a new session.'): self.entry_mouse_enter(event, message))
+        self.btn_add_file.bind('<Enter>', lambda event, message=self._(u'Adding single image files.'): self.entry_mouse_enter(event, message))
+        self.btn_add_folder.bind('<Enter>', lambda event, message=self._(u'Adding image files of a folder.'): self.entry_mouse_enter(event, message))
+        self.btn_zoom_more.bind('<Enter>', lambda event, message=self._(u'Activate zoom-in function for ' u'images.'): self.entry_mouse_enter(event, message))
+        self.btn_zoom_less.bind('<Enter>', lambda event, message=self._(u'Activate zoom-out function for ' u'images.'): self.entry_mouse_enter(event, message))
+        self.btn_locate.bind('<Enter>', lambda event, message=self._(u'Activate locating image by click'): self.entry_mouse_enter(event, message))
+        self.btn_play.bind('<Enter>', lambda event, message=self._(u'Start a calibration run.'): self.entry_mouse_enter(event, message))
+        self.btn_delete.bind('<Enter>', lambda event, message=self._(u'Delete the active session.'): self.entry_mouse_enter(event, message))
+        self.btn_settings.bind('<Enter>', lambda event, message=self._(u'Set different calibration flags.'): self.entry_mouse_enter(event, message))
+        self.btn_export.bind('<Enter>', lambda event, message=self._(u'Export the mean parameters.'): self.entry_mouse_enter(event, message))
+        self.btn_export2.bind('<Enter>', lambda event, message=self._(u'Export the parameters of every ' u'subsample.'): self.entry_mouse_enter(event, message))
+
+        self.btn_start.bind('<Leave>', self.entry_mouse_leave)
+        self.btn_add_file.bind('<Leave>', self.entry_mouse_leave)
+        self.btn_add_folder.bind('<Leave>', self.entry_mouse_leave)
+        self.btn_zoom_more.bind('<Leave>', self.entry_mouse_leave)
+        self.btn_zoom_less.bind('<Leave>', self.entry_mouse_leave)
+        self.btn_locate.bind('<Leave>', self.entry_mouse_leave)
+        self.btn_play.bind('<Leave>', self.entry_mouse_leave)
+        self.btn_delete.bind('<Leave>', self.entry_mouse_leave)
+        self.btn_settings.bind('<Leave>', self.entry_mouse_leave)
+        self.btn_export.bind('<Leave>', self.entry_mouse_leave)
+        self.btn_export2.bind('<Leave>', self.entry_mouse_leave)
         # TODO: Write text for each infobox!
 
         # buttons positioning
-        for i in range(len(self.bot)):
-            self.bot[i].grid(row=0, column=i, sticky=tk.W)
+        self.btn_start.grid(row=0, column=0, sticky=tk.W)
+        self.btn_add_file.grid(row=0, column=1, sticky=tk.W)
+        self.btn_add_folder.grid(row=0, column=2, sticky=tk.W)
+        self.btn_zoom_more.grid(row=0, column=3, sticky=tk.W)
+        self.btn_zoom_less.grid(row=0, column=4, sticky=tk.W)
+        self.btn_locate.grid(row=0, column=5, sticky=tk.W)
+        self.btn_play.grid(row=0, column=6, sticky=tk.W)
+        self.btn_delete.grid(row=0, column=7, sticky=tk.W)
+        self.btn_settings.grid(row=0, column=8, sticky=tk.W)
+        self.btn_export.grid(row=0, column=9, sticky=tk.W)
+        self.btn_export2.grid(row=0, column=10, sticky=tk.W)
 
         # scrollbar and listbox initialization #
         tk.Label(self.frm[1], text=self._(u'Data Browser')).pack()
@@ -647,7 +625,7 @@ class Mixin:
                                                     height=DEFAULT_HEIGHT))
                 self.list_panel[j][i].grid(row=0, column=0,
                                            sticky=tk.E + tk.W + tk.N)
-                self.list_panel[j][i].bind('<Button-1>', self.click_to_zoom)
+                self.list_panel[j][i].bind('<Button-1>', lambda e,a=j: self.click_to_zoom(e, a))
                 self.list_panel[j][i].bind('<Button-4>',
                                            lambda e:
                                                self.scroll_to_zoom('m', e))
@@ -836,7 +814,7 @@ class Mixin:
         # Binding keyboard events with toolbar functions
         self.master.bind('<Delete>', lambda e: self.del_single())
         self.master.bind('<Alt-F4>', self.master.quit)
-        self.master.bind('<F5>', lambda event: self.bot[5].invoke())
+        self.master.bind('<F5>', lambda event: self.btn_play.invoke())
 
     def entry_mouse_enter(self, event, message='I got no message!'):
         '''

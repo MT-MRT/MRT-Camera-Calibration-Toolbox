@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 from PIL import Image, ImageTk
 from matplotlib import cm
+import matplotlib.pyplot as plt
 
 logging.basicConfig(level=logging.ERROR)
 
@@ -32,7 +33,7 @@ class Mixin:
             self.updatePicture(None)
             self.updateBarError(1)
 
-    def click_to_zoom(self, event):
+    def click_to_zoom(self, event, camera):
         '''
         Function for the click event with a zoom sunken button
         Detects the x,y click position and calculates the image resizing scale
@@ -42,18 +43,33 @@ class Mixin:
         self.y = event.y
         # check if the zoom in button is sunken and current zoom is less than
         # maximum
-        if self.bot[3].config('relief')[-1] == 'sunken' \
+        if self.btn_zoom_more.config('relief')[-1] == 'sunken' \
                 and self.zoomhandler < 10:
             self.scale /= self.delta
             self.imscale /= self.delta
             self.zoomhandler += 1
         # check if the zoom out button is sunken and current zoom is less than
         # minimum
-        elif self.bot[4].config('relief')[-1] == 'sunken' \
+        elif self.btn_zoom_less.config('relief')[-1] == 'sunken' \
                 and self.zoomhandler > 0:
             self.scale *= self.delta
             self.imscale *= self.delta
             self.zoomhandler -= 1
+        # check if there are loaded images and if the locate button in enable
+        elif self.paths[camera] and self.btn_locate.config('relief')[-1] == 'sunken':
+            selection = 1
+            for poly in self.polygons:
+                contains, attrd = poly.contains(event)
+                if contains:
+                    self.listbox.selection_clear(0, tk.END)
+                    self.index.set(selection - 1)
+                    # This make sense for update by click in bar chart
+                    self.listbox.select_set(selection - 1)
+                    self.listbox.yview(selection - 1)
+                    self.loadBarError([1])
+                    self.updateBarError(0)
+                    break
+                selection += 1
         self.updatePicture()
 
     def scroll_to_zoom(self, ztype, event):
@@ -74,11 +90,25 @@ class Mixin:
         '''
         Function to keep only one zoom button enable
         '''
-        if self.bot[button1].config('relief')[-1] == 'sunken':
-            self.bot[button1].config(relief='raised')
+        if button1.config('relief')[-1] == 'sunken':
+            button1.config(relief='raised')
         else:
-            self.bot[button1].config(relief='sunken')
-            self.bot[button2].config(relief='raised')
+            button1.config(relief='sunken')
+            button2.config(relief='raised')
+        # disable locate button
+        self.btn_locate.config(relief='raised')
+
+    def clickpoint_to_image(self):
+        '''
+        Function to select image with clicked point in canvas
+        '''
+        if self.btn_locate.config('relief')[-1] == 'sunken':
+            self.btn_locate.config(relief='raised')
+        else:
+            self.btn_locate.config(relief='sunken')
+        # disable zoom buttons
+        self.btn_zoom_more.config(relief='raised')
+        self.btn_zoom_less.config(relief='raised')
 
     def updatePicture(self, *args):
         '''
@@ -182,11 +212,27 @@ class Mixin:
         Function to update heat map when a new image is added or an image is
         deleted
         '''
+        self.polygons = []
+        DEFAULT_WIDTH = 320
+        DEFAULT_HEIGHT = 240
         self.zoomhandler = 0
         if self.n_total.get() > 0:
             for j in range(self.n_cameras):
                 # recalculate heat_map
                 self.heat_map[j] = self.density_cloud_heat_map(j)
+        for j in range(self.n_cameras):
+            width = self.size[j][1]
+            height = self.size[j][0]
+            for i in range(len(self.paths[0])):
+                geometry = []
+                points = [0,self.p_height-1,self.p_width*self.p_height-1,self.p_width*self.p_height-self.p_height]
+                for p in points:
+                    c = self.detected_features[j][i][p]
+                    x_p = c[0][0]*DEFAULT_WIDTH/width
+                    y_p = c[0][1]*DEFAULT_HEIGHT/height
+                    geometry.append([x_p, y_p])
+                poly = plt.Polygon(geometry)
+                self.polygons.append(poly)
         # update data browser
         self.loadImagesBrowser()
 

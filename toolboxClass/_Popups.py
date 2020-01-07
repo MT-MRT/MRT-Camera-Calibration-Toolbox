@@ -420,8 +420,8 @@ class Mixin:
         '''
         Function to adjust the GUI according to the selected calibration method
         '''
-        self.bot[8].config(state='disable')  # enable export parameters button
-        self.bot[9].config(state='disable')  # enable export parameters button
+        self.btn_export.config(state='disable')  # disable export parameters button
+        self.btn_export2.config(state='disable')  # disable export parameters button
         # reset all values
         self.reset_camera_parameters()
         self.reset_error()

@@ -90,10 +90,10 @@ class Mixin:
                     self.index.set(0)
                 else:
                     # disable zoom in button
-                    self.bot[3].config(state='disable')
-                    self.bot[4].config(state='disable')
+                    self.btn_zoom_more.config(state='disable')
+                    self.btn_zoom_less.config(state='disable')
                     # disable run calibration button
-                    self.bot[5].config(state='disable')
+                    self.btn_play.config(state='disable')
                     self.index.set(-1)
             # uses self.index which is updated in updatepicture
             self.loadBarError([0, 1])
@@ -103,10 +103,18 @@ class Mixin:
         Function to delete all the session
         '''
         # enable the add session button
-        self.bot[0].config(state='active')
+        self.btn_start.config(state='active')
         # disable the other toolbar buttons
-        for i in range(1, len(self.bot)):
-            self.bot[i].config(state='disable')
+        self.btn_add_file.config(state='disable')
+        self.btn_add_folder.config(state='disable')
+        self.btn_zoom_more.config(state='disable')
+        self.btn_zoom_less.config(state='disable')
+        self.btn_locate.config(state='disable')
+        self.btn_play.config(state='disable')
+        self.btn_delete.config(state='disable')
+        self.btn_settings.config(state='disable')
+        self.btn_export.config(state='disable')
+        self.btn_export2.config(state='disable')
         self.popup.destroy()
         # reset variables
         self.reset_camera_parameters()

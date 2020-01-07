@@ -12,8 +12,8 @@ class Mixin:
     def play(self, calib_button):
 
         calib_button.config(state='disabled')
-        self.bot[5].config(relief='sunken')
-        self.bot[5].config(state='active')
+        self.btn_play.config(relief='sunken')
+        self.btn_play.config(state='active')
 
         self.style_pg.configure('text.Horizontal.TProgressbar', text='0 %')
         self.progbar['value'] = 0
@@ -82,8 +82,8 @@ class Mixin:
                     text=self._('K parameter can not be empty'))
                 b_continue = False
             if not b_continue:
-                self.bot[5].config(relief='raised')
-                self.bot[5].config(state='normal')
+                self.btn_play.config(relief='raised')
+                self.btn_play.config(state='normal')
                 calib_button.config(state='active')
                 return
 
@@ -255,8 +255,8 @@ class Mixin:
                                                 - elapsed_time_3))
                 self.label_status[5][2].config(text='%0.5f' % elapsed_time_4)
                 # enable export parameters buttons
-                self.bot[8].config(state='normal')
-                self.bot[9].config(state='normal')
+                self.btn_export.config(state='normal')
+                self.btn_export2.config(state='normal')
                 for e in self.rms:
                     if e == float('inf') or e == float('-inf'):
                         logging.warning(self._('Error is too high'))
@@ -266,8 +266,8 @@ class Mixin:
                         self.reset_camera_parameters()
                         self.reset_error()
                         # disable export parameters button
-                        self.bot[8].config(state='disable')
-                        self.bot[9].config(state='disable')
+                        self.btn_export.config(state='disable')
+                        self.btn_export2.config(state='disable')
                         break
 
         elif self._(u'Load') in self.how_to_calibrate.get():
@@ -338,8 +338,8 @@ class Mixin:
                         # Calculate RMS error
                         self.calculate_error()
                         # enable export parameters button
-                        self.bot[8].config(state='normal')
-                        self.bot[9].config(state='normal')
+                        self.btn_export.config(state='normal')
+                        self.btn_export2.config(state='normal')
 
                 for e in self.rms:
                     if e == float('inf') or e == float('-inf'):
@@ -348,8 +348,8 @@ class Mixin:
                         self.reset_error()
                         self.label_status_l[4][1].config(text=u'\u2718')
                         # disable export parameters button
-                        self.bot[8].config(state='disable')
-                        self.bot[9].config(state='disable')
+                        self.btn_export.config(state='disable')
+                        self.btn_export2.config(state='disable')
                         break
                     else:
                         self.label_status_l[4][1].config(text=u'\u2714')
@@ -359,8 +359,8 @@ class Mixin:
         self.updateCameraParametersGUI()
         self.loadBarError([0, 1])
         calib_button.config(state='normal')
-        self.bot[5].config(relief='raised')
-        self.bot[5].config(state='normal')
+        self.btn_play.config(relief='raised')
+        self.btn_play.config(state='normal')
 
     def calculate_projection(self, r=None, t=None):
         if t is None:

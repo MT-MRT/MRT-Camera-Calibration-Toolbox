@@ -65,8 +65,8 @@ msgstr 'Transforming coordinates for camera %s'
 msgid 'this is stereo rms error: %s'
 msgstr 'this is stereo rms error: %s'
 
-msgid 'Estimated time left: %0.5f seconds'
-msgstr 'Estimated time left: %0.5f seconds'
+msgid 'Estimated time left: %d seconds'
+msgstr 'Estimated time left: %d seconds'
 
 msgid 'Correcting cx an cy for camera {0}'
 msgstr 'Correcting cx an cy for camera {0}'

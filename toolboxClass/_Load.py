@@ -321,7 +321,7 @@ class Mixin:
                 self.progbar['value'] = c_porcent * 10.0
                 # update label
                 self.style_pg.configure('text.Horizontal.TProgressbar',
-                                        text='{:g} %'.format(c_porcent * 100.0))
+                                        text='{:g} %'.format(int(c_porcent * 100)))
                 # if one or more images failed the importing, add info
                 message += self._('Imported: {0}\n').format(i + 1 - len(rejected_images) - len(repeated_images) - len(no_valid_sized_images))
                 message += self._('Rejected: {0}\n').format(len(rejected_images))

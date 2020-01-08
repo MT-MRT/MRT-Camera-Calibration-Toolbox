@@ -198,12 +198,12 @@ class Mixin:
                     self.progbar['value'] = c_porcent * 10.0
                     elapsed_time_1 = time_play.gettime()
                     self.lb_time.config(
-                        text=self._('Estimated time left: %0.5f seconds')
-                        % max(elapsed_time_1 * (1 / c_porcent - 1), 0))
+                        text=self._('Estimated time left: %d seconds')
+                        % max(int(elapsed_time_1 * (1 / c_porcent - 1)), 0))
                     # update label
                     self.style_pg.configure('text.Horizontal.TProgressbar',
                                             text='{:g} %'
-                                            .format(c_porcent * 100.0))
+                                            .format(int(c_porcent * 100)))
                     self.popup.update()  # updating while running other process
 
             self.label_status[1][1].config(text=u'\u2714')
@@ -427,7 +427,7 @@ class Mixin:
                 # update label
                 self.style_pg.configure('text.Horizontal.TProgressbar',
                                         text='{:g} %'
-                                        .format(c_porcent * 100.0))
+                                        .format(int(c_porcent * 100)))
                 self.popup.update()  # for updating while running other process
                 # update rms when the error for all the images is calculated
                 if len(self.r_error[j]) == len(ip):

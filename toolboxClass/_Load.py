@@ -149,39 +149,41 @@ class Mixin:
                 if file_name_2D_points not in self.paths[j]:
                     if '.txt' not in self.valid_files:
                         # read image file
-                        im = np.float32(cv2.imread(file_name_2D_points, 0))
+                        im = cv2.imread(file_name_2D_points, 0)
                         # check if image size is already initialized
                         if self.size[j] is None or len(self.paths[j]) == 0:
                             self.size[j] = im.shape
                             logging.debug('Initialized image size for camera %d...', j + 1)
                         # check if image size is valid
                         if im.shape == self.size[j]:
-                            # original: normalized read image
-                            #im = cv2.normalize(img, normalizedImg, 0, 255, cv.NORM_MINMAX)
-                            im = (255.0 * (im - im.min()) / (im.max() - im.min())).astype(np.uint8)
                             ret = False
                             features = None
-
-                            pre_processing = 2
+                            pre_processing = 4
                             if self._(u'Symmetric Grid') in self.pattern_type.get():
-                                pre_processing = 6
+                                pre_processing = 8
                             for process in range(pre_processing):
                                 if process == 0:
-                                    logging.debug(self._('Normalized image (only)'))
+                                    logging.debug(self._('Original image (Gray scale)'))
                                     # creates copy of im, performance test found in
                                     # https://stackoverflow.com/questions/48106028/ \
                                     # python-copy-an-array-array
                                     im2 = im * 1
                                 elif process == 1:
-                                    logging.debug(self._('Normalized image + Inverting image'))
+                                    logging.debug(self._('Original image + Inverting image'))
                                     im2 = 255 - im2
                                 elif process == 2:
-                                    logging.debug(self._('Normalized image + Gaussian Blur'))
-                                    im2 = cv2.GaussianBlur(im*1, (11, 11), 0)
+                                    logging.debug(self._('Normalized image (only)'))
+                                    im2 = cv2.normalize(im, None, 0, 255, cv2.NORM_MINMAX)
                                 elif process == 3:
-                                    logging.debug(self._('Normalized image + Gaussian Blur + Inverting image'))
+                                    logging.debug(self._('Normalized image + Inverting image'))
                                     im2 = 255 - im2
                                 elif process == 4:
+                                    logging.debug(self._('Normalized image + Gaussian Blur'))
+                                    im2 = cv2.GaussianBlur(im*1, (11, 11), 0)
+                                elif process == 5:
+                                    logging.debug(self._('Normalized image + Gaussian Blur + Inverting image'))
+                                    im2 = 255 - im2
+                                elif process == 6:
                                     logging.debug(self._('Normalized image + Dilate'))
                                     L = 3
                                     # initialize grid for the circle matrix
@@ -196,7 +198,7 @@ class Mixin:
                                                     grid_circle[ii, jj] = 1
                                     kernel = grid_circle.astype(np.uint8)
                                     im2 = cv2.dilate(im * 1, kernel, iterations=1)
-                                elif process == 5:
+                                elif process == 7:
                                     logging.debug(self._('Normalized image + Dilate + Inverting image'))
                                     im2 = 255 - im2
 

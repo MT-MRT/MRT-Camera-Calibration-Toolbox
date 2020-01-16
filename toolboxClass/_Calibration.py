@@ -197,9 +197,12 @@ class Mixin:
                     c_porcent = counter / float(len(self.samples))
                     self.progbar['value'] = c_porcent * 10.0
                     elapsed_time_1 = time_play.gettime()
-                    self.lb_time.config(
-                        text=self._('Estimated time left: %d seconds')
-                        % max(int(elapsed_time_1 * (1 / c_porcent - 1)), 0))
+                    t_left_minutes, t_left_seconds = divmod(elapsed_time_1 * (1 / c_porcent - 1), 60)
+                    if t_left_minutes != 0:
+                        self.lb_time.config(text=self._('Estimated time left: %d minutes and %d seconds') % (
+                        max(t_left_minutes, 0), max(t_left_seconds, 0)))
+                    else:
+                        self.lb_time.config(text=self._('Estimated time left: %d seconds') % (max(t_left_seconds, 0)))
                     # update label
                     self.style_pg.configure('text.Horizontal.TProgressbar',
                                             text='{:g} %'

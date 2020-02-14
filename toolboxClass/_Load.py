@@ -319,11 +319,11 @@ class Mixin:
                     repeated_images.append(file_name_2D_points)
 
                 # percentage of completion of process
-                c_porcent = (i + 1) / float(len(file_names_2D_points))
-                self.progbar['value'] = c_porcent * 10.0
+                c_percent = (i + 1) / float(len(file_names_2D_points))
+                self.progbar['value'] = c_percent * 10.0
                 # update label
                 self.style_pg.configure('text.Horizontal.TProgressbar',
-                                        text='{:g} %'.format(int(c_porcent * 100)))
+                                        text='{:g} %'.format(int(c_percent * 100)))
                 # if one or more images failed the importing, add info
                 message += self._('Imported: {0}\n').format(i + 1 - len(rejected_images) - len(repeated_images) - len(no_valid_sized_images))
                 message += self._('Rejected: {0}\n').format(len(rejected_images))

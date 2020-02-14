@@ -13,32 +13,29 @@ def ncr(n, r):
     r = min(r, n - r)
     numer = reduce(op.mul, range(n, n - r, -1), 1)
     denom = reduce(op.mul, range(1, r + 1), 1)
-    return numer / denom
+    return int(numer / denom)
 
 
-def combination(n, r, k):
+def get_one_combination(n, r):
     '''
-    Function to calculate different combinations sets
+    Function to calculate one possible combination given n and r
     '''
-    index = 0
-    k = min(ncr(n, r), k)
+    for item in itertools.combinations(permutation(n), r):
+        sample = list(item)
+        sample.sort()
+        return sample
+
+
+def get_all_combinations(n, r):
+    '''
+    Function to get all possible combinations given n and r
+    '''
     samples = []
-    b_c = True
-    while b_c:
-        for item in itertools.combinations(permutation(n), r):
-            if index == k - 1:
-                b_c = False
-            s_item = list(item)
-            s_item.sort()
-            if s_item not in samples:
-                samples.append(s_item)
-                index += 1
-                break
-    # Shows how many times each elements is used
-    # for i in range(n):
-    #     counter = sum(x.count(i) for x in samples)
-    #     print("%d is %d times"%(i,counter))
-    return samples, k
+    for item in itertools.combinations(list(range(n)), r):
+        item_s = list(item)
+        item_s.sort()
+        samples.append(item_s)
+    return samples
 
 
 def validate(action, index, value_if_allowed, prior_value, text,

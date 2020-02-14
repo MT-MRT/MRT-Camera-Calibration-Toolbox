@@ -1,7 +1,7 @@
 import logging
 import cv2
 import numpy as np
-from toolboxClass.miscTools.misc_tools import combination
+from toolboxClass.miscTools.misc_tools import ncr, get_all_combinations, get_one_combination
 from toolboxClass.miscTools.quaternions import averageMatrix
 from toolboxClass.miscTools.time_tools import chronometer
 
@@ -88,7 +88,8 @@ class Mixin:
                 return
 
             # n, number of all images
-            self.samples, k = combination(len(self.objpoints), c_r, c_k)
+            max_k = ncr(self.n_total.get(), c_r)
+            k = min(c_k, max_k)
 
             if k != c_k:
                 self.c_k.set(int(k))
@@ -116,10 +117,28 @@ class Mixin:
             self.k5_array = [[], []]
             self.RMS_array = []
 
-            for s in self.samples:
+            if k == max_k:
+                self.samples = get_all_combinations(self.n_total.get(), c_r)
+            else:
+                self.samples = []
+
+            for counter in range(k):
+                # if k is the maximum possible, read list
+                if k != max_k:
+                    getting_new_sample = True
+                    while getting_new_sample:
+                        s = get_one_combination(self.n_total.get(), c_r)
+                        if s not in self.samples:
+                            self.samples.append(s)
+                            getting_new_sample = False
+
+                s = self.samples[counter]
+
+                # select the object points of the sample
                 op = list(self.objpoints[i] for i in s)
                 ip, c, d = [], [], []
                 for j in range(self.n_cameras):
+                    # select the object points of the sample for each camera
                     ip.append(list(self.imgpoints[j][i] for i in s))
                     c.append(np.eye(3, dtype=np.float32))
                     d.append(np.zeros((5, 1), dtype=np.float32))
@@ -162,52 +181,40 @@ class Mixin:
                                             c[0], d[0], flags=flags_parameters)
 
                 logging.info(self._('this is stereo rms error: %s'), rms)
-
-                if rms != 0:
-                    counter += 1
-                    # add to matrices
-                    C_array.append(c)
-                    D_array.append(d)
-                    # add to iteration array
-                    self.fx_array[0].append(c[0][0][0])
-                    self.fy_array[0].append(c[0][1][1])
-                    self.cx_array[0].append(c[0][0][2])
-                    self.cy_array[0].append(c[0][1][2])
-                    self.k1_array[0].append(d[0][0][0])
-                    self.k2_array[0].append(d[0][1][0])
-                    self.k3_array[0].append(d[0][2][0])
-                    self.k4_array[0].append(d[0][3][0])
-                    self.k5_array[0].append(d[0][4][0])
-                    self.RMS_array.append(rms)
-                    if self.m_stereo:
+                # add to matrices
+                C_array.append(c)
+                D_array.append(d)
+                self.RMS_array.append(rms)
+                # add to iteration array for each camera
+                for camera in range(int(self.m_stereo) + 1):
+                    self.fx_array[camera].append(c[camera][0][0])
+                    self.fy_array[camera].append(c[camera][1][1])
+                    self.cx_array[camera].append(c[camera][0][2])
+                    self.cy_array[camera].append(c[camera][1][2])
+                    self.k1_array[camera].append(d[camera][0][0])
+                    self.k2_array[camera].append(d[camera][1][0])
+                    self.k3_array[camera].append(d[camera][2][0])
+                    self.k4_array[camera].append(d[camera][3][0])
+                    self.k5_array[camera].append(d[camera][4][0])
+                    if camera == 1:
                         self.R_array.append(R)
                         self.T_array.append(T)
-                        # add to iteration array
-                        self.fx_array[1].append(c[1][0][0])
-                        self.fy_array[1].append(c[1][1][1])
-                        self.cx_array[1].append(c[1][0][2])
-                        self.cy_array[1].append(c[1][1][2])
-                        self.k1_array[1].append(d[1][0][0])
-                        self.k2_array[1].append(d[1][1][0])
-                        self.k3_array[1].append(d[1][2][0])
-                        self.k4_array[1].append(d[1][3][0])
-                        self.k5_array[1].append(d[1][4][0])
 
-                    # percentage of completion of process
-                    c_porcent = counter / float(len(self.samples))
-                    self.progbar['value'] = c_porcent * 10.0
-                    elapsed_time_1 = time_play.gettime()
-                    t_left_minutes, t_left_seconds = divmod(elapsed_time_1 * (1 / c_porcent - 1), 60)
-                    if t_left_minutes != 0:
-                        self.lb_time.config(text=self._('Estimated time left: %d minutes and %d seconds') % (
+                # percentage of completion of process
+                c_percent = (counter+1) / k
+                self.progbar['value'] = c_percent * 10.0
+                elapsed_time_1 = time_play.gettime()
+                t_left_minutes, t_left_seconds = divmod(elapsed_time_1 * (1 / c_percent - 1), 60)
+                if t_left_minutes != 0:
+                    self.lb_time.config(text=self._('Estimated time left: %d minutes and %d seconds') % (
                         max(t_left_minutes, 0), max(t_left_seconds, 0)))
-                    else:
-                        self.lb_time.config(text=self._('Estimated time left: %d seconds') % (max(t_left_seconds, 0)))
-                    # update label
-                    self.style_pg.configure('text.Horizontal.TProgressbar',
-                                            text='{:g} %'
-                                            .format(int(c_porcent * 100)))
-                    self.popup.update()  # updating while running other process
+                else:
+                    self.lb_time.config(text=self._('Estimated time left: %d seconds') % (max(t_left_seconds, 0)))
+                # update label
+                self.style_pg.configure('text.Horizontal.TProgressbar',
+                                        text='{:g} %'
+                                        .format(int(c_percent * 100)))
+                self.popup.update()  # updating while running other process
 
             self.label_status[1][1].config(text=u'\u2714')
             self.label_status[1][2].config(text='%0.5f' % elapsed_time_1)
@@ -385,8 +392,8 @@ class Mixin:
                                                       c[j],
                                                       d[j])
                 else:
-                    r1 = r[j][i]
-                    t1 = t[j][i]
+                    r1 = r[i][:]
+                    t1 = t[i][:]
 
                 imgpoints2, _ = cv2.projectPoints(op[i], r1, t1, c[j], d[j])
                 self.projected[j].append(imgpoints2)
@@ -424,13 +431,13 @@ class Mixin:
                 self.r_error_p[j].append(np.linalg.norm(ip[i] - imgpoints2,
                                                         axis=2))
                 # Calculated value to update progressbar
-                c_porcent = (j * len(ip) + i + 1) \
+                c_percent = (j * len(ip) + i + 1) \
                     / float(self.n_cameras * len(ip))
-                self.progbar['value'] = c_porcent * 10.0
+                self.progbar['value'] = c_percent * 10.0
                 # update label
                 self.style_pg.configure('text.Horizontal.TProgressbar',
                                         text='{:g} %'
-                                        .format(int(c_porcent * 100)))
+                                        .format(int(c_percent * 100)))
                 self.popup.update()  # for updating while running other process
                 # update rms when the error for all the images is calculated
                 if len(self.r_error[j]) == len(ip):

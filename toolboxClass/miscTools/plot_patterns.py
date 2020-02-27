@@ -21,7 +21,7 @@ def plot_chessboard(c_pattern, p_width, p_height, w, h):
                                    (i + w_step + w_step / 5.0,
                                     h_down + h_step + h_step / 5.0)], fill=color_pattern_mix,
                                   tag='grid_oval')
-        elif w_down < i < w_limit - w_step:
+        elif w_down < i < w_limit - 1 - w_step:
             c_pattern.create_oval([(i + w_step - w_step / 5.0,
                                     h_down + h_step - h_step / 5.0),
                                    (i + w_step + w_step / 5.0,
@@ -31,7 +31,7 @@ def plot_chessboard(c_pattern, p_width, p_height, w, h):
     # Creates all horizontal lines at intervals of 100
     for i in range(h_down, h_limit + 1, h_step):
         c_pattern.create_line([(w_down, i), (w_limit, i)], tag='grid_line')
-        if h_down < i < h_limit - h_step:
+        if h_down < i < h_limit - 1 - h_step:
             c_pattern.create_oval([(w_down + w_step - w_step / 5.0,
                                     i + h_step - h_step / 5.0),
                                    (w_down + w_step + w_step / 5.0,

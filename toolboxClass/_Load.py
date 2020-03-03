@@ -378,10 +378,12 @@ class Mixin:
         if self.n_total.get() > 0:
             self.btn_zoom_more.config(state='normal')  # enable zoom in button
             self.btn_zoom_less.config(state='normal')  # enable zoom out button
+            self.btn_move_feature.config(state='normal')  # enable move feature button
             self.btn_locate.config(state='normal')  # enable locate button
             self.btn_play.config(state='normal')  # enable run calib button
         else:
             self.btn_zoom_more.config(state='disable')  # disable zoom in button
             self.btn_zoom_less.config(state='disable')  # disable zoom out button
+            self.btn_move_feature.config(state='disable')  # disable move feature button
             self.btn_locate.config(state='disable')  # disable locate button
             self.btn_play.config(state='disable')  # disable run calib button

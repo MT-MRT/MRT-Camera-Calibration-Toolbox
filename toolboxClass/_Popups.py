@@ -817,3 +817,21 @@ class Mixin:
                                                    sticky=tk.W + tk.E)
 
         self.center()
+
+    def popupmsg_changes(self):
+        '''
+        Function to create popup for changes confirmation
+        '''
+        self.popup = tk.Toplevel(self.master)
+        self.popup.withdraw()
+        self.popup.wm_title(self._(u'Confirm changes'))
+        tk.Label(self.popup, image='::tk::icons::warning',
+                 text=self._(u'Are you sure you want to change the feature position?'), compound=tk.LEFT).grid(row=0,
+                                                                                                              column=0,
+                                                                                                              columnspan=2,
+                                                                                                              sticky=tk.W + tk.E)
+        tk.Button(self.popup, text=self._(u'Yes'), command=self.change_position_feature).grid(row=1, column=0,
+                                                                                              sticky=tk.W + tk.E)
+        tk.Button(self.popup, text=self._(u'No'), command=self.popup.destroy).grid(row=1, column=1,
+                                                                                       sticky=tk.W + tk.E)
+        self.center()

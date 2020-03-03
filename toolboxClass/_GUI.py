@@ -53,7 +53,7 @@ class Mixin:
         self.heat_map = [None, None]
         self.img = [[[], [], [], [], [], []], [[], [], [], [], [], []]]
         self.index.set(-1)
-        self.index_corner = 0
+        self.index_corner.set(0)
         self.paths = [[], []]
         self.img_original = [[], []]
         self.detected_features = [[], []]
@@ -90,6 +90,8 @@ class Mixin:
         self.T_array = []
         self.RMS_array = []
         self.samples = None
+        # coordinates variable for moving features
+        self.new_coord_feature = [[], []]
 
     def center(self):
         '''
@@ -129,6 +131,7 @@ class Mixin:
         self.btn_settings = None
         self.btn_export = None
         self.btn_export2 = None
+        self.btn_move_feature = None
         # total images
         self.n_total = tk.IntVar()
         # pattern feature variables
@@ -143,6 +146,7 @@ class Mixin:
         self.image_height = tk.IntVar()
         # trace for update picture
         self.index = tk.IntVar()
+        self.index_corner = tk.IntVar()
         # method for calibration variable
         self.how_to_calibrate = tk.StringVar()
         self.how_to_calibrate.set(self._(u'Clustering calculation'))
@@ -310,7 +314,7 @@ class Mixin:
             # frame for second grafic second camera
             self.frm[10].grid(row=1, column=1)
             # Enable tab for extrinsic Reprojection
-            self.tabControl[0].tab(4, state='normal')
+            self.tabControl[0].tab(len(self.list_panel[0])-1, state='normal')
         else:
             self.n_cameras = 1
             # set GUI for one camera
@@ -321,7 +325,7 @@ class Mixin:
             self.frm[10].grid_forget()
             self.btn_add_file.config(state='normal')  # enable adding per file
             # Disable tab for extrinsic Reprojection
-            self.tabControl[0].tab(4, state='disable')
+            self.tabControl[0].tab(len(self.list_panel[0])-1, state='disable')
 
     def traces_GUI(self):
         '''
@@ -343,9 +347,11 @@ class Mixin:
         self.feature_distance.trace_id \
             = self.feature_distance.trace('w', self.check_errors_and_plot)
         # link changes in selected pose to update GUI
-        self.index.trace('w', self.updatePicture)
+        self.index.trace('w', self.update_index_corner)
         # camera parameters
         self.fx[0].trace('w', self.updatePicture)
+        # link changes when selecting index
+        self.select_feature.bind('<<ComboboxSelected>>', self.update_index_corner)
 
     def initUI(self, *args, **kwargs):
         '''
@@ -481,6 +487,7 @@ class Mixin:
         path_settings = os.getcwd() + '/icons/settings.png'
         path_export2 = os.getcwd() + '/icons/exportall.png'
         path_locate = os.getcwd() + '/icons/locate.png'
+        path_move_feature = os.getcwd() + '/icons/movefeature.png'
         # loading tk object for the icons
         self.icono_open = tk.PhotoImage(file=path_open)
         self.icono_zoommore = tk.PhotoImage(file=path_zoommore)
@@ -493,6 +500,7 @@ class Mixin:
         self.icono_settings = tk.PhotoImage(file=path_settings)
         self.icono_export2 = tk.PhotoImage(file=path_export2)
         self.icono_locate = tk.PhotoImage(file=path_locate)
+        self.icono_move_feature = tk.PhotoImage(file=path_move_feature)
 
         # toolbar configuration #
         # icons assignment and trace of functions to the buttons
@@ -505,6 +513,11 @@ class Mixin:
         self.btn_zoom_less = tk.Button(self.frm[0], state=tk.DISABLED, image=self.icono_zoomless)
         self.btn_zoom_more.config(command=lambda: self.toggle_zoom_buttons(self.btn_zoom_more, self.btn_zoom_less))
         self.btn_zoom_less.config(command=lambda: self.toggle_zoom_buttons(self.btn_zoom_less, self.btn_zoom_more))
+        self.btn_move_feature = tk.Button(self.frm[0], state=tk.DISABLED, image=self.icono_move_feature,
+                                          command=self.move_feature)
+        self.select_feature = ttk.Combobox(self.frm[0], state='readonly', textvariable=self.index_corner,
+                                           values=[-1, -2, -3, -4], width=3)
+        self.btn_change_feature = tk.Button(self.frm[0], text='Change', command=self.popupmsg_changes)
         self.btn_locate = tk.Button(self.frm[0], state=tk.DISABLED, image=self.icono_locate, command=self.clickpoint_to_image)
         self.btn_play = tk.Button(self.frm[0], state=tk.DISABLED, image=self.icono_play, command=self.play_popup)
         self.btn_delete = tk.Button(self.frm[0], state=tk.DISABLED, image=self.icono_delete,
@@ -548,12 +561,13 @@ class Mixin:
         self.btn_add_folder.grid(row=0, column=2, sticky=tk.W)
         self.btn_zoom_more.grid(row=0, column=3, sticky=tk.W)
         self.btn_zoom_less.grid(row=0, column=4, sticky=tk.W)
-        self.btn_locate.grid(row=0, column=5, sticky=tk.W)
-        self.btn_play.grid(row=0, column=6, sticky=tk.W)
-        self.btn_delete.grid(row=0, column=7, sticky=tk.W)
-        self.btn_settings.grid(row=0, column=8, sticky=tk.W)
-        self.btn_export.grid(row=0, column=9, sticky=tk.W)
-        self.btn_export2.grid(row=0, column=10, sticky=tk.W)
+        self.btn_move_feature.grid(row=0, column=5, sticky=tk.W)
+        self.btn_locate.grid(row=0, column=8, sticky=tk.W)
+        self.btn_play.grid(row=0, column=9, sticky=tk.W)
+        self.btn_delete.grid(row=0, column=10, sticky=tk.W)
+        self.btn_settings.grid(row=0, column=11, sticky=tk.W)
+        self.btn_export.grid(row=0, column=12, sticky=tk.W)
+        self.btn_export2.grid(row=0, column=13, sticky=tk.W)
 
         # scrollbar and listbox initialization #
         tk.Label(self.frm[1], text=self._(u'Data Browser')).pack()

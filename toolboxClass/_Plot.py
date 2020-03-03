@@ -29,7 +29,7 @@ class Mixin:
             self.updateBarError(0)
         # This corresponds to a click over the Pixel error chart
         else:
-            self.index_corner = selection - 1
+            self.index_corner.set(selection - 1)
             self.updatePicture(None)
             self.updateBarError(1)
 
@@ -70,6 +70,15 @@ class Mixin:
                     self.updateBarError(0)
                     break
                 selection += 1
+        elif self.paths[camera] and self.btn_move_feature.config('relief')[-1] == 'sunken' and self.tabControl[
+            camera].index(self.tabControl[camera].select()) == 1:
+            width = self.size[camera][1]
+            height = self.size[camera][0]
+            x_offset, y_offset = self.list_panel[camera][0].coords('all')
+            x_image = (self.x - x_offset) / self.imscale * width / DEFAULT_WIDTH
+            y_image = (self.y - y_offset) / self.imscale * width / DEFAULT_WIDTH
+            if 0 <= x_image <= width and 0 <= y_image <= height:
+                self.new_coord_feature[camera] = [[x_image, y_image]]
         self.updatePicture()
 
     def scroll_to_zoom(self, ztype, event):
@@ -97,6 +106,9 @@ class Mixin:
             button2.config(relief='raised')
         # disable locate button
         self.btn_locate.config(relief='raised')
+        self.btn_move_feature.config(relief='raised')
+        self.select_feature.grid_forget()
+        self.btn_change_feature.grid_forget()
 
     def clickpoint_to_image(self):
         '''
@@ -109,6 +121,44 @@ class Mixin:
         # disable zoom buttons
         self.btn_zoom_more.config(relief='raised')
         self.btn_zoom_less.config(relief='raised')
+        self.btn_move_feature.config(relief='raised')
+        self.select_feature.grid_forget()
+        self.btn_change_feature.grid_forget()
+
+    def change_position_feature(self):
+        '''
+        function to change feature position
+        '''
+        for camera in range(self.n_cameras):
+            if self.new_coord_feature[camera]:
+                self.detected_features[camera][self.index.get()][self.index_corner.get()] = self.new_coord_feature[
+                    camera]
+        self.popup.destroy()
+        self.updatePicture()
+
+    def move_feature(self):
+        '''
+        Function to select a coordinate point by clicking
+        '''
+        if self.btn_move_feature.config('relief')[-1] == 'sunken':
+            self.btn_move_feature.config(relief='raised')
+            self.select_feature.grid_forget()
+            self.btn_change_feature.grid_forget()
+        else:
+            self.btn_move_feature.config(relief='sunken')
+            self.new_coord_feature = [[], []]
+            self.select_feature['values'] = list(range(self.p_height*self.p_width))
+            self.select_feature.grid(row=0, column=6, sticky=tk.W)
+            self.btn_change_feature.grid(row=0, column=7, sticky=tk.W)
+        # disable zoom buttons
+        self.btn_zoom_more.config(relief='raised')
+        self.btn_zoom_less.config(relief='raised')
+        self.btn_locate.config(relief='raised')
+        self.updatePicture()
+
+    def update_index_corner(self, *args):
+        self.new_coord_feature = [[], []]
+        self.updatePicture()
 
     def updatePicture(self, *args):
         '''
@@ -126,8 +176,10 @@ class Mixin:
                 images[j].append(Image.fromarray(
                         self.img_original[j][selection]))
                 # get images with marked features of the selected image
-                images[j].append(Image.fromarray(
-                        self.image_features(j, selection)))
+                if self.paths[j] and self.btn_move_feature.config('relief')[-1] == 'sunken':
+                    images[j].append(Image.fromarray(self.show_moving_features(j, selection)))
+                else:
+                    images[j].append(Image.fromarray(self.image_features(j, selection)))
                 # get heat_map for all the images in camera
                 images[j].append(Image.fromarray(
                         self.heat_map[j]))
@@ -147,7 +199,7 @@ class Mixin:
                 new_size = int(self.imscale * width), int(self.imscale
                                                           * height)
                 for j in range(self.n_cameras):
-                    for i in range(5):
+                    for i in range(len(self.list_panel[j])):
                         self.list_panel[j][i].scale('all', self.x, self.y,
                                                     self.scale, self.scale)
                         self.img[j][i] = ImageTk.PhotoImage(
@@ -162,7 +214,7 @@ class Mixin:
                 new_size = int(self.imscale * width), int(self.imscale
                                                           * height)
                 for j in range(self.n_cameras):
-                    for i in range(5):
+                    for i in range(len(self.list_panel[j])):
                         self.list_panel[j][i].scale('all', 0, 0, 1, 1)
                         self.list_panel[j][i].coords(
                                 self.list_image_on_panel[j][i], 0, 0)
@@ -176,7 +228,7 @@ class Mixin:
         # for no valid selection, update with empty picture the panel of tabs
         else:
             for j in range(self.n_cameras):
-                for i in range(5):
+                for i in range(len(self.list_panel[j])):
                     self.list_panel[j][i].delete('all')
                     self.list_image_on_panel[j][i] = \
                         self.list_panel[j][i].create_image(0, 0,
@@ -311,6 +363,31 @@ class Mixin:
         im = np.uint8(cm.jet(grid) * 255)
         return im
 
+    def show_moving_features(self, camera, index):
+        '''
+        Function to represent new desired feature position after click
+        '''
+        # create RGB picture with the image size
+        im3 = np.uint8(np.zeros(self.size[camera] + (3,)))
+        im = self.img_original[camera][index]
+        im3[:, :, 0] = im
+        im3[:, :, 1] = im
+        im3[:, :, 2] = im
+
+        for index_f in range(len(self.detected_features[camera][index])):
+            a = self.detected_features[camera][index][index_f]
+            if index_f == self.index_corner.get():
+                color = (154, 12, 70)
+                if self.new_coord_feature[camera]:
+                    if abs(a[0][0] - self.new_coord_feature[camera][0][0]) < 10**-3 and abs(a[0][1] - self.new_coord_feature[camera][0][1]) < 10**-3:
+                        color = (80, 149, 200)
+                    a = [[round(x) for x in self.new_coord_feature[camera][0]]]
+                cv2.circle(im3, (a[0][0], a[0][1]), 5, color)
+            else:
+                cv2.circle(im3, (a[0][0], a[0][1]), 3, (80, 149, 200))
+
+        return im3
+
     def project_detected_features(self, camera, index, forExtrinsics=False):
         '''
         Function to get the images comparing the original in green and its
@@ -335,7 +412,7 @@ class Mixin:
             for i in range(self.p_height):
                 for j in range(self.p_width):
                     a = projections[camera][index][j * self.p_height + i]
-                    if j * self.p_height + i == self.index_corner:
+                    if j * self.p_height + i == self.index_corner.get():
                         cv2.circle(im3, (a[0][0], a[0][1]), 5, (154, 12, 70))
                     if i < self.p_height - 1:
                         b = projections[camera][index][j * self.p_height
@@ -353,7 +430,7 @@ class Mixin:
             for j in range(self.p_width):
                 a = self.detected_features[camera][index][j * self.p_height
                                                           + i]
-                if j * self.p_height + i == self.index_corner:
+                if j * self.p_height + i == self.index_corner.get():
                     cv2.circle(im3, (a[0][0], a[0][1]), 5, (80, 149, 200))
                 if i < self.p_height - 1:
                     b = self.detected_features[camera][index][j * self.p_height
@@ -378,7 +455,7 @@ class Mixin:
         if k == 0:
             index = self.index.get()
         else:
-            index = self.index_corner
+            index = self.index_corner.get()
         for j in range(self.n_cameras):
             # TODO maybe save old index?
             if self.r_error[j]:
@@ -415,7 +492,7 @@ class Mixin:
                     if self.r_error_p[j]:
                         # converted to size-1 arrays
                         data = self.r_error_p[j][self.index.get()].T[0]
-                        index = self.index_corner
+                        index = self.index_corner.get()
 
                 if data is not None:
                     # defining bars of the chart #

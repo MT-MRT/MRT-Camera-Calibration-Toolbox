@@ -92,6 +92,8 @@ class Mixin:
                     # disable zoom in button
                     self.btn_zoom_more.config(state='disable')
                     self.btn_zoom_less.config(state='disable')
+                    self.btn_move_feature.config(state='disable')
+                    self.btn_locate.config(state='disable')
                     # disable run calibration button
                     self.btn_play.config(state='disable')
                     self.index.set(-1)
@@ -109,6 +111,7 @@ class Mixin:
         self.btn_add_folder.config(state='disable')
         self.btn_zoom_more.config(state='disable')
         self.btn_zoom_less.config(state='disable')
+        self.btn_move_feature.config(state='disable')
         self.btn_locate.config(state='disable')
         self.btn_play.config(state='disable')
         self.btn_delete.config(state='disable')

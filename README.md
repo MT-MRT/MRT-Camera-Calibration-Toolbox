@@ -20,12 +20,12 @@ The application provides intrinsics, extrinsics and lens distortion parameters f
 
 To use the toolbox, the modules listed below have to be installed on your computer. 
 
--   Python3 (Tested for Python 3.4 and Python 3.6)
--   OpenCV 4.1
+-   Python3 (Tested for Python 3.4, Python 3.6 and Python 3.7)
+-   OpenCV 4.1.0
 -   tkinter 8.6
--   PIL 5.4.1
--   numpy 1.16.4
--   matplotlib 1.3.1
+-   PIL 6.1.0
+-   numpy 1.17.0
+-   matplotlib 3.1.1
 
 ## Installation
 

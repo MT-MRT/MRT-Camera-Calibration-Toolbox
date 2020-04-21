@@ -182,7 +182,7 @@ class Mixin:
             if self.load_files[0]:
                 set_3D_points = np.fromfile(self.load_files[0][0],
                                             dtype=np.float32, sep=',')
-                n_points = len(set_3D_points) / 3
+                n_points = int(len(set_3D_points) / 3)
                 self.object_pattern = set_3D_points.reshape((n_points, 1, 3))
 
     def add_session_popup(self):

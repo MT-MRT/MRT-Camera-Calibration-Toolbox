@@ -12,7 +12,7 @@ class Mixin:
         '''
         Function to export object points and image points
         '''
-        if self.object_pattern != None:
+        if self.object_pattern is not None:
             t_choose = self._('Please select a folder for object points')
             path_folder = filedialog.askdirectory(parent=self.master, title=t_choose)
             if path_folder != '':

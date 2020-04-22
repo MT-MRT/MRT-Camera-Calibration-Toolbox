@@ -304,7 +304,7 @@ class Mixin:
                     else:
                         a = np.fromfile(file_name_2D_points,
                                         dtype=np.float32, sep=',')
-                        a = a.reshape((len(a) / 2, 1, 2))
+                        a = a.reshape((int(len(a) / 2), 1, 2))
                         self.p_height = 1
                         self.p_width = len(a)
                         # add file path to path

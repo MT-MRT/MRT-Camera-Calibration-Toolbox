@@ -8,6 +8,24 @@ logging.basicConfig(level=logging.ERROR)
 
 
 class Mixin:
+    def export_features(self):
+        '''
+        Function to export object points and image points
+        '''
+        if self.object_pattern != None:
+            t_choose = self._('Please select a folder for object points')
+            path_folder = filedialog.askdirectory(parent=self.master, title=t_choose)
+            if path_folder != '':
+                np.savetxt(path_folder + '/op.txt', self.object_pattern.reshape(-1), newline=',')
+            if self.n_total.get() > 0:
+                for j in range(self.n_cameras):
+                    t_choose = self._('Please select a folder for image points of each pose for camera ')
+                    path_folder = filedialog.askdirectory(parent=self.master, title=t_choose + str(j + 1))
+                    if path_folder != '':
+                        for index in range(len(self.paths[j])):
+                            feature = self.detected_features[j][index]
+                            np.savetxt(path_folder + '/f_%d.txt'%index, feature.reshape(-1), newline=',')
+                                
     def exportCalibrationParameters(self):
         '''
         Function to export the calibration parameters

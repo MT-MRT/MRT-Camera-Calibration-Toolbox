@@ -302,6 +302,9 @@ class Mixin:
                             self.detected_features[j].append(None)
 
                     else:
+                        if self.size[j] is None or len(self.paths[j]) == 0:
+                            self.size[j] = (self.image_height.get(),self.image_width.get())
+                            logging.debug('Initialized image size for camera %d...', j + 1)
                         a = np.fromfile(file_name_2D_points,
                                         dtype=np.float32, sep=',')
                         a = a.reshape((int(len(a) / 2), 1, 2))
@@ -310,8 +313,7 @@ class Mixin:
                         # add file path to path
                         self.paths[j].append(file_name_2D_points)
                         # add original of image to img_original
-                        im = np.zeros((self.image_height.get(),
-                                       self.image_width.get()))
+                        im = np.zeros(self.size[j])
                         self.img_original[j].append(im)
                         # add features to detected_features
                         self.detected_features[j].append(a)

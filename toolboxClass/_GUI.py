@@ -829,6 +829,7 @@ class Mixin:
         self.master.bind('<Delete>', lambda e: self.del_single())
         self.master.bind('<Alt-F4>', self.master.quit)
         self.master.bind('<F5>', lambda event: self.btn_play.invoke())
+        self.master.bind('<Control-f>', lambda e: self.export_features()) # functionality not in toolbar
 
     def entry_mouse_enter(self, event, message='I got no message!'):
         '''

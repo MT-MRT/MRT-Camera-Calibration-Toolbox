@@ -61,7 +61,7 @@ Toolbar icons obtain from: [https://www.iconfinder.com](https://www.iconfinder.c
 So far no publication has been written on the current toolbox, we recommend the following paper for citation of the geometric calibration of cameras in several spectral ranges:
 ```BibTeX
 @INPROCEEDINGS{Rangel2014,
-  author = {Rangel González, Johannes Havid and Soldan, Samuel and Kroll, Andreas},
+  author = {Rangel, Johannes and Soldan, Samuel and Kroll, Andreas},
   title = {3D Thermal Imaging: Fusion of Thermography and Depth Cameras},
   booktitle = {12th International Conference for Quantitative InfraRed Thermography (QIRT 2014)},
   year = {2014},

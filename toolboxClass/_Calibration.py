@@ -99,7 +99,6 @@ class Mixin:
                 self.popup.update()  # for updating while running other process
 
             time_play = chronometer()
-            counter = 0
 
             C_array = []
             D_array = []
@@ -122,7 +121,10 @@ class Mixin:
             else:
                 self.samples = []
 
-            for counter in range(k):
+            skipped_samples = []
+            counter = 0
+            doCalibration = True
+            while doCalibration:  # for counter in range(k):
                 # if k is the maximum possible, read list
                 if k != max_k:
                     getting_new_sample = True
@@ -131,8 +133,8 @@ class Mixin:
                         if s not in self.samples:
                             self.samples.append(s)
                             getting_new_sample = False
-
-                s = self.samples[counter]
+                else:
+                    s = self.samples[counter]
 
                 # select the object points of the sample
                 op = list(self.objpoints[i] for i in s)
@@ -181,24 +183,30 @@ class Mixin:
                                             c[0], d[0], flags=flags_parameters)
 
                 logging.info(self._('this is stereo rms error: %s'), rms)
-                # add to matrices
-                C_array.append(c)
-                D_array.append(d)
-                self.RMS_array.append(rms)
-                # add to iteration array for each camera
-                for camera in range(int(self.m_stereo) + 1):
-                    self.fx_array[camera].append(c[camera][0][0])
-                    self.fy_array[camera].append(c[camera][1][1])
-                    self.cx_array[camera].append(c[camera][0][2])
-                    self.cy_array[camera].append(c[camera][1][2])
-                    self.k1_array[camera].append(d[camera][0][0])
-                    self.k2_array[camera].append(d[camera][1][0])
-                    self.k3_array[camera].append(d[camera][2][0])
-                    self.k4_array[camera].append(d[camera][3][0])
-                    self.k5_array[camera].append(d[camera][4][0])
-                    if camera == 1:
-                        self.R_array.append(R)
-                        self.T_array.append(T)
+                # skip calibrations with rms error greather than 0.7 pixels
+                if rms > 0.7:
+                    skipped_samples.append(s)
+                else:
+                    # include sample  results for calibrations
+                    counter += 1
+                    # add to matrices
+                    C_array.append(c)
+                    D_array.append(d)
+                    self.RMS_array.append(rms)
+                    # add to iteration array for each camera
+                    for camera in range(int(self.m_stereo) + 1):
+                        self.fx_array[camera].append(c[camera][0][0])
+                        self.fy_array[camera].append(c[camera][1][1])
+                        self.cx_array[camera].append(c[camera][0][2])
+                        self.cy_array[camera].append(c[camera][1][2])
+                        self.k1_array[camera].append(d[camera][0][0])
+                        self.k2_array[camera].append(d[camera][1][0])
+                        self.k3_array[camera].append(d[camera][2][0])
+                        self.k4_array[camera].append(d[camera][3][0])
+                        self.k5_array[camera].append(d[camera][4][0])
+                        if camera == 1:
+                            self.R_array.append(R)
+                            self.T_array.append(T)
 
                 # percentage of completion of process
                 c_percent = (counter+1) / k
@@ -214,12 +222,18 @@ class Mixin:
                 self.style_pg.configure('text.Horizontal.TProgressbar',
                                         text='{:g} %'
                                         .format(int(c_percent * 100)))
+                # checks if desired number of calibrations is reached
+                if counter == k:
+                    break
                 self.popup.update()  # updating while running other process
 
             self.label_status[1][1].config(text=u'\u2714')
             self.label_status[1][2].config(text='%0.5f' % elapsed_time_1)
             self.lb_time.config(text='')
 
+            logging.info(self._('skipped calibrations: %s'), len(skipped_samples))
+            logging.info(self._('total calibrations: %s'), len(self.samples))
+            #self.exportCalibrationParametersIteration()
             if len(C_array) > 0:
                 self.camera_matrix = np.mean(np.array(C_array), axis=0)
                 self.dist_coefs = np.mean(np.array(D_array), axis=0)
@@ -258,6 +272,11 @@ class Mixin:
                                                 - elapsed_time_2))
                 # Calculate RMS error
                 self.calculate_error()
+                for s in skipped_samples:
+                    # index = self.samples.index(s)
+                    # self.RMS_array.pop(index)
+                    self.samples.remove(s)
+
                 elapsed_time_4 = time_play.gettime()
                 self.label_status[4][1].config(text=u'\u2714')
                 self.label_status[4][2].config(text='%0.5f' %

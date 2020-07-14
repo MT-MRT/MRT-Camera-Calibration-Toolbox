@@ -2,7 +2,7 @@ import itertools
 import operator as op
 from functools import reduce
 from numpy.random import permutation
-
+import numpy as np
 
 def ncr(n, r):
     '''
@@ -66,3 +66,11 @@ def float2StringVar(string, value, decimals=5):
         string.set('-')
     else:
         string.set(str(round(value, decimals)))
+
+def get_indices_to_average(rms, percentile = 75):
+    '''
+    Function to obtain array indices within percentile
+    '''
+    rms_max = np.percentile(rms, percentile)
+    indices = [i for i,v in enumerate(rms) if v < rms_max]
+    return indices

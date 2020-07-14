@@ -1,7 +1,7 @@
 import logging
 import cv2
 import numpy as np
-from toolboxClass.miscTools.misc_tools import ncr, get_all_combinations, get_one_combination
+from toolboxClass.miscTools.misc_tools import ncr, get_all_combinations, get_one_combination, get_indices_to_average
 from toolboxClass.miscTools.quaternions import averageMatrix
 from toolboxClass.miscTools.time_tools import chronometer
 
@@ -121,7 +121,7 @@ class Mixin:
             else:
                 self.samples = []
 
-            skipped_samples = []
+            indices_to_average = None
             counter = 0
             doCalibration = True
             while doCalibration:  # for counter in range(k):
@@ -183,30 +183,16 @@ class Mixin:
                                             c[0], d[0], flags=flags_parameters)
 
                 logging.info(self._('this is stereo rms error: %s'), rms)
-                # skip calibrations with rms error greather than 0.7 pixels
-                if rms > 0.7:
-                    skipped_samples.append(s)
-                else:
-                    # include sample  results for calibrations
-                    counter += 1
-                    # add to matrices
-                    C_array.append(c)
-                    D_array.append(d)
-                    self.RMS_array.append(rms)
-                    # add to iteration array for each camera
-                    for camera in range(int(self.m_stereo) + 1):
-                        self.fx_array[camera].append(c[camera][0][0])
-                        self.fy_array[camera].append(c[camera][1][1])
-                        self.cx_array[camera].append(c[camera][0][2])
-                        self.cy_array[camera].append(c[camera][1][2])
-                        self.k1_array[camera].append(d[camera][0][0])
-                        self.k2_array[camera].append(d[camera][1][0])
-                        self.k3_array[camera].append(d[camera][2][0])
-                        self.k4_array[camera].append(d[camera][3][0])
-                        self.k5_array[camera].append(d[camera][4][0])
-                        if camera == 1:
-                            self.R_array.append(R)
-                            self.T_array.append(T)
+                # add to matrices
+                C_array.append(c)
+                D_array.append(d)
+                self.RMS_array.append(rms)
+                if self.m_stereo:
+                    self.R_array.append(R)
+                    self.T_array.append(T)
+                indices_to_average = get_indices_to_average(self.RMS_array)
+                # include sample  results for calibrations
+                counter = len(indices_to_average)
 
                 # percentage of completion of process
                 c_percent = (counter+1) / k
@@ -223,7 +209,7 @@ class Mixin:
                                         text='{:g} %'
                                         .format(int(c_percent * 100)))
                 # checks if desired number of calibrations is reached
-                if counter == k:
+                if counter >= k:
                     break
                 self.popup.update()  # updating while running other process
 
@@ -231,14 +217,38 @@ class Mixin:
             self.label_status[1][2].config(text='%0.5f' % elapsed_time_1)
             self.lb_time.config(text='')
 
-            logging.info(self._('skipped calibrations: %s'), len(skipped_samples))
+            logging.info(self._('selected calibrations: %s'), len(indices_to_average))
             logging.info(self._('total calibrations: %s'), len(self.samples))
             #self.exportCalibrationParametersIteration()
+            # get camera and distortion array according to indices to average
+            C_array = np.array(C_array)[indices_to_average]
+            D_array = np.array(D_array)[indices_to_average]
+            # extract array of parameters of camera an distortion array
+            for j in range(self.n_cameras):
+                self.fx_array[j] = C_array[:,j][:, 0][:, 0]
+                self.fy_array[j] = C_array[:,j][:, 1][:, 1]
+                self.cx_array[j] = C_array[:,j][:, 0][:, 2]
+                self.cy_array[j] = C_array[:,j][:, 1][:, 2]
+                self.k1_array[j] = D_array[:,j][:, 0][:, 0]
+                self.k2_array[j] = D_array[:,j][:, 1][:, 0]
+                self.k3_array[j] = D_array[:,j][:, 2][:, 0]
+                self.k4_array[j] = D_array[:,j][:, 3][:, 0]
+                self.k5_array[j] = D_array[:,j][:, 4][:, 0]
+            # get rotation and traslation array according to indices to average
+            if self.m_stereo:
+                self.R_array = np.array(self.R_array)[indices_to_average]
+                self.T_array = np.array(self.T_array)[indices_to_average]
+            # get rms array according to indices to average
+            self.RMS_array = np.array(self.RMS_array)[indices_to_average]
+            # get samples array according to indices to average
+            self.samples = np.array(self.samples)[indices_to_average]
+
+            # calculate parameters
             if len(C_array) > 0:
-                self.camera_matrix = np.mean(np.array(C_array), axis=0)
-                self.dist_coefs = np.mean(np.array(D_array), axis=0)
-                self.dev_camera_matrix = np.std(np.array(C_array), axis=0)
-                self.dev_dist_coefs = np.std(np.array(D_array), axis=0)
+                self.camera_matrix = np.mean(C_array, axis=0)
+                self.dist_coefs = np.mean(D_array, axis=0)
+                self.dev_camera_matrix = np.std(C_array, axis=0)
+                self.dev_dist_coefs = np.std(D_array, axis=0)
                 if self.m_stereo:
                     self.R_stereo = averageMatrix(self.R_array)
                     self.T_stereo = np.mean(np.array(self.T_array), axis=0)
@@ -272,10 +282,6 @@ class Mixin:
                                                 - elapsed_time_2))
                 # Calculate RMS error
                 self.calculate_error()
-                for s in skipped_samples:
-                    # index = self.samples.index(s)
-                    # self.RMS_array.pop(index)
-                    self.samples.remove(s)
 
                 elapsed_time_4 = time_play.gettime()
                 self.label_status[4][1].config(text=u'\u2714')

@@ -58,7 +58,7 @@ Toolbar icons obtain from: [https://www.iconfinder.com](https://www.iconfinder.c
 
 ## Citation
 
-So far no publication has been written on the current toolbox, we recommend the following paper for citation of the geometric calibration of cameras in several spectral ranges:
+Please cite the following paper when using our toolbox it in your research project:
 ```BibTeX
 @INPROCEEDINGS{Schramm2020,
   author  = {Schramm, Sebastian and Rangel, Johannes and Aguirre Salazar, Daniela and Schmoll, Robert and Kroll, Andreas},

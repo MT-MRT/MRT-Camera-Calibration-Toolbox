@@ -63,11 +63,13 @@ Please cite the following paper when using our toolbox it in your research proje
 @INPROCEEDINGS{Schramm2020,
   author  = {Schramm, Sebastian and Rangel, Johannes and Aguirre Salazar, Daniela and Schmoll, Robert and Kroll, Andreas},
   title   = {Multispectral Geometric Calibration of Cameras in Visual and Infrared Spectral Range},
-  doi     = {10.1109/JSEN.2020.3019959},
-  note    = {accepted, Early Access},
-  url     = {https://ieeexplore.ieee.org/document/9178752},
   journal = {IEEE Sensors},
-  year    = {2020},
+  year    = {2021},
+  volume  = {21},
+  number  = {2},
+  pages   = {2159-2168},
+  doi     = {10.1109/JSEN.2020.3019959},
+  url     = {https://ieeexplore.ieee.org/document/9178752},
 }
 ```
 

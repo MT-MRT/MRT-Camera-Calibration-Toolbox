@@ -10,7 +10,7 @@ class MyHintLabel(tk.Toplevel):
 
     def __init__(self, message,
                  auto_clear=False, wait_popup=True):
-        """init hint"""
+        """Init hint."""
         self.message = message
         self.auto_clear = auto_clear
         self.wait_popup = wait_popup
@@ -33,7 +33,7 @@ class MyHintLabel(tk.Toplevel):
             self.after(self.POPUP_TIME, self.clear_hint)
 
     def load_hint(self):
-        """Load hint"""
+        """Load hint."""
         tk.Toplevel.__init__(self)
         self.overrideredirect(True)
         self.message_label = tk.Label(self, compound='left', text=self.message,
@@ -43,7 +43,7 @@ class MyHintLabel(tk.Toplevel):
         self.attributes("-alpha", 0.0)
 
     def show_hint(self):
-        """Show hint"""
+        """Show hint."""
         try:
             self.xpos = self.winfo_pointerx()  # get actual cursor position
             self.ypos = self.winfo_pointery()
@@ -54,5 +54,5 @@ class MyHintLabel(tk.Toplevel):
             pass
 
     def clear_hint(self):
-        """Destroy hint"""
+        """Destroy hint."""
         self.destroy()

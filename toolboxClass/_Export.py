@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.ERROR)
 
 class Mixin:
     def export_features(self):
-        """Function to export object points and image points"""
+        """Function to export object points and image points."""
         if self.object_pattern is not None:
             t_choose = self._('Please select a folder for object points')
             path_folder = filedialog.askdirectory(parent=self.master, title=t_choose)
@@ -25,7 +25,7 @@ class Mixin:
                             np.savetxt(path_folder + '/f_%d.txt'%index, feature.reshape(-1), newline=',')
 
     def exportCalibrationParameters(self):
-        """Function to export the calibration parameters"""
+        """Function to export the calibration parameters."""
         default_filenames = [self._('intrinsics_first_camera'),
                              self._('intrinsics_second_camera'),
                              self._('extrinsics')]
@@ -52,7 +52,7 @@ class Mixin:
                 return
 
     def exportCalibrationParametersIteration(self):
-        """Function to export calibration results per Iteration"""
+        """Function to export calibration results per Iteration."""
         logging.info(self._('exporting results per calibration'))
 
         t_choose = self._('Please select a folder')

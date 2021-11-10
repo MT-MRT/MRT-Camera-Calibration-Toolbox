@@ -14,9 +14,7 @@ DEFAULT_HEIGHT = 240
 
 class Mixin:
     def updateSelectionperclick(self, selection, i):
-        '''
-        Function for the click event over the error bars
-        '''
+        '''Function for the click event over the error bars'''
         # This corresponds to a click over the RMS reprojection error chart
         if i == 0:
             self.zoomhandler = 0
@@ -34,8 +32,8 @@ class Mixin:
             self.updateBarError(1)
 
     def click_to_zoom(self, event, camera):
-        '''
-        Function for the click event with a zoom sunken button
+        '''Function for the click event with a zoom sunken button
+
         Detects the x,y click position and calculates the image resizing scale
         '''
         self.scale = 1.0
@@ -59,7 +57,7 @@ class Mixin:
         elif self.paths[camera] and self.btn_locate.config('relief')[-1] == 'sunken':
             selection = 1
             for poly in self.polygons:
-                contains, attrd = poly.contains(event)
+                contains, _ = poly.contains(event)
                 if contains:
                     self.listbox.selection_clear(0, tk.END)
                     self.index.set(selection - 1)
@@ -96,9 +94,7 @@ class Mixin:
         self.updatePicture()
 
     def toggle_zoom_buttons(self, button1, button2):
-        '''
-        Function to keep only one zoom button enable
-        '''
+        '''Function to keep only one zoom button enable'''
         if button1.config('relief')[-1] == 'sunken':
             button1.config(relief='raised')
         else:
@@ -111,9 +107,7 @@ class Mixin:
         self.btn_change_feature.grid_forget()
 
     def clickpoint_to_image(self):
-        '''
-        Function to select image with clicked point in canvas
-        '''
+        '''Function to select image with clicked point in canvas'''
         if self.btn_locate.config('relief')[-1] == 'sunken':
             self.btn_locate.config(relief='raised')
         else:
@@ -126,9 +120,7 @@ class Mixin:
         self.btn_change_feature.grid_forget()
 
     def change_position_feature(self):
-        '''
-        function to change feature position
-        '''
+        '''Function to change feature position'''
         for camera in range(self.n_cameras):
             if self.new_coord_feature[camera]:
                 self.detected_features[camera][self.index.get()][self.index_corner.get()] = self.new_coord_feature[
@@ -137,9 +129,7 @@ class Mixin:
         self.updatePicture()
 
     def move_feature(self):
-        '''
-        Function to select a coordinate point by clicking
-        '''
+        '''Function to select a coordinate point by clicking'''
         if self.btn_move_feature.config('relief')[-1] == 'sunken':
             self.btn_move_feature.config(relief='raised')
             self.select_feature.grid_forget()
@@ -161,9 +151,7 @@ class Mixin:
         self.updatePicture()
 
     def updatePicture(self, *args):
-        '''
-        Function to update pictures in panel of tabs
-        '''
+        '''Function to update pictures in panel of tabs'''
         selection = self.index.get()
         # checks for a valid selection
         if selection >= 0:
@@ -239,10 +227,7 @@ class Mixin:
     # self.panel1.itemconfig(self.image_on_panel1, image = None)
 
     def image_features(self, camera, index):
-        '''
-        Function to create an picture with the original one and its
-        detected features with markers
-        '''
+        '''Function to create an picture with the original one and its detected features with markers'''
         # get the features for the selected image
         features = self.detected_features[camera][index]
         # get original of the selected image
@@ -260,10 +245,7 @@ class Mixin:
         return im2
 
     def update_added_deleted(self, *args):
-        '''
-        Function to update heat map when a new image is added or an image is
-        deleted
-        '''
+        '''Function to update heat map when a new image is added or an image is deleted'''
         self.polygons = []
         DEFAULT_WIDTH = 320
         DEFAULT_HEIGHT = 240
@@ -289,10 +271,7 @@ class Mixin:
         self.loadImagesBrowser()
 
     def density_cloud_heat_map(self, camera):
-        '''
-        Function to calculate a density cloud map of all the images using its
-        detected features
-        '''
+        '''Function to calculate a density cloud map of all the images using its detected features'''
         # initialize picture with image size
         width = self.size[camera][1]
         height = self.size[camera][0]
@@ -364,9 +343,7 @@ class Mixin:
         return im
 
     def show_moving_features(self, camera, index):
-        '''
-        Function to represent new desired feature position after click
-        '''
+        '''Function to represent new desired feature position after click'''
         # create RGB picture with the image size
         im3 = np.uint8(np.zeros(self.size[camera] + (3,)))
         im = self.img_original[camera][index]
@@ -389,10 +366,9 @@ class Mixin:
         return im3
 
     def project_detected_features(self, camera, index, forExtrinsics=False):
-        '''
-        Function to get the images comparing the original in green and its
-        projection in red. The current selected feature index is represented
-        by a circle over the point
+        '''Function to get the images comparing the original in green and its projection in red. 
+
+        The current selected feature index is represented by a circle over the point
         '''
         # create RGB picture with the image size
         im3 = np.uint8(np.zeros(self.size[camera] + (3,)))
@@ -447,9 +423,8 @@ class Mixin:
         return im3
 
     def updateBarError(self, k):
-        '''
-        Function to update the color of the bars in the bar charts
-        depending of the selection
+        '''Function to update the color of the bars in the bar charts depending of the selection.
+
         The selected bar is red, the others are blue
         '''
         if k == 0:
@@ -467,9 +442,7 @@ class Mixin:
                 self.bar[k][j].draw()
 
     def loadBarError(self, r_up):
-        '''
-        Function to update error bar chart
-        '''
+        '''Function to update error bar chart'''
         xlabel_names = [self._('Images'), self._('Features')]
         title_names = [self._('RMS Reprojection Error'),
                        self._('Pixel Distance Error')]
@@ -555,10 +528,9 @@ class Mixin:
                 self.bar[k][j].draw()
 
     def on_press(self, event, i, j):
-        '''
-        Function to handle the event of pressing over one of the bar in the
-        chart to update selected pose. j is camera, i is graphic. TODO: Maybe
-        change logic? (easier to understand...)
+        '''Function to handle the event of pressing over one of the bar in the chart to update selected pose. 
+
+        j is camera, i is graphic. TODO: Maybe change logic? (easier to understand...)
         '''
         # checks if a calibration has already succeed
         if self.camera_matrix[0][0][0] != 0:  # Fx is zero only when reset

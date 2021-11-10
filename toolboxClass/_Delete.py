@@ -6,9 +6,7 @@ logging.basicConfig(level=logging.ERROR)
 
 class Mixin:
     def reset_error(self):
-        '''
-        Function to reset error related variables
-        '''
+        '''Function to reset error related variables'''
         # array of rms error for each pose
         self.r_error = [None, None]
         # array of pixel distance error for each feature
@@ -18,9 +16,7 @@ class Mixin:
         self.projected_stereo = [[], []]
 
     def reset_camera_parameters(self):
-        '''
-        Function to reset all intrinsics and extrinsics parameters
-        '''
+        '''Function to reset all intrinsics and extrinsics parameters'''
         # camera matrix
         # array of 2 of 3*3 for camera parameters (mean and standard deviation)
         self.camera_matrix = [np.zeros((3, 3),
@@ -47,9 +43,7 @@ class Mixin:
         self.rms = [0, 0, 0]
 
     def del_single(self):
-        '''
-        Function to delete with Del key one image
-        '''
+        '''Function to delete with Del key one image'''
         # get current index
         index = self.listbox.curselection()
         if index:
@@ -101,9 +95,7 @@ class Mixin:
             self.loadBarError([0, 1])
 
     def del_all(self):
-        '''
-        Function to delete all the session
-        '''
+        '''Function to delete all the session'''
         # enable the add session button
         self.btn_start.config(state='active')
         # disable the other toolbar buttons

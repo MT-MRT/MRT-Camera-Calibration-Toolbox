@@ -7,9 +7,7 @@ logging.basicConfig(level=logging.ERROR)
 
 class Mixin:
     def updateSelection(self, event):
-        '''
-        Function for the click event over the data browser
-        '''
+        '''Function for the click event over the data browser'''
         widget = event.widget
         self.zoomhandler = 0
         if widget.curselection():
@@ -19,9 +17,7 @@ class Mixin:
             self.updateBarError(0)
 
     def loadImagesBrowser(self):
-        '''
-        Function to update items in data browser
-        '''
+        '''Function to update items in data browser'''
         # checks if listbox object exists
         if self.listbox:
             self.listbox.delete(0, tk.END)
@@ -35,10 +31,7 @@ class Mixin:
                     self.listbox.select_set(self.index.get())
 
     def updateCameraParametersGUI(self):
-        '''
-        Function to update all the labels values from the calculated parameters
-        in the calibration
-        '''
+        '''Function to update all the labels values from the calculated parameters in the calibration'''
         if self.n_cameras == 0:
             r_cameras1 = 2
             r_cameras2 = 3

@@ -11,9 +11,7 @@ logging.basicConfig(level=logging.ERROR)
 
 class Mixin:
     def load_3D_points(self):
-        '''
-        Function to load 3D points from text
-        '''
+        '''Function to load 3D points from text'''
         self.load_files[0] \
             = filedialog.askopenfilenames(parent=self.popup,
                                           filetypes=[(self._('Text files'),
@@ -37,9 +35,7 @@ class Mixin:
                 self.check_errors_and_plot(None)
 
     def get_file_names(self, typeof, title_dialog):
-        '''
-        Function for getting new files
-        '''
+        '''Function for getting new files'''
         filenames = []
         # this is adding per file
         if typeof == 'p':
@@ -114,9 +110,7 @@ class Mixin:
             self.loadBarError([0, 1])
 
     def add_file(self, typeof):
-        '''
-        Function to add files to the session
-        '''
+        '''Function to add files to the session'''
         file_names_2D_points = self.get_file_names(typeof, self._('2D points'))
 
         if len(file_names_2D_points) == 0:

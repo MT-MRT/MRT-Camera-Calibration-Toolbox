@@ -5,9 +5,7 @@ from numpy.random import permutation
 import numpy as np
 
 def ncr(n, r):
-    '''
-    Function to get maximum possible combinations given n and r
-    '''
+    '''Function to get maximum possible combinations given n and r'''
     # https://stackoverflow.com/questions/4941753/is-there-a-math-ncr-function
     # -in-python
     r = min(r, n - r)
@@ -17,9 +15,7 @@ def ncr(n, r):
 
 
 def get_one_combination(n, r):
-    '''
-    Function to calculate one possible combination given n and r
-    '''
+    '''Function to calculate one possible combination given n and r'''
     for item in itertools.combinations(permutation(n), r):
         sample = list(item)
         sample.sort()
@@ -27,9 +23,7 @@ def get_one_combination(n, r):
 
 
 def get_all_combinations(n, r):
-    '''
-    Function to get all possible combinations given n and r
-    '''
+    '''Function to get all possible combinations given n and r'''
     samples = []
     for item in itertools.combinations(list(range(n)), r):
         item_s = list(item)
@@ -40,9 +34,7 @@ def get_all_combinations(n, r):
 
 def validate(action, index, value_if_allowed, prior_value, text,
              validation_type, trigger_type, widget_name, allowed):
-    '''
-    Function to check if entry value is correct
-    '''
+    '''Function to check if entry value is correct'''
     # https://stackoverflow.com/questions/8959815/
     # restricting-the-value-in-tkinter-entry-widget
     if (action == '1'):
@@ -59,18 +51,14 @@ def validate(action, index, value_if_allowed, prior_value, text,
 
 
 def float2StringVar(string, value, decimals=5):
-    '''
-    Function to set string given its value
-    '''
+    '''Function to set string given its value'''
     if value == 0 or value is None:
         string.set('-')
     else:
         string.set(str(round(value, decimals)))
 
 def get_indices_to_average(rms, percentile = 75):
-    '''
-    Function to obtain array indices within percentile
-    '''
+    '''Function to obtain array indices within percentile'''
     rms_max = np.percentile(rms, percentile)
     indices = [i for i,v in enumerate(rms) if v < rms_max]
     return indices

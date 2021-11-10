@@ -11,9 +11,7 @@ logging.basicConfig(level=logging.ERROR)
 
 class Mixin:
     def popup_configuration(self):
-        '''
-        Function to create popup for calibration settings button
-        '''
+        '''Function to create popup for calibration settings button'''
         self.popup = tk.Toplevel(self.master)
         self.popup.withdraw()
 
@@ -40,10 +38,7 @@ class Mixin:
         self.center()
 
     def pattern_default(self, *args):
-        '''
-        Function to set default pattern parameters when the pattern type is
-        changed
-        '''
+        '''Function to set default pattern parameters when the pattern type is changed'''
         self.popup.update()
         if self._(u'Chessboard') in self.pattern_type.get():
             self.feature_distance.set(50)
@@ -59,11 +54,7 @@ class Mixin:
             self.pattern_height.set(6)
 
     def check_errors_and_plot(self, *args):
-        '''
-        Function for updating the canvas representation of the pattern when
-        adding a new session also shows error and warnings depending of the
-        range of the parameters
-        '''
+        '''Function for updating the canvas representation of the pattern when adding a new session also shows error and warnings depending of the range of the parameters'''
 
         # delete grid_line objects
         if self.c_pattern:
@@ -186,9 +177,7 @@ class Mixin:
                 self.object_pattern = set_3D_points.reshape((n_points, 1, 3))
 
     def add_session_popup(self):
-        '''
-        Function to create popup for add session button
-        '''
+        '''Function to create popup for add session button'''
         self.popup = tk.Toplevel(self.master)
         self.popup.grid_columnconfigure(0, weight=1)
         self.popup.grid_rowconfigure(0, weight=1)
@@ -400,10 +389,7 @@ class Mixin:
         self.center()
 
     def modify_add_session_popup(self, *args):
-        '''
-        Function to modify add_session popup by changing pattern load
-        selection box
-        '''
+        '''Function to modify add_session popup by changing pattern load selection box'''
         self.l_load_files[0].config(text='')
         self.load_files[0] = None
         if self._(u'Text') in self.pattern_load.get():
@@ -417,9 +403,7 @@ class Mixin:
         self.check_errors_and_plot(None)
 
     def modify_play_popup(self, *args):
-        '''
-        Function to adjust the GUI according to the selected calibration method
-        '''
+        '''Function to adjust the GUI according to the selected calibration method'''
         self.btn_export.config(state='disable')  # disable export parameters button
         self.btn_export2.config(state='disable')  # disable export parameters button
         # reset all values
@@ -465,9 +449,7 @@ class Mixin:
             self.m_frm[1].grid_forget()
 
     def popupmsg(self):
-        '''
-        Function to show popup with information about the importing images process
-        '''
+        '''Function to show popup with information about the importing images process'''
         self.popup = tk.Toplevel(self.master)
         self.popup.withdraw()
 
@@ -501,9 +483,7 @@ class Mixin:
         return l_msg, text_detail, b_cancel
 
     def cancel_importing(self, button):
-        '''
-        Function to cancel the importing images process and when finished, close the popup
-        '''
+        '''Function to cancel the importing images process and when finished, close the popup'''
         if 'Cancel' in button.cget('text'):
             self.continue_importing = False
             button.configure(text=self._('Exit'))
@@ -511,9 +491,7 @@ class Mixin:
             self.popup.destroy()
 
     def show_details(self, button, frm):
-        '''
-        Function to show more or less details about the rejected, repeated and invalid sized images
-        '''
+        '''Function to show more or less details about the rejected, repeated and invalid sized images'''
         if '\u2b07' in button.cget('text'):
             frm.grid(row=2, column=0)
             button.configure(text=self._('\u2b06 less details'))
@@ -786,9 +764,7 @@ class Mixin:
         self.center()
 
     def popup_importing_fails(self, message):
-        '''
-        Function to create error popup when selecting invalid images folders
-        '''
+        '''Function to create error popup when selecting invalid images folders'''
         self.popup = tk.Toplevel(self.master)
         self.popup.withdraw()
 
@@ -800,9 +776,7 @@ class Mixin:
         self.center()
 
     def popupmsg_deleting(self):
-        '''
-        Function to create popup for deleting confirmation
-        '''
+        '''Function to create popup for deleting confirmation'''
         self.popup = tk.Toplevel(self.master)
         self.popup.withdraw()
 
@@ -819,9 +793,7 @@ class Mixin:
         self.center()
 
     def popupmsg_changes(self):
-        '''
-        Function to create popup for changes confirmation
-        '''
+        '''Function to create popup for changes confirmation'''
         self.popup = tk.Toplevel(self.master)
         self.popup.withdraw()
         self.popup.wm_title(self._(u'Confirm changes'))

@@ -92,7 +92,6 @@ class Mixin:
 
     def center(self):
         """Function to center popups and disable the main windows."""
-
         self.master.update_idletasks()
         width = self.popup.winfo_reqwidth()
         height = self.popup.winfo_reqheight()
@@ -205,7 +204,8 @@ class Mixin:
         self.style_pg.layout('text.Horizontal.TProgressbar', layout)
 
     def add_session(self):
-        """Function to add session after the given parameters are correct.
+        """
+        Function to add session after the given parameters are correct.
 
         Creates object_pattern according to the selected pattern type
         Enables and disables the corresponding buttons

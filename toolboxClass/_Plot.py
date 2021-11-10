@@ -366,7 +366,7 @@ class Mixin:
         return im3
 
     def project_detected_features(self, camera, index, forExtrinsics=False):
-        """Function to get the images comparing the original in green and its projection in red. 
+        """Function to get the images comparing the original in green and its projection in red.
 
         The current selected feature index is represented by a circle over the point.
         """
@@ -528,7 +528,7 @@ class Mixin:
                 self.bar[k][j].draw()
 
     def on_press(self, event, i, j):
-        """Function to handle the event of pressing over one of the bar in the chart to update selected pose. 
+        """Function to handle the event of pressing over one of the bar in the chart to update selected pose.
 
         j is camera, i is graphic. TODO: Maybe change logic? (easier to understand...).
         """

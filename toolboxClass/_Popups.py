@@ -38,7 +38,7 @@ class Mixin:
         self.center()
 
     def pattern_default(self, *args):
-        """Function to set default pattern parameters when the pattern type is changed"""
+        """Function to set default pattern parameters when the pattern type is changed."""
         self.popup.update()
         if self._(u'Chessboard') in self.pattern_type.get():
             self.feature_distance.set(50)
@@ -55,7 +55,6 @@ class Mixin:
 
     def check_errors_and_plot(self, *args):
         """Function for updating the canvas representation of the pattern when adding a new session also shows error and warnings depending of the range of the parameters."""
-
         # delete grid_line objects
         if self.c_pattern:
             self.c_pattern.delete('grid_line')

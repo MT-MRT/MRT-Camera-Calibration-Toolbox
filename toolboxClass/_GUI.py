@@ -15,7 +15,7 @@ DEFAULT_HEIGHT = 240
 
 class Mixin:
     def initializeVariables(self):
-        '''Function to define variables that has to be reinitialized each time a session is deleted'''
+        """Function to define variables that has to be reinitialized each time a session is deleted"""
         # total number of cameras
         self.n_cameras = 0
         # size for each camera, used for internal functions
@@ -91,7 +91,7 @@ class Mixin:
         self.new_coord_feature = [[], []]
 
     def center(self):
-        '''Function to center popups and disable the main windows'''
+        """Function to center popups and disable the main windows"""
 
         self.master.update_idletasks()
         width = self.popup.winfo_reqwidth()
@@ -111,7 +111,7 @@ class Mixin:
             self.popup.grab_set()  # interact only with popup
 
     def initialize_GUI_variables(self):
-        '''Function to initialize GUI related variables at the beginning'''
+        """Function to initialize GUI related variables at the beginning"""
         # buttons
         self.btn_start = None
         self.btn_add_file = None
@@ -205,12 +205,12 @@ class Mixin:
         self.style_pg.layout('text.Horizontal.TProgressbar', layout)
 
     def add_session(self):
-        '''Function to add session after the given parameters are correct
+        """Function to add session after the given parameters are correct
 
         Creates object_pattern according to the selected pattern type
         Enables and disables the corresponding buttons
         Adjust the GUI for a single/stereo mode
-        '''
+        """
         if self._(u'Images') in self.pattern_load.get():
             for j in range(3):
                 if self.label_msg[j].cget('text'):
@@ -321,7 +321,7 @@ class Mixin:
             self.tabControl[0].tab(len(self.list_panel[0])-1, state='disable')
 
     def traces_GUI(self):
-        '''Function to trace all the changes in tkinter variables'''
+        """Function to trace all the changes in tkinter variables"""
         # link changes in number of poses for updating function
         self.n_total.trace('w', self.update_added_deleted)
         # link changes in width and height to plotting function
@@ -345,7 +345,7 @@ class Mixin:
         self.select_feature.bind('<<ComboboxSelected>>', self.update_index_corner)
 
     def initUI(self, *args, **kwargs):
-        '''Function to create toolbar, data browser, panel of tabs of images,error charts and calculated parameters visualization'''
+        """Function to create toolbar, data browser, panel of tabs of images,error charts and calculated parameters visualization"""
         # frames definition and positioning ##
         self.frm = []
         for i in range(7):
@@ -820,9 +820,9 @@ class Mixin:
         self.master.bind('<Control-f>', lambda e: self.export_features()) # functionality not in toolbar
 
     def entry_mouse_enter(self, event, message='I got no message!'):
-        '''Mouseover event loading hint'''
+        """Mouseover event loading hint"""
         self.my_hint_label = hl.MyHintLabel(message)
 
     def entry_mouse_leave(self, event):
-        '''Mouseleave event destroying hint'''
+        """Mouseleave event destroying hint"""
         self.my_hint_label.destroy()

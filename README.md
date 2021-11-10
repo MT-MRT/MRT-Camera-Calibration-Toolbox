@@ -60,7 +60,7 @@ Toolbar icons obtain from: [https://www.iconfinder.com](https://www.iconfinder.c
 
 Please cite the following paper when using our toolbox it in your research project:
 ```BibTeX
-@INPROCEEDINGS{Schramm2020,
+@INPROCEEDINGS{Schramm2021,
   author  = {Schramm, Sebastian and Rangel, Johannes and Aguirre Salazar, Daniela and Schmoll, Robert and Kroll, Andreas},
   title   = {Multispectral Geometric Calibration of Cameras in Visual and Infrared Spectral Range},
   journal = {IEEE Sensors},

@@ -77,8 +77,8 @@ Please cite the following paper when using our toolbox it in your research proje
 
 If you have any questions, please email Daniela Aguirre Salazar at daguirres@unal.edu.co or Sebastian Schramm at sebastian.schramm@mrt.uni-kassel.de.
 
-[Visit us](https://www.uni-kassel.de/maschinenbau/institute/mess-und-regelungstechnik/mrt.html)
+[Visit us](https://www.uni-kassel.de/maschinenbau/institute/analyse-und-regelung-technischer-systeme/mess-und-regelungstechnik/startseite)
 
 <p align="center">
-  <a href="https://www.uni-kassel.de/maschinenbau/institute/mess-und-regelungstechnik/mrt.html"><img src="https://github.com/MT-MRT/MRT-Camera-Calibration-Toolbox/blob/master/docs/MRT-Logo.png" alt="MRT" width="250"/>
+  <a href="https://www.uni-kassel.de/maschinenbau/institute/analyse-und-regelung-technischer-systeme/mess-und-regelungstechnik/startseite"><img src="https://github.com/MT-MRT/MRT-Camera-Calibration-Toolbox/blob/master/docs/MRT-Logo.png" alt="MRT" width="250"/>
 </p>

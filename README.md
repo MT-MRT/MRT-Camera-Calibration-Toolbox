@@ -24,7 +24,7 @@ To use the toolbox, the modules listed below have to be installed on your comput
 -   OpenCV 4.2.0
 -   tkinter 8.6
 -   PIL 6.1.0
--   numpy 1.17.0
+-   numpy 1.22.0
 -   matplotlib 3.1.1
 
 ## Installation

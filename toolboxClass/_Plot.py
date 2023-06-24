@@ -353,6 +353,7 @@ class Mixin:
 
         for index_f in range(len(self.detected_features[camera][index])):
             a = self.detected_features[camera][index][index_f]
+            a = a.astype(int)
             if index_f == self.index_corner.get():
                 color = (154, 12, 70)
                 if self.new_coord_feature[camera]:
@@ -388,16 +389,19 @@ class Mixin:
             for i in range(self.p_height):
                 for j in range(self.p_width):
                     a = projections[camera][index][j * self.p_height + i]
+                    a = a.astype(int)
                     if j * self.p_height + i == self.index_corner.get():
                         cv2.circle(im3, (a[0][0], a[0][1]), 5, (154, 12, 70))
                     if i < self.p_height - 1:
                         b = projections[camera][index][j * self.p_height
                                                        + i + 1]
+                        b = b.astype(int)
                         cv2.line(im3, (a[0][0], a[0][1]),
                                  (b[0][0], b[0][1]), (154, 12, 70))
                     if j < self.p_width - 1:
                         c = projections[camera][index][(j + 1)
                                                        * self.p_height + i]
+                        c = c.astype(int)
                         cv2.line(im3, (a[0][0], a[0][1]),
                                  (c[0][0], c[0][1]), (154, 12, 70))
 
@@ -406,17 +410,20 @@ class Mixin:
             for j in range(self.p_width):
                 a = self.detected_features[camera][index][j * self.p_height
                                                           + i]
+                a = a.astype(int)
                 if j * self.p_height + i == self.index_corner.get():
                     cv2.circle(im3, (a[0][0], a[0][1]), 5, (80, 149, 200))
                 if i < self.p_height - 1:
                     b = self.detected_features[camera][index][j * self.p_height
                                                               + i + 1]
+                    b = b.astype(int)
                     cv2.line(im3, (a[0][0], a[0][1]),
                              (b[0][0], b[0][1]), (80, 149, 200))
                 if j < self.p_width - 1:
                     c = self.detected_features[camera][index][(j + 1)
                                                               * self.p_height
                                                               + i]
+                    c = c.astype(int)
                     cv2.line(im3, (a[0][0], a[0][1]),
                              (c[0][0], c[0][1]), (80, 149, 200))
 

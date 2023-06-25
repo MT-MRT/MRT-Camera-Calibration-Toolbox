@@ -7,7 +7,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 import toolboxClass.miscTools.hint_label as hl
 
-logging.basicConfig(level=logging.ERROR)
+logging.basicConfig(level=logging.INFO)
 
 DEFAULT_WIDTH = 320
 DEFAULT_HEIGHT = 240
@@ -54,6 +54,8 @@ class Mixin:
         self.paths = [[], []]
         self.img_original = [[], []]
         self.detected_features = [[], []]
+        self.aruco_corners = [[], []]
+        self.obj_corners = [[], []]
         # total number of images (couple of images for the stereo mode)
         self.n_total.set(0)
 
@@ -229,6 +231,15 @@ class Mixin:
         if self._(u'Images') in self.pattern_load.get():
             # creates object from Chessboard pattern
             if self._(u'Chessboard') in self.pattern_type.get():
+                self.object_pattern = np.zeros((self.p_width
+                                                * self.p_height, 3),
+                                               np.float32)
+                grid = np.mgrid[0:self.p_height, 0:self.p_width] \
+                         .T.reshape(-1, 2) * self.f_distance
+                self.object_pattern[:, 0] = -grid[:, 1]
+                self.object_pattern[:, 1] = grid[:, 0]
+            # creates object from Coded Chessboard pattern
+            elif self._(u'Coded Chess') in self.pattern_type.get():
                 self.object_pattern = np.zeros((self.p_width
                                                 * self.p_height, 3),
                                                np.float32)

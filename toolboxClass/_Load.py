@@ -3,11 +3,15 @@ import os
 # import tkinter as tk
 from tkinter import filedialog
 import cv2
+from cv2 import aruco
 import numpy as np
 import toolboxClass.miscTools.datastring as datastring
 
-logging.basicConfig(level=logging.ERROR)
+logging.basicConfig(level=logging.INFO)
 
+# Sidelength of the AruCo marker in mm 
+ARUCO_SIZE = 161.5
+ARUCO_DICT = cv2.aruco.DICT_4X4_250 # TODO: !!!
 
 class Mixin:
     def load_3D_points(self):
@@ -121,6 +125,10 @@ class Mixin:
         elif self.m_stereo and len(file_names_2D_points) % 2 != 0:
             self.popup_importing_fails(self._(u'\nThe number of files per folder has to be the same for each camera.\n'))
             return
+        # for coded chessboard initiate ArucoDetector object and object points
+        dictionary = cv2.aruco.getPredefinedDictionary(ARUCO_DICT)
+        parameters = cv2.aruco.DetectorParameters()
+        detector = cv2.aruco.ArucoDetector(dictionary, parameters)
 
         l_msg, text_detail, b_cancel = self.popupmsg()
 
@@ -212,6 +220,17 @@ class Mixin:
                                         cv2.cornerSubPix(im2, features, (3, 3),
                                                          (-1, -1), criteria)
                                         break
+                                
+                                # find features for coded chessboard pattern type
+                                if self._(u'Coded Chess') in self.pattern_type.get():
+                                    corners, _, _ = detector.detectMarkers(im2)
+                                    if corners != []:
+                                        ret = True
+                                        corners = np.swapaxes(np.asarray(corners[0][:,:,:]),0,1)
+
+                                        features = []
+                                        break
+
                                 # find features for asymmetric grid pattern type
                                 elif self._(u'Asymmetric Grid') \
                                         in self.pattern_type.get():
@@ -276,6 +295,8 @@ class Mixin:
                                 self.img_original[j].append(im)
                                 # add features to detected_features
                                 self.detected_features[j].append(features)
+                                # add corners to aruco_corners
+                                self.aruco_corners[j].append(corners)
                             else:
                                 # add image path to rejected_images
                                 rejected_images.append(file_name_2D_points)
@@ -348,6 +369,19 @@ class Mixin:
                 l_msg.configure(text=message)
                 l_msg.configure(text=message)
                 break
+        # Iterative feature detection for coded chessboard targets (includes subsidary calibrations)
+        for j in [0,1]:
+            self.obj_corners[j] = [
+                    np.array([np.array([0.,0.,0.]),
+                    np.array([0.,ARUCO_SIZE,0.]),
+                    np.array([ARUCO_SIZE,ARUCO_SIZE,0.]),
+                    np.array([ARUCO_SIZE,0.,0.])]).astype(np.float32)
+                    ]*len(self.aruco_corners[j])
+            logging.info(f"{self.obj_corners[j]}")
+            logging.info(f"{self.aruco_corners[j]}")
+            imgs = self.paths[j]
+            ...
+
 
         if self.continue_importing:
             self.cancel_importing(b_cancel)

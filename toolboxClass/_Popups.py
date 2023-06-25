@@ -44,10 +44,6 @@ class Mixin:
             self.feature_distance.set(50)
             self.pattern_width.set(9)
             self.pattern_height.set(6)
-        elif self._(u'Coded Chess') in self.pattern_type.get():
-            self.feature_distance.set(50)
-            self.pattern_width.set(9)
-            self.pattern_height.set(6)
         elif self._(u'Asymmetric Grid') in self.pattern_type.get():
             self.feature_distance.set(100)
             self.pattern_width.set(9)
@@ -117,12 +113,6 @@ class Mixin:
 
             if b_continue:
                 if self._(u'Chessboard') in self.pattern_type.get():
-                    plot_chessboard(self.c_pattern,
-                                    self.p_width,
-                                    self.p_height,
-                                    self.c_pattern.winfo_width(),
-                                    self.c_pattern.winfo_height())
-                elif self._(u'Coded Chess') in self.pattern_type.get():
                     plot_chessboard(self.c_pattern,
                                     self.p_width,
                                     self.p_height,
@@ -268,7 +258,6 @@ class Mixin:
         tk.Label(self.m_frm[1], text=self._(u'Pattern type '))\
             .grid(row=0, column=0, sticky=tk.W)
         tk.OptionMenu(self.m_frm[1], self.pattern_type, self._(u'Chessboard'),
-                      self._(u'Coded Chess'),
                       self._(u'Asymmetric Grid'),
                       self._(u'Symmetric Grid')).grid(row=1, column=0,
                                                       sticky=tk.W + tk.E)
@@ -364,11 +353,10 @@ class Mixin:
         self.m_frm[0]\
             .bind('<Enter>', lambda event,
                   message=self._(u'The toolbox is capable of chessboard, '
-                                 u'coded chessboard, asymetric and symmetric'
-                                 u'circle targets (choose images). If the'
-                                 u'\nused target is none of them, please input'
-                                 u'txt-files withthe given features'
-                                 u'(see documentation).'):
+                                 u'asymetric and symmetric circle targets '
+                                 u'(choose images). If the \nused target is '
+                                 u'none of them, please input txt-files with '
+                                 u'the given features (see documentation).'):
                   self.entry_mouse_enter(event, message))
         self.m_frm[1]\
             .bind('<Enter>', lambda event,
@@ -395,7 +383,7 @@ class Mixin:
 
         # Setting pattern feature variables
         self.mode_stereo.set(False)
-        self.pattern_type.set(self._(u'Coded Chess'))
+        self.pattern_type.set(self._(u'Chessboard'))
 
         self.center()
 

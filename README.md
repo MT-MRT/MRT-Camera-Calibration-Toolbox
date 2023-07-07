@@ -75,7 +75,7 @@ Please cite the following paper when using our toolbox it in your research proje
 
 ## Contact
 
-If you have any questions, please email Daniela Aguirre Salazar at daguirres@unal.edu.co or Sebastian Schramm at sebastian.schramm@mrt.uni-kassel.de.
+If you have any questions, please email Daniela Aguirre Salazar at daguirres@unal.edu.co or Sebastian Schramm at robert.schmoll@mrt.uni-kassel.de.
 
 [Visit us](https://www.uni-kassel.de/maschinenbau/institute/analyse-und-regelung-technischer-systeme/mess-und-regelungstechnik/startseite)
 

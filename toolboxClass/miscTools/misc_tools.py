@@ -59,6 +59,14 @@ def float2StringVar(string, value, decimals=5):
 
 def get_indices_to_average(rms, percentile = 75):
     """Function to obtain array indices within percentile."""
+    # NOTE:
+    # Using a strict inequality (v < percentile) can result in an empty
+    # selection when all RMS values are identical or a single rms value (e.g., single image group),
+    # causing the calibration loop to never terminate.
+    # Using <= ensures at least one sample is retained.
     rms_max = np.percentile(rms, percentile)
-    indices = [i for i,v in enumerate(rms) if v < rms_max]
+    # Original behavior:
+    # indices = [i for i,v in enumerate(rms) if v < rms_max]
+    # updated behavior:
+    indices = [i for i,v in enumerate(rms) if v <= rms_max]
     return indices

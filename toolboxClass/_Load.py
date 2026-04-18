@@ -147,8 +147,14 @@ class Mixin:
                         # check if image size is already initialized
                         if self.size[j] is None or len(self.paths[j]) == 0:
                             self.size[j] = im.shape
+                            if self.size[j][0] > self.size[j][1]:
+                                self.size[j] = (self.size[j][1], self.size[j][0])
+                            
                             logging.debug('Initialized image size for camera %d...', j + 1)
                         # check if image size is valid
+                        if im.shape == (self.size[j][1], self.size[j][0]):
+                            im = cv2.rotate(im, cv2.ROTATE_90_COUNTERCLOCKWISE)
+
                         if im.shape == self.size[j]:
                             ret = False
                             features = None

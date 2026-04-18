@@ -89,6 +89,7 @@ class Mixin:
         self.samples = None
         # coordinates variable for moving features
         self.new_coord_feature = [[], []]
+        self.my_hint_label = None
 
     def center(self):
         """Function to center popups and disable the main windows."""
@@ -821,8 +822,12 @@ class Mixin:
 
     def entry_mouse_enter(self, event, message='I got no message!'):
         """Mouseover event loading hint."""
+        if self.my_hint_label is not None:
+            self.my_hint_label.destroy()
         self.my_hint_label = hl.MyHintLabel(message)
 
     def entry_mouse_leave(self, event):
         """Mouseleave event destroying hint."""
-        self.my_hint_label.destroy()
+        if self.my_hint_label is not None:
+            self.my_hint_label.destroy()
+            self.my_hint_label = None

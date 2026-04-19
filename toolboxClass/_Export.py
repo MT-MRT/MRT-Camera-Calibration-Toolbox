@@ -1,8 +1,11 @@
 import logging
 # import tkinter as tk
 from tkinter import filedialog
-import numpy as np
-import toolboxClass.miscTools.datastring as datastring
+
+from toolboxClass.export_functions import (export_features_to_folder,
+                                           format_intrinsics,
+                                           format_extrinsics,
+                                           save_calibration_iteration)
 
 logging.basicConfig(level=logging.ERROR)
 
@@ -12,17 +15,23 @@ class Mixin:
         """Function to export object points and image points."""
         if self.object_pattern is not None:
             t_choose = self._('Please select a folder for object points')
-            path_folder = filedialog.askdirectory(parent=self.master, title=t_choose)
-            if path_folder != '':
-                np.savetxt(path_folder + '/op.txt', self.object_pattern.reshape(-1), newline=',')
+            op_folder = filedialog.askdirectory(parent=self.master,
+                                                title=t_choose)
+            ip_folders = []
             if self.n_total.get() > 0:
                 for j in range(self.n_cameras):
-                    t_choose = self._('Please select a folder for image points of each pose for camera ')
-                    path_folder = filedialog.askdirectory(parent=self.master, title=t_choose + str(j + 1))
-                    if path_folder != '':
-                        for index in range(len(self.paths[j])):
-                            feature = self.detected_features[j][index]
-                            np.savetxt(path_folder + '/f_%d.txt'%index, feature.reshape(-1), newline=',')
+                    t_choose = self._('Please select a folder for image '
+                                      'points of each pose for camera ')
+                    folder = filedialog.askdirectory(parent=self.master,
+                                                     title=t_choose
+                                                     + str(j + 1))
+                    ip_folders.append(folder)
+            else:
+                ip_folders = [''] * self.n_cameras
+
+            export_features_to_folder(
+                self.object_pattern, self.detected_features,
+                self.paths, self.n_cameras, op_folder, ip_folders)
 
     def exportCalibrationParameters(self):
         """Function to export the calibration parameters."""
@@ -38,13 +47,11 @@ class Mixin:
             if filename != '':
                 f = open(filename, 'w')
                 if j < 2:
-                    c_string = datastring\
-                               .instrinsic2string(self.camera_matrix[j],
-                                                  self.dist_coefs[j])
+                    c_string = format_intrinsics(self.camera_matrix[j],
+                                                 self.dist_coefs[j])
                     f.write(c_string)
                 else:
-                    c_string = datastring\
-                               .extrinsic2string(self.R_stereo,
+                    c_string = format_extrinsics(self.R_stereo,
                                                  self.T_stereo)
                     f.write(c_string)
                 f.close()
@@ -59,51 +66,10 @@ class Mixin:
         path_folder = filedialog.askdirectory(parent=self.master,
                                               title=t_choose)
 
-        if path_folder != '':
-            for j in range(self.n_cameras):
-                filename = '/fx_cam_' + str(j + 1) + '.txt'
-                np.array(self.fx_array[j]).tofile(path_folder + filename, '\n')
-                filename = '/fy_cam_' + str(j + 1) + '.txt'
-                np.array(self.fy_array[j]).tofile(path_folder + filename, '\n')
-                filename = '/cx_cam_' + str(j + 1) + '.txt'
-                np.array(self.cx_array[j]).tofile(path_folder + filename, '\n')
-                filename = '/cy_cam_' + str(j + 1) + '.txt'
-                np.array(self.cy_array[j]).tofile(path_folder + filename, '\n')
-                filename = '/k1_cam_' + str(j + 1) + '.txt'
-                np.array(self.k1_array[j]).tofile(path_folder + filename, '\n')
-                filename = '/k2_cam_' + str(j + 1) + '.txt'
-                np.array(self.k2_array[j]).tofile(path_folder + filename, '\n')
-                filename = '/k3_cam_' + str(j + 1) + '.txt'
-                np.array(self.k3_array[j]).tofile(path_folder + filename, '\n')
-                filename = '/k4_cam_' + str(j + 1) + '.txt'
-                np.array(self.k4_array[j]).tofile(path_folder + filename, '\n')
-                filename = '/k5_cam_' + str(j + 1) + '.txt'
-                np.array(self.k5_array[j]).tofile(path_folder + filename, '\n')
-                if j == 1:
-                    filename = self._('/rotation.txt')
-                    f = open(path_folder + filename, 'w')
-                    for r in self.R_array:
-                        f.write(','.join(str(e) for e in r) + '\n')
-                    f.close()
-                    filename = self._('/translation.txt')
-                    f = open(path_folder + filename, 'w')
-                    for t in self.T_array:
-                        f.write(','.join(str(e[0]) for e in t) + '\n')
-                    f.close()
+        save_calibration_iteration(
+            self.fx_array, self.fy_array, self.cx_array, self.cy_array,
+            self.k1_array, self.k2_array, self.k3_array, self.k4_array,
+            self.k5_array, self.R_array, self.T_array, self.RMS_array,
+            self.samples, self.paths, self.n_cameras, path_folder,
+            translate=self._)
 
-            filename = self._('/rms') + '.txt'
-            np.array(self.RMS_array).tofile(path_folder + filename, '\n')
-            filename = self._('/samples') + '.txt'
-            f = open(path_folder + filename, 'w')
-            for s in self.samples:
-                f.write('[')
-                for j in range(self.n_cameras):
-                    if j == 1:
-                        f.write(',')
-                    f.write('[')
-                    l_paths_s = list(self.paths[j][i] for i in s)
-                    f.write(','.join(str(e) for e in l_paths_s))
-                    f.write(']')
-                f.write(']')
-                f.write('\n')
-            f.close()

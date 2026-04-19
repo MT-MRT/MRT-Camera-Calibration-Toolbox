@@ -1,10 +1,13 @@
 import logging
 import tkinter as tk
-import cv2
 import numpy as np
 from PIL import Image, ImageTk
-from matplotlib import cm
 import matplotlib.pyplot as plt
+
+from toolboxClass.plot_functions import (create_feature_image,
+                                         create_heat_map,
+                                         create_moving_features_image,
+                                         create_projection_image)
 
 logging.basicConfig(level=logging.ERROR)
 
@@ -228,21 +231,9 @@ class Mixin:
 
     def image_features(self, camera, index):
         """Function to create an picture with the original one and its detected features with markers."""
-        # get the features for the selected image
         features = self.detected_features[camera][index]
-        # get original of the selected image
         im = self.img_original[camera][index]
-        if features.any():
-            im2 = np.uint8(np.zeros(im.shape + (3,)))
-            im2[:, :, 0] = im
-            im2[:, :, 1] = im
-            im2[:, :, 2] = im
-            # draw markers over the image representing the features
-            cv2.drawChessboardCorners(im2, (self.p_height, self.p_width),
-                                      features, True)
-        else:
-            im2 = im
-        return im2
+        return create_feature_image(im, features, self.p_height, self.p_width)
 
     def update_added_deleted(self, *args):
         """Function to update heat map when a new image is added or an image is deleted."""
@@ -272,162 +263,34 @@ class Mixin:
 
     def density_cloud_heat_map(self, camera):
         """Function to calculate a density cloud map of all the images using its detected features."""
-        # initialize picture with image size
-        width = self.size[camera][1]
-        height = self.size[camera][0]
-        grid = np.zeros((height, width))
-        # get detected features for the camera
-        list_features = self.detected_features[camera]
-        # create circle matrix for each pattern #
-        # calculate number of pixel as the radius of the circle for each
-        # feature depending of the width
-        L = int(round(0.006 * width + 8))
-        step = 1.0 / L
-        # initialize grid for the circle matrix
-        grid_circle = np.zeros((L * 2 + 1, L * 2 + 1))
-        # Assign values to the grid from 1.0 to 0.0 as a circle representation,
-        # where the center gets 1.0 and the radius gets 0.0
-        for k in range(L):
-            for i in range(L - k, L + k + 1):
-                for j in range(L - k, L + k + 1):
-                    r = ((i - L) ** 2 + (j - L) ** 2) ** 0.5
-                    if r <= k:
-                        grid_circle[i, j] += step
-        # for each point in the list of features overlay the circle matrix,
-        # considering the width and height of the image
-        for k in list_features:
-            for c in k:
-                x = int(c[0][1])
-                y = int(c[0][0])
-                x_min = 0
-                x_max = height
-                y_min = 0
-                y_max = width
-                x_min_g = 0
-                x_max_g = L * 2 + 1
-                y_min_g = 0
-                y_max_g = L * 2 + 1
+        return create_heat_map(self.size[camera],
+                               self.detected_features[camera])
 
-                if x - L < 0:
-                    x_min_g -= x - L
-                else:
-                    x_min += x - L
-                if x + L + 1 > height:
-                    x_max_g = x_max - x_min
-                else:
-                    x_max = x + L + 1
-                if y - L < 0:
-                    y_min_g -= y - L
-                else:
-                    y_min += y - L
-                if y + L + 1 > width:
-                    y_max_g = y_max - y_min
-                else:
-                    y_max = y + L + 1
-
-                # TODO: Show errors
-                grid[x_min:x_max, y_min:y_max] += grid_circle[x_min_g:x_max_g,
-                                                              y_min_g:y_max_g]
-
-        # normalized the picture
-        grid = ((grid - grid.min()) / (grid.max() - grid.min()))
-
-        # for k in list_features:
-        #    for c in k:
-        #        grid[int(c[0][1]),int(c[0][0])]=1.0
-
-        # create heatmap of the normalized picture. Check:
-        # https://stackoverflow.com/questions/10965417/how-to-convert-numpy-
-        # array-to-pil-image-applying-matplotlib-colormap
-        im = np.uint8(cm.jet(grid) * 255)
-        return im
 
     def show_moving_features(self, camera, index):
         """Function to represent new desired feature position after click."""
-        # create RGB picture with the image size
-        im3 = np.uint8(np.zeros(self.size[camera] + (3,)))
         im = self.img_original[camera][index]
-        im3[:, :, 0] = im
-        im3[:, :, 1] = im
-        im3[:, :, 2] = im
+        return create_moving_features_image(
+            im, self.size[camera], self.detected_features[camera],
+            index, self.index_corner.get(), self.new_coord_feature[camera])
 
-        for index_f in range(len(self.detected_features[camera][index])):
-            a = self.detected_features[camera][index][index_f]
-            a = a.astype(int)
-            if index_f == self.index_corner.get():
-                color = (154, 12, 70)
-                if self.new_coord_feature[camera]:
-                    if abs(a[0][0] - self.new_coord_feature[camera][0][0]) < 10**-3 and abs(a[0][1] - self.new_coord_feature[camera][0][1]) < 10**-3:
-                        color = (80, 149, 200)
-                    a = [[round(x) for x in self.new_coord_feature[camera][0]]]
-                cv2.circle(im3, (a[0][0], a[0][1]), 5, color)
-            else:
-                cv2.circle(im3, (a[0][0], a[0][1]), 3, (80, 149, 200))
-
-        return im3
 
     def project_detected_features(self, camera, index, forExtrinsics=False):
         """Function to get the images comparing the original in green and its projection in red.
 
         The current selected feature index is represented by a circle over the point.
         """
-        # create RGB picture with the image size
-        im3 = np.uint8(np.zeros(self.size[camera] + (3,)))
         im = self.img_original[camera][index]
-        im3[:, :, 0] = im
-        im3[:, :, 1] = im
-        im3[:, :, 2] = im
-        # check if the projection is from intrinsics or from intrinsics and
-        # extrinsics (from the other camera)
         if forExtrinsics:
-            projections = self.projected_stereo
+            projections = self.projected_stereo[camera]
         else:
-            projections = self.projected
+            projections = self.projected[camera]
 
-        # plot projection mesh of features using  red lines
-        if projections[camera]:
-            for i in range(self.p_height):
-                for j in range(self.p_width):
-                    a = projections[camera][index][j * self.p_height + i]
-                    a = a.astype(int)
-                    if j * self.p_height + i == self.index_corner.get():
-                        cv2.circle(im3, (a[0][0], a[0][1]), 5, (154, 12, 70))
-                    if i < self.p_height - 1:
-                        b = projections[camera][index][j * self.p_height
-                                                       + i + 1]
-                        b = b.astype(int)
-                        cv2.line(im3, (a[0][0], a[0][1]),
-                                 (b[0][0], b[0][1]), (154, 12, 70))
-                    if j < self.p_width - 1:
-                        c = projections[camera][index][(j + 1)
-                                                       * self.p_height + i]
-                        c = c.astype(int)
-                        cv2.line(im3, (a[0][0], a[0][1]),
-                                 (c[0][0], c[0][1]), (154, 12, 70))
+        return create_projection_image(
+            im, self.size[camera], self.detected_features[camera],
+            projections, index, self.index_corner.get(),
+            self.p_height, self.p_width)
 
-        # plot original mesh of features using green lines
-        for i in range(self.p_height):
-            for j in range(self.p_width):
-                a = self.detected_features[camera][index][j * self.p_height
-                                                          + i]
-                a = a.astype(int)
-                if j * self.p_height + i == self.index_corner.get():
-                    cv2.circle(im3, (a[0][0], a[0][1]), 5, (80, 149, 200))
-                if i < self.p_height - 1:
-                    b = self.detected_features[camera][index][j * self.p_height
-                                                              + i + 1]
-                    b = b.astype(int)
-                    cv2.line(im3, (a[0][0], a[0][1]),
-                             (b[0][0], b[0][1]), (80, 149, 200))
-                if j < self.p_width - 1:
-                    c = self.detected_features[camera][index][(j + 1)
-                                                              * self.p_height
-                                                              + i]
-                    c = c.astype(int)
-                    cv2.line(im3, (a[0][0], a[0][1]),
-                             (c[0][0], c[0][1]), (80, 149, 200))
-
-        return im3
 
     def updateBarError(self, k):
         """Function to update the color of the bars in the bar charts depending of the selection.

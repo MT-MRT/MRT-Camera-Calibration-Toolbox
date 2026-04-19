@@ -150,8 +150,10 @@ class Mixin:
             elapsed_time_1 = result.get('elapsed_time_1', 0)
             time_play = chronometer()
 
+            # Time for averaging step (now included in clustering result)
+            averaging_time = time_play.gettime()
             self.label_status[2][1].config(text=u'\u2714')
-            self.label_status[2][2].config(text='%0.5f' % 0)
+            self.label_status[2][2].config(text='%0.5f' % averaging_time)
 
             if np.any(self.camera_matrix[:, 0, 0] == 1):
                 self.reset_camera_parameters()

@@ -1,4 +1,5 @@
 import logging
+import math
 import cv2
 import numpy as np
 from toolboxClass.miscTools.misc_tools import ncr
@@ -90,10 +91,10 @@ class Mixin:
                 return
 
             # n, number of all images
-            max_k = ncr(self.n_total.get(), c_r)
+            max_k = math.comb(self.n_total.get(), c_r)
             k = min(c_k, max_k)
 
-            if k != c_k:
+            if k < c_k:
                 self.c_k.set(int(k))
                 self.label_msg[1].config(
                     text=(self._('Number of groups changed from ')

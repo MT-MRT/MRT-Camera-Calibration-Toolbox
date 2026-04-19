@@ -4,16 +4,6 @@ from functools import reduce
 from numpy.random import permutation
 import numpy as np
 
-def ncr(n, r):
-    """Function to get maximum possible combinations given n and r."""
-    # https://stackoverflow.com/questions/4941753/is-there-a-math-ncr-function
-    # -in-python
-    r = min(r, n - r)
-    numer = reduce(op.mul, range(n, n - r, -1), 1)
-    denom = reduce(op.mul, range(1, r + 1), 1)
-    return int(numer / denom)
-
-
 def get_one_combination(n, r):
     """Function to calculate one possible combination given n and r."""
     for item in itertools.combinations(permutation(n), r):

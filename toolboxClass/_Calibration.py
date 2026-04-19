@@ -1,9 +1,11 @@
 import logging
 import cv2
 import numpy as np
-from toolboxClass.miscTools.misc_tools import ncr, get_all_combinations, get_one_combination, get_indices_to_average
-from toolboxClass.miscTools.quaternions import averageMatrix
+from toolboxClass.miscTools.misc_tools import ncr
 from toolboxClass.miscTools.time_tools import chronometer
+from toolboxClass.calibration_functions import (run_clustering_calibration,
+                                                calculate_projection,
+                                                calculate_error)
 
 logging.basicConfig(level=logging.ERROR)
 
@@ -98,175 +100,58 @@ class Mixin:
                           + self._('%d to %d (maximum possible)') % (c_k, k)))
                 self.popup.update()  # for updating while running other process
 
-            time_play = chronometer()
-
-            C_array = []
-            D_array = []
-            self.R_array = []
-            self.T_array = []
-
-            self.fx_array = [[], []]
-            self.fy_array = [[], []]
-            self.cx_array = [[], []]
-            self.cy_array = [[], []]
-            self.k1_array = [[], []]
-            self.k2_array = [[], []]
-            self.k3_array = [[], []]
-            self.k4_array = [[], []]
-            self.k5_array = [[], []]
-            self.RMS_array = []
-
-            if k == max_k:
-                self.samples = get_all_combinations(self.n_total.get(), c_r)
-            else:
-                self.samples = []
-
-            indices_to_average = None
-            counter = 0
-            doCalibration = True
-            while doCalibration:  # for counter in range(k):
-                # if k is the maximum possible, read list
-                if k != max_k:
-                    getting_new_sample = True
-                    while getting_new_sample:
-                        s = get_one_combination(self.n_total.get(), c_r)
-                        if s not in self.samples:
-                            self.samples.append(s)
-                            getting_new_sample = False
-                else:
-                    s = self.samples[counter]
-
-                # select the object points of the sample
-                op = list(self.objpoints[i] for i in s)
-                ip, c, d = [], [], []
-                for j in range(self.n_cameras):
-                    # select the object points of the sample for each camera
-                    ip.append(list(self.imgpoints[j][i] for i in s))
-                    c.append(np.eye(3, dtype=np.float32))
-                    d.append(np.zeros((5, 1), dtype=np.float32))
-
-                R = None
-                T = None
-
-                if self.m_stereo:
-                    # move coordinates when images size are different
-                    if self.size[0] != self.size[1]:
-                        logging.debug(self._('Different camera resolution'))
-                        ip = np.array(ip)
-                        index_min = self.size.index(min(self.size))
-                        index_max = self.size.index(max(self.size))
-                        w_max, h_max = self.size[index_max]
-                        w_min, h_min = self.size[index_min]
-                        w_adj = (w_max - w_min) / 2
-                        h_adj = (h_max - h_min) / 2
-                        n_poses, n_points, _, _ = ip[index_min].shape
-                        logging.debug(
-                            self._('Transforming coordinates for camera %s'),
-                            index_min + 1)
-                        for pose in range(n_poses):
-                            for point in range(n_points):
-                                ip[index_min][pose][point] = \
-                                    np.sum([ip[index_min][pose][point],
-                                            [[h_adj, w_adj]]],
-                                           axis=0)
-                    width = max(self.size[0][1], self.size[1][1])
-                    height = max(self.size[0][0], self.size[1][0])
-                    rms, c[0], d[0], c[1], d[1], R, T, _, _ = \
-                        cv2.stereoCalibrate(op, ip[0], ip[1], c[0], d[0], c[1],
-                                            d[1], (width, height),
-                                            flags=flags_parameters)
-                else:
-                    width = self.size[0][1]
-                    height = self.size[0][0]
-                    rms, c[0], d[0], _, _ = \
-                        cv2.calibrateCamera(op, ip[0], (width, height),
-                                            c[0], d[0], flags=flags_parameters)
-
-                logging.info(self._('this is stereo rms error: %s'), rms)
-                # add to matrices
-                C_array.append(c)
-                D_array.append(d)
-                self.RMS_array.append(rms)
-                if self.m_stereo:
-                    self.R_array.append(R)
-                    self.T_array.append(T)
-                indices_to_average = get_indices_to_average(self.RMS_array)
-                # include sample  results for calibrations
-                counter = len(indices_to_average)
-
-                # percentage of completion of process
-                c_percent = (counter+1) / k
+            def clustering_progress(counter, total_k, c_percent, elapsed_time):
                 self.progbar['value'] = c_percent * 10.0
-                elapsed_time_1 = time_play.gettime()
-                t_left_minutes, t_left_seconds = divmod(elapsed_time_1 * (1 / c_percent - 1), 60)
+                t_left_minutes, t_left_seconds = divmod(elapsed_time * (1 / c_percent - 1), 60)
                 if t_left_minutes != 0:
                     self.lb_time.config(text=self._('Estimated time left: %d minutes and %d seconds') % (
                         max(t_left_minutes, 0), max(t_left_seconds, 0)))
                 else:
                     self.lb_time.config(text=self._('Estimated time left: %d seconds') % (max(t_left_seconds, 0)))
-                # update label
                 self.style_pg.configure('text.Horizontal.TProgressbar',
                                         text='{:g} %'
                                         .format(int(c_percent * 100)))
-                # checks if desired number of calibrations is reached
-                if counter >= k:
-                    break
-                self.popup.update()  # updating while running other process
+                self.popup.update()
+
+            result, k = run_clustering_calibration(
+                self.objpoints, self.imgpoints, self.size,
+                self.n_cameras, self.m_stereo, flags_parameters,
+                self.n_total.get(), c_r, c_k,
+                progress_callback=clustering_progress)
 
             self.label_status[1][1].config(text=u'\u2714')
-            self.label_status[1][2].config(text='%0.5f' % elapsed_time_1)
+            if result['success']:
+                self.label_status[1][2].config(text='%0.5f' % result['elapsed_time_1'])
             self.lb_time.config(text='')
 
-            logging.info(self._('selected calibrations: %s'), len(indices_to_average))
-            logging.info(self._('total calibrations: %s'), len(self.samples))
-            #self.exportCalibrationParametersIteration()
-            # get camera and distortion array according to indices to average
-            C_array = np.array(C_array)[indices_to_average]
-            D_array = np.array(D_array)[indices_to_average]
-            # extract array of parameters of camera an distortion array
-            for j in range(self.n_cameras):
-                self.fx_array[j] = C_array[:,j][:, 0][:, 0]
-                self.fy_array[j] = C_array[:,j][:, 1][:, 1]
-                self.cx_array[j] = C_array[:,j][:, 0][:, 2]
-                self.cy_array[j] = C_array[:,j][:, 1][:, 2]
-                self.k1_array[j] = D_array[:,j][:, 0][:, 0]
-                self.k2_array[j] = D_array[:,j][:, 1][:, 0]
-                self.k3_array[j] = D_array[:,j][:, 2][:, 0]
-                self.k4_array[j] = D_array[:,j][:, 3][:, 0]
-                self.k5_array[j] = D_array[:,j][:, 4][:, 0]
-            # get rotation and traslation array according to indices to average
-            if self.m_stereo:
-                self.R_array = np.array(self.R_array)[indices_to_average]
-                self.T_array = np.array(self.T_array)[indices_to_average]
-            # get rms array according to indices to average
-            self.RMS_array = np.array(self.RMS_array)[indices_to_average]
-            # get samples array according to indices to average
-            self.samples = np.array(self.samples)[indices_to_average]
-
-            # calculate parameters
-            if len(C_array) > 0:
-                self.camera_matrix = np.mean(C_array, axis=0)
-                self.dist_coefs = np.mean(D_array, axis=0)
-                self.dev_camera_matrix = np.std(C_array, axis=0)
-                self.dev_dist_coefs = np.std(D_array, axis=0)
-                if self.m_stereo:
-                    self.R_stereo = averageMatrix(self.R_array)
-                    self.T_stereo = np.mean(np.array(self.T_array), axis=0)
-                    # Correction for cx and cy parameters
-                    if self.size[0] != self.size[1]:
-                        logging.debug(self
-                                      ._('Correcting cx an cy for camera {0}')
-                                      .format(index_min + 1))
-                        self.camera_matrix[index_min][0][2] -= h_adj
-                        self.camera_matrix[index_min][1][2] -= w_adj
+            if result['success']:
+                self.camera_matrix = result['camera_matrix']
+                self.dev_camera_matrix = result['dev_camera_matrix']
+                self.dist_coefs = result['dist_coefs']
+                self.dev_dist_coefs = result['dev_dist_coefs']
+                self.R_stereo = result['R_stereo']
+                self.T_stereo = result['T_stereo']
+                self.fx_array = result['fx_array']
+                self.fy_array = result['fy_array']
+                self.cx_array = result['cx_array']
+                self.cy_array = result['cy_array']
+                self.k1_array = result['k1_array']
+                self.k2_array = result['k2_array']
+                self.k3_array = result['k3_array']
+                self.k4_array = result['k4_array']
+                self.k5_array = result['k5_array']
+                self.R_array = result['R_array']
+                self.T_array = result['T_array']
+                self.RMS_array = result['RMS_array']
+                self.samples = result['samples']
             else:
                 self.reset_camera_parameters()
 
-            elapsed_time_2 = time_play.gettime()
+            elapsed_time_1 = result.get('elapsed_time_1', 0)
+            time_play = chronometer()
+
             self.label_status[2][1].config(text=u'\u2714')
-            self.label_status[2][2].config(text='%0.5f' %
-                                           (elapsed_time_2
-                                            - elapsed_time_1))
+            self.label_status[2][2].config(text='%0.5f' % 0)
 
             if np.any(self.camera_matrix[:, 0, 0] == 1):
                 self.reset_camera_parameters()
@@ -278,8 +163,7 @@ class Mixin:
                 elapsed_time_3 = time_play.gettime()
                 self.label_status[3][1].config(text=u'\u2714')
                 self.label_status[3][2].config(text='%0.5f' %
-                                               (elapsed_time_3
-                                                - elapsed_time_2))
+                                               elapsed_time_3)
                 # Calculate RMS error
                 self.calculate_error()
 
@@ -288,7 +172,9 @@ class Mixin:
                 self.label_status[4][2].config(text='%0.5f' %
                                                (elapsed_time_4
                                                 - elapsed_time_3))
-                self.label_status[5][2].config(text='%0.5f' % elapsed_time_4)
+                self.label_status[5][2].config(text='%0.5f' %
+                                               (elapsed_time_1
+                                                + elapsed_time_4))
                 # enable export parameters buttons
                 self.btn_export.config(state='normal')
                 self.btn_export2.config(state='normal')
@@ -398,79 +284,22 @@ class Mixin:
         self.btn_play.config(state='normal')
 
     def calculate_projection(self, r=None, t=None):
-        if t is None:
-            t = []
-        if r is None:
-            r = []
-        op = self.objpoints
-        ip = self.imgpoints
-        c = self.camera_matrix
-        d = self.dist_coefs
-
-        for j in range(self.n_cameras):
-            self.projected[j] = []
-            self.projected_stereo[(j + 1) % 2] = []
-            for i, _ in enumerate(op):
-                if not r:
-                    _, r1, t1, _ = cv2.solvePnPRansac(op[i],
-                                                      ip[j][i],
-                                                      c[j],
-                                                      d[j])
-                else:
-                    r1 = r[i][:]
-                    t1 = t[i][:]
-
-                imgpoints2, _ = cv2.projectPoints(op[i], r1, t1, c[j], d[j])
-                self.projected[j].append(imgpoints2)
-
-                if self.m_stereo:
-                    r1 = cv2.Rodrigues(r1)[0]
-
-                    if j == 1:
-                        r2 = np.dot(np.linalg.inv(self.R_stereo), r1)
-                        t2 = np.dot(np.linalg.inv(self.R_stereo), t1) \
-                            - np.dot(np.linalg.inv(self.R_stereo),
-                                     self.T_stereo)
-                    else:
-                        r2 = np.dot(self.R_stereo, r1)
-                        t2 = np.dot(self.R_stereo, t1) + self.T_stereo
-
-                    imgpoints2, _ = cv2.projectPoints(op[i], r2, t2,
-                                                      c[(j + 1) % 2],
-                                                      d[(j + 1) % 2])
-                    self.projected_stereo[(j + 1) % 2].append(imgpoints2)
+        """Function to calculate projections for all cameras."""
+        self.projected, self.projected_stereo = calculate_projection(
+            self.objpoints, self.imgpoints, self.camera_matrix,
+            self.dist_coefs, self.n_cameras, self.m_stereo,
+            self.R_stereo, self.T_stereo, r=r, t=t)
 
     def calculate_error(self):
-        for j in range(self.n_cameras):
-            ip = self.imgpoints[j]
-            self.r_error_p[j] = []
-            self.r_error[j] = []
-            for i, _ in enumerate(ip):
-                if self.m_stereo:
-                    imgpoints2 = self.projected_stereo[j][i]
-                else:
-                    imgpoints2 = self.projected[j][i]
-                self.r_error[j].append(np.sqrt((
-                        np.power(np.linalg.norm(ip[i] - imgpoints2, axis=2), 2)
-                        .mean())))
-                self.r_error_p[j].append(np.linalg.norm(ip[i] - imgpoints2,
-                                                        axis=2))
-                # Calculated value to update progressbar
-                c_percent = (j * len(ip) + i + 1) \
-                    / float(self.n_cameras * len(ip))
-                self.progbar['value'] = c_percent * 10.0
-                # update label
-                self.style_pg.configure('text.Horizontal.TProgressbar',
-                                        text='{:g} %'
-                                        .format(int(c_percent * 100)))
-                self.popup.update()  # for updating while running other process
-                # update rms when the error for all the images is calculated
-                if len(self.r_error[j]) == len(ip):
-                    logging.info(self._('Updating RMS for camera %d'), j + 1)
-                    self.rms[j] = np.sqrt(np.sum(np.square(self.r_error[j])) /
-                                          len(self.r_error[j]))
-                    if j == 1:
-                        self.rms[2] = np.sqrt(
-                            np.sum(np.square(self.r_error[0]
-                                             + self.r_error[1]))
-                            / len(self.r_error[0] + self.r_error[1]))
+        """Function to calculate reprojection errors with GUI progress updates."""
+        def progress_callback(c_percent):
+            self.progbar['value'] = c_percent * 10.0
+            self.style_pg.configure('text.Horizontal.TProgressbar',
+                                    text='{:g} %'
+                                    .format(int(c_percent * 100)))
+            self.popup.update()
+
+        self.r_error, self.r_error_p, self.rms = calculate_error(
+            self.imgpoints, self.projected, self.projected_stereo,
+            self.n_cameras, self.m_stereo,
+            progress_callback=progress_callback)

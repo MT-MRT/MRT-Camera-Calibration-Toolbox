@@ -4,7 +4,10 @@ import os
 from tkinter import filedialog
 import cv2
 import numpy as np
-import toolboxClass.miscTools.datastring as datastring
+
+from toolboxClass.load_functions import (load_3d_points, detect_features,
+                                         parse_intrinsics, parse_extrinsics,
+                                         get_file_list)
 
 logging.basicConfig(level=logging.ERROR)
 
@@ -22,9 +25,8 @@ class Mixin:
                                         ._('File missing, please add'),
                                         fg='red')
         else:
-            set_3D_points = np.fromfile(self.load_files[0][0],
-                                        dtype=np.float32, sep=',')
-            if len(set_3D_points) % 3 != 0:
+            set_3D_points = load_3d_points(self.load_files[0][0])
+            if set_3D_points is None:
                 self.l_load_files[0].config(text=self._('No 3D points'),
                                             fg='red')
                 self.object_pattern = None
@@ -60,22 +62,7 @@ class Mixin:
                 else:
                     break
             for p in list_path:
-                file_no_path = []
-                for f in os.listdir(p):
-                    ext = os.path.splitext(f)[1]
-                    if ext.lower() not in self.valid_files:
-                        continue
-                    file_no_path.append(f)
-                try:
-                    # sorting files, based on:
-                    # https://stackoverflow.com/questions/33159106/
-                    # sort-filenames-in-directory-in-ascending-order
-                    file_no_path.sort(key=lambda f:
-                                      int(''.join(filter(str.isdigit, f))))
-                except ValueError:
-                    logging.warning(self._('non-indexable filenames'))
-                for f in file_no_path:
-                    filenames.append(os.path.join(p, f))
+                filenames.extend(get_file_list(p, self.valid_files))
         return filenames
 
     def assign_filename(self, j):
@@ -96,9 +83,9 @@ class Mixin:
             a = f.read()
             if j <= 1:
                 self.camera_matrix[j], self.dist_coefs[j] = \
-                    datastring.string2intrinsic(a)
+                    parse_intrinsics(a)
             else:
-                self.R_stereo, self.T_stereo = datastring.string2extrinsic(a)
+                self.R_stereo, self.T_stereo = parse_extrinsics(a)
             # update status check
             self.label_status_l[j + 1][1].config(text=u'\u2714')
             if j == 2:
@@ -150,124 +137,15 @@ class Mixin:
                             logging.debug('Initialized image size for camera %d...', j + 1)
                         # check if image size is valid
                         if im.shape == self.size[j]:
-                            ret = False
-                            features = None
-                            pre_processing = 4
-                            if self._(u'Symmetric Grid') in self.pattern_type.get():
-                                pre_processing = 8
-                            for process in range(pre_processing):
-                                if process == 0:
-                                    logging.debug(self._('Original image (Gray scale)'))
-                                    # creates copy of im, performance test found in
-                                    # https://stackoverflow.com/questions/48106028/ \
-                                    # python-copy-an-array-array
-                                    im2 = im * 1
-                                elif process == 1:
-                                    logging.debug(self._('Original image + Inverting image'))
-                                    im2 = 255 - im2
-                                elif process == 2:
-                                    logging.debug(self._('Normalized image (only)'))
-                                    im2 = cv2.normalize(im, None, 0, 255, cv2.NORM_MINMAX)
-                                elif process == 3:
-                                    logging.debug(self._('Normalized image + Inverting image'))
-                                    im2 = 255 - im2
-                                elif process == 4:
-                                    logging.debug(self._('Normalized image + Gaussian Blur'))
-                                    im2 = cv2.GaussianBlur(im*1, (11, 11), 0)
-                                elif process == 5:
-                                    logging.debug(self._('Normalized image + Gaussian Blur + Inverting image'))
-                                    im2 = 255 - im2
-                                elif process == 6:
-                                    logging.debug(self._('Normalized image + Dilate'))
-                                    L = 3
-                                    # initialize grid for the circle matrix
-                                    grid_circle = np.zeros((L * 2 + 1, L * 2 + 1))
-                                    # Assign values to the grid from 1.0 to 0.0 as a circle representation,
-                                    # where the center gets 1.0 and the radius gets 0.0
-                                    for k in range(L):
-                                        for ii in range(L - k, L + k + 1):
-                                            for jj in range(L - k, L + k + 1):
-                                                r = ((ii - L) ** 2 + (jj - L) ** 2) ** 0.5
-                                                if r <= k:
-                                                    grid_circle[ii, jj] = 1
-                                    kernel = grid_circle.astype(np.uint8)
-                                    im2 = cv2.dilate(im * 1, kernel, iterations=1)
-                                elif process == 7:
-                                    logging.debug(self._('Normalized image + Dilate + Inverting image'))
-                                    im2 = 255 - im2
-
-                                # find features for chessboard pattern type
-                                if self._(u'Chessboard') in self.pattern_type.get():
-                                    ret, features = \
-                                        cv2.findChessboardCorners(im2,
-                                                                  (self.p_height,
-                                                                   self.p_width))
-                                    if ret:
-                                        # EPS realistisch einstellen je nach
-                                        # Bildaufloesung (z.B fuer (240x320) 0.1, 0.25)
-                                        # improve feature detection
-                                        criteria = (cv2.TERM_CRITERIA_EPS
-                                                    + cv2.TERM_CRITERIA_MAX_ITER,
-                                                    130, 0.25)
-                                        cv2.cornerSubPix(im2, features, (3, 3),
-                                                         (-1, -1), criteria)
-                                        break
-                                # find features for asymmetric grid pattern type
-                                elif self._(u'Asymmetric Grid') \
-                                        in self.pattern_type.get():
-                                    features = np.array([], np.float32)
-                                    ret, features = \
-                                        cv2.findCirclesGrid(im2, (self.p_height,
-                                                                  self.p_width),
-                                                            features,
-                                                            cv2
-                                                            .CALIB_CB_ASYMMETRIC_GRID)
-                                    if ret:
-                                        break
-                                # find features for asymmetric grid pattern type
-                                elif self._(u'Symmetric Grid') \
-                                        in self.pattern_type.get():
-                                    features = np.array([], np.float32)
-                                    # Since the findCirclesGrid algorithm for symmetric
-                                    # grid usually fails for a wrong height - width
-                                    # configuration, we invert here those parameters.
-                                    for inner_cycle in range(2):
-                                        if inner_cycle == 0:
-                                            logging.debug(self._('height - width'))
-                                            ret, features = \
-                                                cv2.findCirclesGrid(
-                                                    im2,
-                                                    (self.p_height, self.p_width),
-                                                    features,
-                                                    cv2.CALIB_CB_SYMMETRIC_GRID)
-                                            if ret:
-                                                break
-                                        else:
-                                            logging.debug(self._('width - height'))
-                                            ret, features = \
-                                                cv2.findCirclesGrid(
-                                                    im2,
-                                                    (self.p_width, self.p_height),
-                                                    features,
-                                                    cv2.CALIB_CB_SYMMETRIC_GRID)
-
-                                            if ret:
-                                                # transform the detected features
-                                                # configuration to match the original
-                                                # (height, width)
-                                                features = features \
-                                                    .reshape(self.p_height,
-                                                             self.p_width,
-                                                             1, 2)
-                                                features = np.transpose(features,
-                                                                        (1, 0, 2, 3))
-                                                features = features \
-                                                    .reshape(self.p_width
-                                                             * self.p_height,
-                                                             1, 2)
-                                                break
-                                    if ret:
-                                        break
+                            is_chessboard = self._(u'Chessboard') in self.pattern_type.get()
+                            is_asymmetric = self._(u'Asymmetric Grid') in self.pattern_type.get()
+                            is_symmetric = self._(u'Symmetric Grid') in self.pattern_type.get()
+                            ret, features = detect_features(
+                                im, self.pattern_type.get(),
+                                self.p_height, self.p_width,
+                                is_chessboard=is_chessboard,
+                                is_asymmetric=is_asymmetric,
+                                is_symmetric=is_symmetric)
                             # checks if the detection of features succeed
                             if ret:
                                 # add file path to path

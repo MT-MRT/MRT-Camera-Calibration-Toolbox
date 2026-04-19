@@ -136,7 +136,7 @@ def run_clustering_calibration(objpoints, imgpoints, size, n_cameras, m_stereo,
             getting_new_sample = True
             while getting_new_sample:
                 s = get_one_combination(n_total, c_r)
-                if s not in samples:
+                if (s not in samples) or (len(samples) >= max_k):
                     samples.append(s)
                     getting_new_sample = False
         else:

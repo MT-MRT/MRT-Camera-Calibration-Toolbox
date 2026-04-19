@@ -6,6 +6,9 @@ import numpy as np
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 import toolboxClass.miscTools.hint_label as hl
+from toolboxClass.pattern_functions import (create_chessboard_pattern,
+                                            create_asymmetric_grid_pattern,
+                                            create_symmetric_grid_pattern)
 
 logging.basicConfig(level=logging.ERROR)
 
@@ -230,41 +233,16 @@ class Mixin:
         if self._(u'Images') in self.pattern_load.get():
             # creates object from Chessboard pattern
             if self._(u'Chessboard') in self.pattern_type.get():
-                self.object_pattern = np.zeros((self.p_width
-                                                * self.p_height, 3),
-                                               np.float32)
-                grid = np.mgrid[0:self.p_height, 0:self.p_width] \
-                         .T.reshape(-1, 2) * self.f_distance
-                self.object_pattern[:, 0] = -grid[:, 1]
-                self.object_pattern[:, 1] = grid[:, 0]
+                self.object_pattern = create_chessboard_pattern(
+                    self.p_width, self.p_height, self.f_distance)
             # creates object from Grid pattern
             elif self._(u'Asymmetric Grid') in self.pattern_type.get():
-                pattern_size = (self.p_height, self.p_width)
-                self.object_pattern = np.zeros((np.prod(pattern_size), 3),
-                                               np.float32)
-                self.object_pattern[:, :2] = np.fliplr(np.indices(pattern_size)
-                                                       .T.reshape(-1, 2))
-                for i in range(np.prod(pattern_size)):
-                    if self.object_pattern[i, 0] % 2 == 0:
-                        self.object_pattern[i, 1] = self.object_pattern[i, 1] \
-                                                   * self.f_distance
-                        self.object_pattern[i, 0] = self.object_pattern[i, 0] \
-                            * self.f_distance / 2
-                    else:
-                        self.object_pattern[i, 1] = self.object_pattern[i, 1] \
-                                                   * self.f_distance \
-                                                   + self.f_distance / 2
-                        self.object_pattern[i, 0] = self.object_pattern[i, 0] \
-                            * self.f_distance / 2
+                self.object_pattern = create_asymmetric_grid_pattern(
+                    self.p_width, self.p_height, self.f_distance)
             # returns for led pattern (not yet implemented)
             elif self._(u'Symmetric Grid') in self.pattern_type.get():
-                self.object_pattern = np.zeros((self.p_width
-                                                * self.p_height, 3),
-                                               np.float32)
-                grid = np.mgrid[0:self.p_height, 0:self.p_width]\
-                         .T.reshape(-1, 2) * self.f_distance
-                self.object_pattern[:, 0] = -grid[:, 1]
-                self.object_pattern[:, 1] = grid[:, 0]
+                self.object_pattern = create_symmetric_grid_pattern(
+                    self.p_width, self.p_height, self.f_distance)
 
             # set default image type
             self.valid_files = ['.jpg', '.png']

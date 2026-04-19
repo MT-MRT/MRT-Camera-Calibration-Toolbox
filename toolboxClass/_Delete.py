@@ -1,5 +1,8 @@
 import logging
-import numpy as np
+
+from toolboxClass.delete_functions import (create_empty_error,
+                                           create_empty_camera_parameters,
+                                           delete_single_image_data)
 
 logging.basicConfig(level=logging.ERROR)
 
@@ -7,40 +10,15 @@ logging.basicConfig(level=logging.ERROR)
 class Mixin:
     def reset_error(self):
         """Function to reset error related variables."""
-        # array of rms error for each pose
-        self.r_error = [None, None]
-        # array of pixel distance error for each feature
-        self.r_error_p = [[], []]
-        # projections
-        self.projected = [[], []]
-        self.projected_stereo = [[], []]
+        (self.r_error, self.r_error_p,
+         self.projected, self.projected_stereo) = create_empty_error()
 
     def reset_camera_parameters(self):
         """Function to reset all intrinsics and extrinsics parameters."""
-        # camera matrix
-        # array of 2 of 3*3 for camera parameters (mean and standard deviation)
-        self.camera_matrix = [np.zeros((3, 3),
-                              dtype=np.float32),
-                              np.zeros((3, 3),
-                              dtype=np.float32)]
-        self.dev_camera_matrix = [np.zeros((3, 3),
-                                  dtype=np.float32),
-                                  np.zeros((3, 3),
-                                  dtype=np.float32)]
-        # array of 2 of 5*1 for distortion parameters (mean and standard dev.)
-        self.dist_coefs = [np.zeros((5, 1),
-                           dtype=np.float32),
-                           np.zeros((5, 1),
-                           dtype=np.float32)]
-        self.dev_dist_coefs = [np.zeros((5, 1),
-                               dtype=np.float32),
-                               np.zeros((5, 1),
-                               dtype=np.float32)]
-        # rotational and translation matrix
-        self.R_stereo = np.zeros((3, 3), dtype=np.float32)
-        self.T_stereo = np.zeros((3, 1), dtype=np.float32)
-        # rms error
-        self.rms = [0, 0, 0]
+        (self.camera_matrix, self.dev_camera_matrix,
+         self.dist_coefs, self.dev_dist_coefs,
+         self.R_stereo, self.T_stereo, self.rms) = \
+            create_empty_camera_parameters()
 
     def del_single(self):
         """Function to delete with Del key one image."""
@@ -50,21 +28,10 @@ class Mixin:
             self.update = False
             # delete for each selected image the path, original image,
             # features, projections, and erros from the corresponding list
-            for j in range(self.n_cameras):
-                del self.paths[j][index[0]]
-                del self.img_original[j][index[0]]
-                del self.detected_features[j][index[0]]
-                if self.projected[j]:  # check if projection data exists
-                    del self.projected[j][index[0]]
-                if j == 1:
-                    # check if stereo projection data exists
-                    if self.projected_stereo[0]:
-                        del self.projected_stereo[0][index[0]]
-                        del self.projected_stereo[1][index[0]]
-                # barchar
-                if self.r_error[j]:  # check if reprojection error data exists
-                    del self.r_error[j][index[0]]
-                    del self.r_error_p[j][index[0]]
+            delete_single_image_data(
+                self.paths, self.img_original, self.detected_features,
+                self.projected, self.projected_stereo,
+                self.r_error, self.r_error_p, self.n_cameras, index[0])
             # update number of total poses
             self.n_total.set(self.n_total.get() - 1)
             # check if there is already a selected image in data browser

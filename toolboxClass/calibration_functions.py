@@ -1,7 +1,8 @@
 import logging
+import math
 import cv2
 import numpy as np
-from toolboxClass.miscTools.misc_tools import (ncr, get_all_combinations,
+from toolboxClass.miscTools.misc_tools import (get_all_combinations,
                                                get_one_combination,
                                                get_indices_to_average)
 from toolboxClass.miscTools.quaternions import averageMatrix
@@ -101,7 +102,7 @@ def run_clustering_calibration(objpoints, imgpoints, size, n_cameras, m_stereo,
     """
     from toolboxClass.miscTools.time_tools import chronometer
 
-    max_k = ncr(n_total, c_r)
+    max_k = math.comb(n_total, c_r)
     k = min(c_k, max_k)
 
     time_play = chronometer()

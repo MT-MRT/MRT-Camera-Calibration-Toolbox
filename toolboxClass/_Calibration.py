@@ -2,7 +2,6 @@ import logging
 import math
 import cv2
 import numpy as np
-from toolboxClass.miscTools.misc_tools import ncr
 from toolboxClass.miscTools.time_tools import chronometer
 from toolboxClass.calibration_functions import (run_clustering_calibration,
                                                 calculate_projection,

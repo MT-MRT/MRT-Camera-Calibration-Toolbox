@@ -61,3 +61,21 @@ def create_symmetric_grid_pattern(p_width, p_height, f_distance):
     object_pattern[:, 0] = -grid[:, 1]
     object_pattern[:, 1] = grid[:, 0]
     return object_pattern
+
+
+def create_chessboard_sb_pattern(p_width, p_height, f_distance):
+    """Create 3D object points for a chessboard pattern using findChessboardCornersSB.
+
+    Args:
+        p_width: Number of inner corners in the width direction.
+        p_height: Number of inner corners in the height direction.
+        f_distance: Distance between features in mm.
+
+    Returns:
+        numpy.ndarray: Array of 3D points with shape (p_width*p_height, 3).
+    """
+    object_pattern = np.zeros((p_width * p_height, 3), np.float32)
+    grid = np.mgrid[0:p_height, 0:p_width].T.reshape(-1, 2) * f_distance
+    object_pattern[:, 0] = -grid[:, 1]
+    object_pattern[:, 1] = grid[:, 0]
+    return object_pattern

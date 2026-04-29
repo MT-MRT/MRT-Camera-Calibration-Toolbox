@@ -64,7 +64,7 @@ class Mixin:
     def pattern_default(self, *args):
         """Function to set default pattern parameters when the pattern type is changed."""
         self.popup.update()
-        if self._(u'Chessboard') in self.pattern_type.get():
+        if self._(u'Chessboard') in self.pattern_type.get() or self._(u'Chessboard SB') in self.pattern_type.get():
             self.feature_distance.set(50)
             self.pattern_width.set(9)
             self.pattern_height.set(6)
@@ -136,7 +136,7 @@ class Mixin:
                         text=self._(u'length parameter can not be empty'))
 
             if b_continue:
-                if self._(u'Chessboard') in self.pattern_type.get():
+                if self._(u'Chessboard') in self.pattern_type.get() or self._(u'Chessboard SB') in self.pattern_type.get():
                     plot_chessboard(self.c_pattern,
                                     self.p_width,
                                     self.p_height,
@@ -282,6 +282,7 @@ class Mixin:
         tk.Label(self.m_frm[1], text=self._(u'Pattern type '))\
             .grid(row=0, column=0, sticky=tk.W)
         tk.OptionMenu(self.m_frm[1], self.pattern_type, self._(u'Chessboard'),
+                      self._(u'Chessboard SB'),
                       self._(u'Asymmetric Grid'),
                       self._(u'Symmetric Grid')).grid(row=1, column=0,
                                                       sticky=tk.W + tk.E)

@@ -238,7 +238,7 @@ class Mixin:
         # checks
         if self._(u'Images') in self.pattern_load.get():
             # creates object from Chessboard pattern
-            if self._(u'Chessboard') in self.pattern_type.get():
+            if self._(u'Chessboard') in self.pattern_type.get() or self._(u'Chessboard SB') in self.pattern_type.get():
                 self.object_pattern = create_chessboard_pattern(
                     self.p_width, self.p_height, self.f_distance)
             # creates object from Grid pattern

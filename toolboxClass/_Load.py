@@ -144,12 +144,14 @@ class Mixin:
 
                         if im.shape == self.size[j]:
                             is_chessboard = self._(u'Chessboard') in self.pattern_type.get()
+                            is_chessboard_sb = self._(u'Chessboard SB') in self.pattern_type.get()
                             is_asymmetric = self._(u'Asymmetric Grid') in self.pattern_type.get()
                             is_symmetric = self._(u'Symmetric Grid') in self.pattern_type.get()
                             ret, features = detect_features(
                                 im, self.pattern_type.get(),
                                 self.p_height, self.p_width,
                                 is_chessboard=is_chessboard,
+                                is_chessboard_sb=is_chessboard_sb,
                                 is_asymmetric=is_asymmetric,
                                 is_symmetric=is_symmetric)
                             # checks if the detection of features succeed

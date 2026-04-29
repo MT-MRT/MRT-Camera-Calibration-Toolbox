@@ -24,7 +24,7 @@ def load_3d_points(filepath):
 
 def detect_features(image, pattern_type, pattern_height, pattern_width,
                     is_chessboard=False, is_asymmetric=False,
-                    is_symmetric=False):
+                    is_symmetric=False, is_chessboard_sb=False):
     """Detect features in an image for various pattern types.
 
     Args:
@@ -35,6 +35,7 @@ def detect_features(image, pattern_type, pattern_height, pattern_width,
         is_chessboard: Whether pattern is a chessboard.
         is_asymmetric: Whether pattern is an asymmetric circle grid.
         is_symmetric: Whether pattern is a symmetric circle grid.
+        is_chessboard_sb: Whether pattern is chessboard using findChessboardCornersSB.
 
     Returns:
         tuple: (success, features) where success is bool.
@@ -86,6 +87,12 @@ def detect_features(image, pattern_type, pattern_height, pattern_width,
                 criteria = (cv2.TERM_CRITERIA_EPS
                             + cv2.TERM_CRITERIA_MAX_ITER, 130, 0.25)
                 cv2.cornerSubPix(im2, features, (3, 3), (-1, -1), criteria)
+                return True, features
+        elif is_chessboard_sb:
+            ret, features = cv2.findChessboardCornersSB(
+                im2, (pattern_width, pattern_height),
+                flags=cv2.CALIB_CB_EXHAUSTIVE + cv2.CALIB_CB_ACCURACY)
+            if ret:
                 return True, features
         elif is_asymmetric:
             features = np.array([], np.float32)

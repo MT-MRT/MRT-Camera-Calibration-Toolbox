@@ -32,9 +32,33 @@ class Mixin:
             .grid(row=3, column=0, sticky=tk.W)
         tk.Checkbutton(self.popup, variable=self.p_zero_tangent_distance)\
             .grid(row=3, column=1, sticky=tk.E + tk.W + tk.N)
+        
+        tk.Label(self.popup, text=self._(u'Fix distortion coefficients'))\
+            .grid(row=4, column=0, columnspan=2, sticky=tk.W)
+        tk.Label(self.popup, text='  k1:')\
+            .grid(row=5, column=0, sticky=tk.W)
+        tk.Checkbutton(self.popup, variable=self.p_fix_k1)\
+            .grid(row=5, column=1, sticky=tk.W)
+        tk.Label(self.popup, text='  k2:')\
+            .grid(row=6, column=0, sticky=tk.W)
+        tk.Checkbutton(self.popup, variable=self.p_fix_k2)\
+            .grid(row=6, column=1, sticky=tk.W)
+        tk.Label(self.popup, text='  k3:')\
+            .grid(row=7, column=0, sticky=tk.W)
+        tk.Checkbutton(self.popup, variable=self.p_fix_k3)\
+            .grid(row=7, column=1, sticky=tk.W)
+        tk.Label(self.popup, text='  k4:')\
+            .grid(row=8, column=0, sticky=tk.W)
+        tk.Checkbutton(self.popup, variable=self.p_fix_k4)\
+            .grid(row=8, column=1, sticky=tk.W)
+        tk.Label(self.popup, text='  k5:')\
+            .grid(row=9, column=0, sticky=tk.W)
+        tk.Checkbutton(self.popup, variable=self.p_fix_k5)\
+            .grid(row=9, column=1, sticky=tk.W)
+        
         tk.Button(self.popup, text=self._(u'Exit'),
                   command=self.popup.destroy)\
-            .grid(row=4, column=0, columnspan=2, sticky=tk.E + tk.W + tk.N)
+            .grid(row=10, column=0, columnspan=2, sticky=tk.E + tk.W + tk.N)
         self.center()
 
     def pattern_default(self, *args):

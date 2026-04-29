@@ -162,6 +162,11 @@ class Mixin:
         self.p_fix_point = tk.BooleanVar()
         self.p_fix_ratio = tk.BooleanVar()
         self.p_zero_tangent_distance = tk.BooleanVar()
+        self.p_fix_k1 = tk.BooleanVar()
+        self.p_fix_k2 = tk.BooleanVar()
+        self.p_fix_k3 = tk.BooleanVar()
+        self.p_fix_k4 = tk.BooleanVar()
+        self.p_fix_k5 = tk.BooleanVar()
         # Variables for intrinsic and extrinsic parameters visualization
         # camera parameters
         self.fx = [tk.StringVar(), tk.StringVar()]

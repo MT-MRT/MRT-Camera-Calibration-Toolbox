@@ -46,7 +46,12 @@ class Mixin:
             int(self.p_intrinsics_guess.get())*cv2.CALIB_USE_INTRINSIC_GUESS +\
             int(self.p_fix_point.get()) * cv2.CALIB_FIX_PRINCIPAL_POINT + \
             int(self.p_fix_ratio.get()) * cv2.CALIB_FIX_ASPECT_RATIO + \
-            int(self.p_zero_tangent_distance.get())*cv2.CALIB_ZERO_TANGENT_DIST
+            int(self.p_zero_tangent_distance.get())*cv2.CALIB_ZERO_TANGENT_DIST + \
+            int(self.p_fix_k1.get()) * cv2.CALIB_FIX_K1 + \
+            int(self.p_fix_k2.get()) * cv2.CALIB_FIX_K2 + \
+            int(self.p_fix_k3.get()) * cv2.CALIB_FIX_K3 + \
+            int(self.p_fix_k4.get()) * cv2.CALIB_FIX_K4 + \
+            int(self.p_fix_k5.get()) * cv2.CALIB_FIX_K5
 
         logging.debug('%s', self.how_to_calibrate.get())
         if self._(u'Clustering') in self.how_to_calibrate.get():

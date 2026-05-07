@@ -362,6 +362,8 @@ class Mixin:
                                                       * factor_width[k])
                         # draw to update, necessary to keep changes
                         self.bar[k][j].draw()
+                        y_ticks = self.ax[k][j].get_yticks()
+                        self.ax[k][j].set_yticks(y_ticks)
                         self.ax[k][j].set_yticklabels(
                                 [item.get_text() for item in
                                  self.ax[k][j].get_yticklabels()], size=10)

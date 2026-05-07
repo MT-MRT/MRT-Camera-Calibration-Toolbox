@@ -20,6 +20,29 @@ class Mixin:
          self.R_stereo, self.T_stereo, self.rms) = \
             create_empty_camera_parameters()
 
+    def find_max_error_image(self):
+        """Find the image with the highest reprojection error.
+
+        Returns:
+            int: Index of the image with the highest error.
+        """
+        max_error = -1
+        max_error_index = 0
+        # check if error data exists
+        if self.r_error[0]:
+            for i in range(len(self.r_error[0])):
+                # for mono calibration use camera 0 error
+                # for stereo use combined error from both cameras
+                if self.n_cameras == 1:
+                    error = self.r_error[0][i]
+                else:
+                    # combine errors from both cameras
+                    error = (self.r_error[0][i] + self.r_error[1][i]) / 2
+                if error > max_error:
+                    max_error = error
+                    max_error_index = i
+        return max_error_index
+
     def del_single(self):
         """Function to delete with Del key one image."""
         # get current index
@@ -34,30 +57,22 @@ class Mixin:
                 self.r_error, self.r_error_p, self.n_cameras, index[0])
             # update number of total poses
             self.n_total.set(self.n_total.get() - 1)
-            # check if there is already a selected image in data browser
-            if index[0]:
-                # for the case the last image is deleted, update the data
-                # browser selection to the penultimate pose
-                if index[0] == self.n_total.get():
-                    self.index.set(index[0] - 1)
-                    self.listbox.select_set(index[0] - 1)
-                    self.listbox.yview(index[0] - 1)
-                else:
-                    self.index.set(index[0])
-                    self.listbox.yview(index[0])
+            # check if there are still images
+            if self.n_total.get():
+                # find the image with the highest error
+                max_error_index = self.find_max_error_image()
+                self.index.set(max_error_index)
+                self.listbox.select_set(max_error_index)
+                self.listbox.yview(max_error_index)
             else:
-                # if there are images, set the first one as selected
-                if self.n_total.get():
-                    self.index.set(0)
-                else:
-                    # disable zoom in button
-                    self.btn_zoom_more.config(state='disable')
-                    self.btn_zoom_less.config(state='disable')
-                    self.btn_move_feature.config(state='disable')
-                    self.btn_locate.config(state='disable')
-                    # disable run calibration button
-                    self.btn_play.config(state='disable')
-                    self.index.set(-1)
+                # disable zoom in button
+                self.btn_zoom_more.config(state='disable')
+                self.btn_zoom_less.config(state='disable')
+                self.btn_move_feature.config(state='disable')
+                self.btn_locate.config(state='disable')
+                # disable run calibration button
+                self.btn_play.config(state='disable')
+                self.index.set(-1)
             # uses self.index which is updated in updatepicture
             self.loadBarError([0, 1])
 

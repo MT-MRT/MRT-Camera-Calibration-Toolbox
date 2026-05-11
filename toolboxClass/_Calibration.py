@@ -49,9 +49,7 @@ class Mixin:
             int(self.p_zero_tangent_distance.get())*cv2.CALIB_ZERO_TANGENT_DIST + \
             int(self.p_fix_k1.get()) * cv2.CALIB_FIX_K1 + \
             int(self.p_fix_k2.get()) * cv2.CALIB_FIX_K2 + \
-            int(self.p_fix_k3.get()) * cv2.CALIB_FIX_K3 + \
-            int(self.p_fix_k4.get()) * cv2.CALIB_FIX_K4 + \
-            int(self.p_fix_k5.get()) * cv2.CALIB_FIX_K5
+            int(self.p_fix_k3.get()) * cv2.CALIB_FIX_K3
 
         logging.debug('%s', self.how_to_calibrate.get())
         if self._(u'Clustering') in self.how_to_calibrate.get():

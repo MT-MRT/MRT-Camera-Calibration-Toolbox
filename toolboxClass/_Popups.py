@@ -47,14 +47,7 @@ class Mixin:
             .grid(row=7, column=0, sticky=tk.W)
         tk.Checkbutton(self.popup, variable=self.p_fix_k3)\
             .grid(row=7, column=1, sticky=tk.W)
-        tk.Label(self.popup, text='  k4:')\
-            .grid(row=8, column=0, sticky=tk.W)
-        tk.Checkbutton(self.popup, variable=self.p_fix_k4)\
-            .grid(row=8, column=1, sticky=tk.W)
-        tk.Label(self.popup, text='  k5:')\
-            .grid(row=9, column=0, sticky=tk.W)
-        tk.Checkbutton(self.popup, variable=self.p_fix_k5)\
-            .grid(row=9, column=1, sticky=tk.W)
+
         
         tk.Button(self.popup, text=self._(u'Exit'),
                   command=self.popup.destroy)\

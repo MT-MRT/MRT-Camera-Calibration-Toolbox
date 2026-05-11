@@ -28,7 +28,7 @@ class Mixin:
             .grid(row=2, column=0, sticky=tk.W)
         tk.Checkbutton(self.popup, variable=self.p_fix_ratio)\
             .grid(row=2, column=1, sticky=tk.E + tk.W + tk.N)
-        tk.Label(self.popup, text=self._(u'Set zero tangent distance'))\
+        tk.Label(self.popup, text=self._(u'Set zero tangent distance (p1 = p2 = 0)'))\
             .grid(row=3, column=0, sticky=tk.W)
         tk.Checkbutton(self.popup, variable=self.p_zero_tangent_distance)\
             .grid(row=3, column=1, sticky=tk.E + tk.W + tk.N)

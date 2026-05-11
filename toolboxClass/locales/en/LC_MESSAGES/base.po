@@ -239,8 +239,8 @@ msgstr 'Fix principal point'
 msgid 'Fix aspect ratio'
 msgstr 'Fix aspect ratio'
 
-msgid 'Set zero tangent distance'
-msgstr 'Set zero tangent distance'
+msgid 'Set zero tangent distance (p1 = p2 = 0)'
+msgstr 'Set zero tangent distance (p1 = p2 = 0)'
 
 msgid 'Exit'
 msgstr 'Exit'

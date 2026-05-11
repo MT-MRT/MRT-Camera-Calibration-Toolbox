@@ -236,7 +236,7 @@ msgstr 'Fixiere Bildhauptpunkt'
 msgid 'Fix aspect ratio'
 msgstr 'Fixiere Seitenverhaeltnis'
 
-msgid 'Set zero tangent distance'
+msgid 'Set zero tangent distance (p1 = p2 = 0)'
 msgstr 'Setze tangentiale Distorsion auf 0'
 
 msgid 'Exit'

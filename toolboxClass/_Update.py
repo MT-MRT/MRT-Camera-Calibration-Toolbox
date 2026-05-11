@@ -1,17 +1,62 @@
 import logging
+import platform
 import tkinter as tk
 from toolboxClass.miscTools.misc_tools import float2StringVar
 
 logging.basicConfig(level=logging.ERROR)
 
+if platform.system() == 'Darwin':
+    CTRL_MASK = 0x8
+else:
+    CTRL_MASK = 0x4
+
 
 class Mixin:
+    def on_listbox_click(self, event):
+        """Handle mouse click with modifier keys for range/individual selection."""
+        widget = event.widget
+        click_pos = widget.nearest(event.y)
+        total_items = widget.size()
+
+        if click_pos >= total_items or click_pos < 0:
+            self.listbox.select_clear(0, tk.END)
+            self.index.set(-1)
+            self.zoomhandler = 0
+            return
+
+        if event.state & 0x1:
+            anchor = getattr(self, 'selection_anchor', click_pos)
+            start = min(anchor, click_pos)
+            end = max(anchor, click_pos)
+            self.listbox.select_clear(0, tk.END)
+            self.listbox.select_set(start, end)
+            self.index.set(click_pos)
+            self.selection_anchor = anchor
+        elif event.state & CTRL_MASK:
+            current_selection = widget.curselection()
+            if click_pos in current_selection:
+                self.listbox.select_clear(click_pos)
+            else:
+                self.listbox.select_set(click_pos)
+            self.index.set(click_pos)
+        else:
+            self.listbox.select_clear(0, tk.END)
+            self.listbox.select_set(click_pos)
+            self.index.set(click_pos)
+            self.selection_anchor = click_pos
+
+        self.zoomhandler = 0
+        if self.r_error[0]:
+            self.loadBarError([1])
+            self.updateBarError(0)
+
     def updateSelection(self, event):
         """Function for the click event over the data browser."""
         widget = event.widget
         self.zoomhandler = 0
-        if widget.curselection():
-            self.index.set(widget.curselection()[0])
+        selection = widget.curselection()
+        if selection:
+            self.index.set(selection[-1])
         if self.r_error[0]:
             self.loadBarError([1])
             self.updateBarError(0)
@@ -24,11 +69,14 @@ class Mixin:
             if self.n_total.get() > 0:
                 for i in self.paths[0]:
                     self.listbox.insert(tk.END, str(i.rsplit('/', 1)[1]))
+                self.listbox.select_clear(0, tk.END)
                 if self.index.get() == -1:
                     self.listbox.select_set(0)
                     self.index.set(0)
+                    self.selection_anchor = 0
                 else:
                     self.listbox.select_set(self.index.get())
+                    self.selection_anchor = self.index.get()
 
     def updateCameraParametersGUI(self):
         """Function to update all the labels values from the calculated parameters in the calibration."""

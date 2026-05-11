@@ -45,18 +45,23 @@ class Mixin:
 
     def del_single(self):
         """Function to delete with Del key one image."""
-        # get current index
-        index = self.listbox.curselection()
-        if index:
+        # get current indices
+        indices = self.listbox.curselection()
+        if indices:
             self.update = False
+            # sort indices in descending order to avoid index shifting
+            indices = sorted(indices, reverse=True)
             # delete for each selected image the path, original image,
             # features, projections, and erros from the corresponding list
-            delete_single_image_data(
-                self.paths, self.img_original, self.detected_features,
-                self.projected, self.projected_stereo,
-                self.r_error, self.r_error_p, self.n_cameras, index[0])
+            for idx in indices:
+                delete_single_image_data(
+                    self.paths, self.img_original, self.detected_features,
+                    self.projected, self.projected_stereo,
+                    self.r_error, self.r_error_p, self.n_cameras, idx)
             # update number of total poses
-            self.n_total.set(self.n_total.get() - 1)
+            self.n_total.set(self.n_total.get() - len(indices))
+            # refresh the listbox
+            self.loadImagesBrowser()
             # check if there are still images
             if self.n_total.get():
                 # find the image with the highest error

@@ -54,6 +54,7 @@ class Mixin:
         self.img = [[[], [], [], [], [], []], [[], [], [], [], [], []]]
         self.index.set(-1)
         self.index_corner.set(0)
+        self.selection_anchor = -1
         self.paths = [[], []]
         self.img_original = [[], []]
         self.detected_features = [[], []]
@@ -546,8 +547,9 @@ class Mixin:
         tk.Label(self.frm[1], text=self._(u'Data Browser')).pack()
         sb = tk.Scrollbar(self.frm[1], orient='vertical')
         sb.pack(side=tk.RIGHT, fill=tk.Y)
-        self.listbox = tk.Listbox(self.frm[1], yscrollcommand=sb.set)
+        self.listbox = tk.Listbox(self.frm[1], yscrollcommand=sb.set, selectmode=tk.EXTENDED)
         self.listbox.pack(expand=True, fill=tk.Y)
+        self.listbox.bind('<Button-1>', self.on_listbox_click)
         self.listbox.bind('<<ListboxSelect>>', self.updateSelection)
         sb.config(command=self.listbox.yview)
 
